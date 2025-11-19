@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Downloader Pro</title>
+    <meta name="description" content="Download Video TikTok Tanpa Watermark dengan Tampilan Premium">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABEL & RESET --- */
+        :root {
+            --primary: #00f2ea;   /* TikTok Cyan */
+            --secondary: #ff0050; /* TikTok Pink */
+            --bg-dark: #0f0f1a;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            /* Background Gradient Artistik */
+            background-image: 
+                radial-gradient(circle at 10% 0%, rgba(0, 242, 234, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 100%, rgba(255, 0, 80, 0.15) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- MAIN CARD (Glassmorphism) --- */
+        .app-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: height 0.3s ease;
+        }
+
+        /* Header Style */
+        .logo-area {
+            margin-bottom: 30px;
+        }
+
+        .logo-area i {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 242, 234, 0.3));
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* --- INPUT AREA --- */
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-box {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            padding: 16px 20px;
+            padding-right: 60px;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .input-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 234, 0.1);
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 45px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-search:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 0, 80, 0.4);
+        }
+
+        .btn-search:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        /* --- RESULT AREA --- */
+        #resultArea {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .video-preview-box {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            max-height: 400px;
+            display: block;
+        }
+
+        .meta-info {
+            text-align: left;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .text-info h3 { font-size: 0.95rem; font-weight: 600; }
+        .text-info p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+        .download-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .btn-dl {
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .dl-video {
+            background: var(--text-main);
+            color: #000;
+        }
+        .dl-video:hover { background: #ddd; transform: translateY(-2px); }
+
+        .dl-music {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+        }
+        .dl-music:hover { background: rgba(255,255,255,0.1); }
+
+        /* --- UTILITIES --- */
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 80, 0.2);
+            color: #ff8fa3;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* --- FOOTER --- */
+        .footer-credit {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: 'Consolas', monospace; /* Supaya font unik terlihat jelas */
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .app-container { padding: 30px 20px; border-radius: 0; height: 100vh; max-width: 100%; border: none; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="logo-area">
+            <i class="fab fa-tiktok"></i>
+            <h1>TikTok Downloader</h1>
+            <p class="subtitle">Unduh Video HD Tanpa Watermark</p>
+        </div>
+
+        <div class="search-wrapper">
+            <input type="text" id="urlInput" class="input-box" placeholder="Tempel tautan TikTok di sini..." autocomplete="off">
+            <button id="btnSearch" class="btn-search" onclick="fetchData()">
+                <i class="fas fa-search" id="iconSearch"></i>
+                <div class="loader" id="loader"></div>
+            </button>
+        </div>
+
+        <div id="errorMsg" class="error-message"></div>
+
+        <div id="resultArea">
+            <div class="meta-info">
+                <img src="" id="avatar" class="avatar" alt="User">
+                <div class="text-info">
+                    <h3 id="username">@username</h3>
+                    <p id="caption" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Caption...</p>
+                </div>
+            </div>
+
+            <div class="video-preview-box">
+                <video id="videoPlayer" controls playsinline referrerpolicy="no-referrer">
+                    Browser Anda tidak mendukung pemutar video.
+                </video>
+            </div>
+
+            <div class="download-grid">
+                <a href="#" id="dlVideo" class="btn-dl dl-video" target="_blank" referrerpolicy="no-referrer">
+                    <i class="fas fa-arrow-down"></i> Download Video (HD)
+                </a>
+                <a href="#" id="dlMusic" class="btn-dl dl-music" target="_blank" referrerpolicy="no-referrer">
+                    <i class="fas fa-music"></i> Download Audio (MP3)
+                </a>
+            </div>
+            
+            <p style="font-size: 0.75rem; color: #666; margin-top: 15px;">
+                *Klik titik tiga (⋮) di video jika auto-download tidak berjalan.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer-credit">
+        © 2025 - Dibuat oleh 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】
+    </div>
+
+    <script>
+        async function fetchData() {
+            const url = document.getElementById('urlInput').value;
+            const btn = document.getElementById('btnSearch');
+            const icon = document.getElementById('iconSearch');
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Validasi Sederhana
+            if (!url) {
+                showError("Harap masukkan tautan terlebih dahulu!");
+                return;
+            }
+
+            // Set UI ke status Loading
+            icon.style.display = 'none';
+            loader.style.display = 'block';
+            btn.disabled = true;
+            resultArea.style.display = 'none';
+            errorMsg.style.display = 'none';
+
+            try {
+                // Panggil API (Menggunakan TikWM)
+                const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.code === 0) {
+                    renderData(data.data);
+                } else {
+                    showError("Video tidak ditemukan. Pastikan tautan benar.");
+                }
+
+            } catch (err) {
+                console.error(err);
+                showError("Gagal terhubung. Periksa koneksi internet Anda.");
+            } finally {
+                // Kembalikan UI ke status normal
+                icon.style.display = 'block';
+                loader.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        function renderData(data) {
+            const domain = "https://www.tikwm.com";
+            
+            // Normalisasi URL
+            let videoUrl = data.play.startsWith('http') ? data.play : domain + data.play;
+            let musicUrl = data.music.startsWith('http') ? data.music : domain + data.music;
+            let coverUrl = data.cover.startsWith('http') ? data.cover : domain + data.cover;
+            let avatarUrl = data.author.avatar.startsWith('http') ? data.author.avatar : domain + data.author.avatar;
+
+            // Isi Data ke HTML
+            document.getElementById('username').innerText = data.author.nickname;
+            document.getElementById('caption').innerText = data.title || "Tanpa caption";
+            document.getElementById('avatar').src = avatarUrl;
+
+            // Setup Video Player
+            const player = document.getElementById('videoPlayer');
+            player.poster = coverUrl;
+            player.src = videoUrl;
+            player.load(); // Reload player agar policy baru terbaca
+
+            // Setup Tombol Download
+            document.getElementById('dlVideo').href = videoUrl;
+            document.getElementById('dlMusic').href = musicUrl;
+
+            // Tampilkan Hasil dengan Animasi
+            document.getElementById('resultArea').style.display = 'block';
+        }
+
+        function showError(message) {
+            const errDiv = document.getElementById('errorMsg');
+            errDiv.innerText = "⚠️ " + message;
+            errDiv.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
