@@ -462,4 +462,243 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-grid"></div>
+
+    <div class="starfield" id="starfield"></div>
+
+    <div class="holographic-card">
+        <div class="header">
+            <i class="fab fa-tiktok logo-icon"></i>
+            <h1 data-text="CYBERNETIC DOWNLOADER">CYBERNETIC DOWNLOADER</h1>
+            <p class="subtitle">Unduh esensi digital tanpa jejak.</p>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="Sematkan data link di sini..." autocomplete="off">
+            <button class="search-button" id="searchBtn" onclick="fetchVideo()">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="progress-bar-container" id="progressBarContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="errorMsg" class="message-box error-message"></div>
+
+        <div id="resultArea">
+            <div class="meta-container">
+                <div class="author-box">
+                    <img src="" id="avatar" class="author-avatar" alt="Author">
+                    <div>
+                        <h3 id="username" class="author-name">@UNKNOWN</h3>
+                        <p id="description" class="video-desc">Memuat data...</p>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-eye stat-icon"></i>
+                        <span id="statViews" class="stat-value">0</span>
+                        <span>Views</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-heart stat-icon"></i>
+                        <span id="statLikes" class="stat-value">0</span>
+                        <span>Likes</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-comment-dots stat-icon"></i>
+                        <span id="statComments" class="stat-value">0</span>
+                        <span>Comments</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-player-container">
+                <video id="videoPlayer" controls playsinline referrerpolicy="no-referrer"></video>
+            </div>
+
+            <div class="download-buttons">
+                <a href="#" id="dlVideo" class="btn-download btn-video" target="_blank" referrerpolicy="no-referrer">
+                    <span class="shine"></span>
+                    <i class="fas fa-download"></i> AKUISISI VIDEO (.MP4)
+                </a>
+                <a href="#" id="dlAudio" class="btn-download btn-audio" target="_blank" referrerpolicy="no-referrer">
+                    <span class="shine"></span>
+                    <i class="fas fa-music"></i> AKUISISI AUDIO (.MP3)
+                </a>
+            </div>
             
+            <p class="tip-text">
+                [INFORMASI]: Jika pengunduhan otomatis gagal, gunakan opsi unduh dari pemutar video di tab baru.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        PROTOCOL V.3.0 // CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】 // 2025
+    </div>
+
+    <audio id="swooshSound" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-whoosh-240.mp3" preload="auto"></audio>
+    <audio id="glitchSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-glitch-2176.mp3" preload="auto"></audio>
+
+
+    <script>
+        // --- Starfield Generation ---
+        function createStars() {
+            const starfield = document.getElementById('starfield');
+            for (let i = 0; i < 100; i++) { // Jumlah bintang
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = star.style.height = `${Math.random() * 3 + 1}px`; // Ukuran bintang
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starfield.appendChild(star);
+            }
+        }
+        createStars();
+
+        // --- Core Fetch Logic ---
+        async function fetchVideo() {
+            const urlInput = document.getElementById('urlInput').value;
+            const searchBtn = document.getElementById('searchBtn');
+            const progressBarContainer = document.getElementById('progressBarContainer');
+            const resultArea = document.getElementById('resultArea');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // --- UI State: Loading ---
+            searchBtn.disabled = true;
+            urlInput.disabled = true;
+            resultArea.style.display = 'none';
+            errorMsg.style.display = 'none';
+            progressBarContainer.style.display = 'block';
+
+            // Play swoosh sound (optional)
+            document.getElementById('swooshSound').play().catch(e => console.log("Swoosh sound failed:", e));
+
+            try {
+                // API Call (TikWM)
+                const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.code === 0 && data.data) {
+                    renderResult(data.data);
+                } else {
+                    throw new Error("Target data not found. Verify link integrity.");
+                }
+            } catch (error) {
+                console.error("[SYSTEM ERROR]:", error);
+                showError("Error: Target data acquisition failed. System offline or invalid URL.");
+                document.getElementById('glitchSound').play().catch(e => console.log("Glitch sound failed:", e));
+            } finally {
+                // --- UI State: Done/Error ---
+                progressBarContainer.style.display = 'none';
+                searchBtn.disabled = false;
+                urlInput.disabled = false;
+            }
+        }
+
+        function renderResult(data) {
+            const domain = "https://www.tikwm.com";
+            const fixUrl = (link) => link && (link.startsWith('http') ? link : domain + link);
+
+            // Play glitch sound (optional)
+            document.getElementById('glitchSound').play().catch(e => console.log("Glitch sound failed:", e));
+
+            // Meta Info
+            document.getElementById('avatar').src = fixUrl(data.author.avatar) || 'https://via.placeholder.com/45/333/FFF?text=NA';
+            document.getElementById('username').innerText = data.author.nickname || 'UNKNOWN ENTITY';
+            document.getElementById('description').innerText = data.title || '[NO DATA AVAILABLE]';
+
+            // Animated Stats
+            animateNumber('statViews', data.play_count || 0);
+            animateNumber('statLikes', data.digg_count || 0);
+            animateNumber('statComments', data.comment_count || 0);
+
+            // Video Player
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.poster = fixUrl(data.cover);
+            videoPlayer.src = fixUrl(data.play);
+            videoPlayer.load();
+
+            // Download Links
+            document.getElementById('dlVideo').href = fixUrl(data.play);
+            document.getElementById('dlAudio').href = fixUrl(data.music);
+
+            resultArea.style.display = 'block';
+        }
+
+        function showError(message) {
+            const err = document.getElementById('errorMsg');
+            err.innerText = message;
+            err.style.display = 'block';
+        }
+
+        // --- Number Animation (for stats) ---
+        function animateNumber(elementId, targetValue, duration = 1000) {
+            const element = document.getElementById(elementId);
+            let startValue = 0;
+            let startTime = null;
+
+            function easeOutQuad(t) { return t * t; } // Easing function
+
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const easedProgress = easeOutQuad(progress);
+                const currentValue = Math.floor(startValue + easedProgress * (targetValue - startValue));
+
+                element.innerText = formatLargeNumber(currentValue);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function formatLargeNumber(num) {
+            if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return num;
+        }
+
+        // --- Audio Preload (optional, but good practice for sound effects) ---
+        window.addEventListener('load', () => {
+            const swoosh = document.getElementById('swooshSound');
+            const glitch = document.getElementById('glitchSound');
+            swoosh.volume = 0.3; // Reduce volume
+            glitch.volume = 0.4;
+        });
+
+        // --- Adjust Glitch Title based on window width ---
+        function adjustGlitchTitle() {
+            const title = document.querySelector('.glitch-title');
+            if (window.innerWidth < 480) { // Example breakpoint
+                title.style.fontSize = '1.5rem';
+            } else {
+                title.style.fontSize = '1.8rem';
+            }
+        }
+        adjustGlitchTitle();
+        window.addEventListener('resize', adjustGlitchTitle);
+    </script>
+</body>
+</html>
