@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader - Hybrid Cyber</title>
+    <title>TikTok Downloader :: CYBERNETIC SCROLLABLE</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,7 +27,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            text-shadow: 0 0 1px rgba(255,255,255,0.05); 
+            text-shadow: 0 0 1px rgba(255,255,255,0.05);
         }
 
         body {
@@ -37,54 +37,41 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* PENTING: Scroll diizinkan */
+            /* FIX SCROLL: Hapus 'justify-content: center' dan 'overflow: hidden' */
             padding: 40px 20px; 
             position: relative;
         }
 
-        /* --- BACKGROUND & SCROLL FIX --- */
-        .background-grid {
-            position: fixed;
+        /* --- ANIMATED BACKGROUND FIX (FIXED POSITION) --- */
+        .background-grid, .starfield {
+            position: fixed; /* Kunci di layar agar konten bisa scroll melewatinya */
             top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Styling background yang sama seperti sebelumnya */
+        .background-grid {
             background-image:
                 linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: grid-pan 60s linear infinite;
-            z-index: -2;
         }
-
         @keyframes grid-pan {
             from { background-position: 0 0; }
             to { background-position: -5000px -5000px; }
         }
 
-        /* Blobs dibuat fixed agar scroll tetap mulus */
-        .blob-cont {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -3;
-            pointer-events: none;
+        .star {
+            position: absolute; background: white; border-radius: 50%; animation: twinkle 5s infinite ease-in-out;
         }
-        
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: move 10s infinite alternate;
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
         }
 
-        .blob-1 { top: 10%; left: 10%; width: 300px; height: 300px; background: var(--accent-cyan); animation-duration: 12s; }
-        .blob-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: var(--accent-magenta); animation-duration: 8s; animation-delay: -2s; }
-        .blob-3 { top: 40%; left: 40%; width: 200px; height: 200px; background: #7d2ae8; animation-duration: 15s; }
-
-        @keyframes move {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, -30px) scale(1.1); }
-        }
-
-        /* --- HOLOGRAPHIC CARD --- */
+        /* --- HOLOGRAPHIC CARD (MAIN CONTAINER) --- */
         .holographic-card {
             background: linear-gradient(145deg, var(--card-bg-light), var(--card-bg-dark));
             backdrop-filter: blur(15px);
@@ -92,30 +79,25 @@
             border: 1px solid rgba(0, 234, 255, 0.2);
             border-radius: 20px;
             padding: 35px;
-            width: 100%;
-            max-width: 480px;
+            width: 100%; /* Dibuat 100% agar responsif */
+            max-width: 480px; /* Batasi lebar agar rapi */
             box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0, 234, 255, 0.2);
             position: relative;
             text-align: center;
-            margin-bottom: 20px; /* Jarak antar card */
+            margin-bottom: 30px; /* Jarak dari footer/bawah */
             animation: card-appear 1s ease forwards;
             opacity: 0;
             transform: translateY(30px);
         }
-        
+
         @keyframes card-appear { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Card Border Glow (tetap dipertahankan) */
         .holographic-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            padding: 2px;
+            content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px;
             background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            z-index: -1;
+            -webkit-mask-composite: xor; mask-composite: exclude; z-index: -1;
             animation: border-glow 5s infinite alternate;
         }
 
@@ -125,105 +107,56 @@
             100% { opacity: 0.5; background-position: 0% 0%; }
         }
 
-        /* --- HEADER & TEXT --- */
+        /* --- HEADER & INPUT (Glitch Text, dll.) --- */
         .header { margin-bottom: 30px; }
-        .logo-icon {
-            font-size: 3rem; background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(0, 234, 255, 0.4));
-            margin-bottom: 10px; animation: icon-float 3s infinite alternate;
-        }
+        .logo-icon { font-size: 3rem; background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(0, 234, 255, 0.4)); margin-bottom: 10px; animation: icon-float 3s infinite alternate; }
         @keyframes icon-float { 0% { transform: translateY(0); } 100% { transform: translateY(-5px); } }
-        
-        h1 {
-            font-family: 'Share Tech Mono', monospace; font-size: 1.8rem; font-weight: 700;
-            letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-cyan); color: white;
-            animation: text-glow 2s infinite alternate;
-        }
+
+        h1 { font-family: 'Share Tech Mono', monospace; font-size: 1.8rem; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-cyan); animation: text-glow 2s infinite alternate; }
         @keyframes text-glow {
             from { text-shadow: 0 0 8px var(--accent-cyan), 0 0 15px var(--accent-magenta); }
             to { text-shadow: 0 0 15px var(--accent-cyan), 0 0 25px var(--accent-magenta); }
         }
-        .subtitle { font-size: 0.9rem; color: #ccc; margin-top: 5px; letter-spacing: 0.5px; }
+        .subtitle { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; letter-spacing: 0.5px; }
 
-        /* --- INPUT & BUTTON --- */
+        /* Input Group: Dibuat lebih rapi dengan fokus pada border glow */
         .input-group { position: relative; margin-bottom: 25px; display: flex; align-items: center; }
-        input {
-            width: 100%; padding: 16px 20px; padding-right: 60px; border-radius: 10px;
-            background: rgba(0, 0, 0, 0.5); border: 2px solid rgba(0, 234, 255, 0.3);
-            color: white; font-size: 1rem; outline: none; transition: 0.3s ease;
-        }
+        input { width: 100%; padding: 16px 20px; padding-right: 60px; border-radius: 10px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 234, 255, 0.3); color: white; font-size: 1rem; outline: none; transition: 0.3s ease; }
         input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(0, 234, 255, 0.3); }
 
-        .search-button {
-            position: absolute; right: 8px; top: 8px; bottom: 8px; width: 45px; border: none;
-            border-radius: 8px; background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
-            color: white; font-size: 1.1rem; cursor: pointer; transition: 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
-            filter: drop-shadow(0 0 8px rgba(0, 234, 255, 0.3));
-        }
-
+        .search-button { position: absolute; right: 8px; top: 8px; bottom: 8px; width: 45px; border: none; border-radius: 8px; background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta)); color: white; font-size: 1.1rem; cursor: pointer; transition: 0.3s ease; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 8px rgba(0, 234, 255, 0.3)); }
         .search-button:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px var(--accent-magenta)); }
         .search-button:disabled { opacity: 0.5; filter: none; cursor: not-allowed; }
 
-        /* --- PROGRESS BAR --- */
-        .progress-bar-container {
-            width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px;
-            margin-bottom: 20px; overflow: hidden; display: none;
-        }
-
-        .progress-bar {
-            width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
-            border-radius: 5px; animation: fill-progress 2s linear infinite alternate;
-        }
+        /* --- PROGRESS & RESULT (ANIMASI MASUK) --- */
+        .progress-bar-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; margin-bottom: 20px; overflow: hidden; display: none; }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta)); border-radius: 5px; animation: fill-progress 2s linear infinite alternate; }
         @keyframes fill-progress { 0% { width: 0%; } 100% { width: 100%; } }
 
-        /* --- RESULT DISPLAY --- */
+        /* RESULT AREA: Hilangkan animasi slideInBottom untuk mencegah double animation/messy */
         #resultArea { display: none; margin-top: 20px; }
 
-        .meta-container {
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 234, 255, 0.15); padding: 15px;
-            border-radius: 12px; margin-bottom: 20px; display: flex; flex-direction: column;
-            gap: 10px; text-align: left;
-        }
-
-        .author-box { display: flex; align-items: center; gap: 12px; padding-bottom: 10px; }
+        .meta-container { background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 234, 255, 0.15); padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left; }
+        .author-box { display: flex; align-items: center; gap: 12px; border-bottom: 1px dashed rgba(0, 234, 255, 0.1); padding-bottom: 10px; margin-bottom: 10px; }
         .author-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; }
         .author-name { font-size: 1rem; font-weight: 600; color: white; }
         .video-desc { font-size: 0.85rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+        /* Video Player */
         .video-player-container {
             width: 100%; aspect-ratio: 9/16; max-height: 400px; background: black;
             border-radius: 12px; overflow: hidden; border: 2px solid rgba(0, 234, 255, 0.3);
             box-shadow: 0 0 20px rgba(0, 234, 255, 0.2); margin-bottom: 20px;
         }
-
         video { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-        /* Download Buttons */
+        /* Download Buttons: Tetap dengan efek glow */
         .download-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-        
-        .btn-download {
-            position: relative; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 1rem;
-            text-decoration: none; color: white; display: flex; align-items: center;
-            justify-content: center; gap: 10px; overflow: hidden; transition: all 0.3s ease;
-            box-shadow: 0 0 0 rgba(0,0,0,0);
-        }
-
-        .btn-video {
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
-            border: 1px solid var(--accent-cyan); filter: drop-shadow(0 0 10px rgba(0, 234, 255, 0.4));
-            color: black;
-        }
-        .btn-video:hover { filter: drop-shadow(0 0 20px var(--accent-cyan)); transform: scale(1.02); box-shadow: 0 5px 15px rgba(0, 234, 255, 0.3); }
-
-        .btn-audio {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-        .btn-audio:hover { background: rgba(255, 255, 255, 0.2); border-color: white; transform: scale(1.02); box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2); }
-
-        .tip-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 15px; }
+        .btn-download { position: relative; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; overflow: hidden; transition: all 0.3s ease; }
+        .btn-video { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta)); filter: drop-shadow(0 0 10px rgba(0, 234, 255, 0.4)); color: black; }
+        .btn-video:hover { filter: drop-shadow(0 0 20px var(--accent-cyan)); transform: scale(1.02); }
+        .btn-audio { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .btn-audio:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.02); }
 
         /* --- FOOTER --- */
         .footer {
@@ -231,29 +164,19 @@
             font-family: 'Share Tech Mono', monospace; letter-spacing: 1px;
         }
 
-        /* --- UTILITY & MESSAGES --- */
-        .message-box {
-            font-size: 0.9rem; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none;
-            background: rgba(255, 0, 119, 0.15); color: #ff80a6; border: 1px solid var(--accent-magenta);
-        }
-        .hidden { display: none !important; }
+        .message-box { font-size: 0.9rem; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; background: rgba(255, 0, 119, 0.15); color: #ff80a6; border: 1px solid var(--accent-magenta); }
     </style>
 </head>
 <body>
 
     <div class="background-grid"></div>
-
-    <div class="blob-cont">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
+    <div class="starfield" id="starfield"></div>
 
     <div class="holographic-card">
         <div class="header">
             <i class="fab fa-tiktok logo-icon"></i>
             <h1 data-text="CYBERNETIC DOWNLOADER">CYBERNETIC DOWNLOADER</h1>
-            <p class="subtitle">Akuisisi data video murni tanpa jejak.</p>
+            <p class="subtitle">Unduh esensi digital tanpa jejak.</p>
         </div>
 
         <div class="input-group">
@@ -267,9 +190,9 @@
             <div class="progress-bar" id="progressBar"></div>
         </div>
 
-        <div id="errorMsg" class="message-box error-message hidden"></div>
-        
-        <div id="resultArea" class="holographic-card hidden">
+        <div id="errorMsg" class="message-box message-error hidden"></div>
+
+        <div id="resultArea">
             <div class="meta-container">
                 <div class="author-box">
                     <img src="" id="avatar" class="author-avatar" alt="Author">
@@ -286,9 +209,11 @@
 
             <div class="download-buttons">
                 <a href="#" id="dlVideo" class="btn-download btn-video" target="_blank" referrerpolicy="no-referrer">
+                    <span class="shine"></span>
                     <i class="fas fa-bolt"></i> AKUISISI VIDEO (.MP4)
                 </a>
                 <a href="#" id="dlAudio" class="btn-download btn-audio" target="_blank" referrerpolicy="no-referrer">
+                    <span class="shine"></span>
                     <i class="fas fa-music"></i> AKUISISI AUDIO (.MP3)
                 </a>
             </div>
@@ -303,27 +228,45 @@
         PROTOCOL V.3.0 // CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】 // 2025
     </div>
 
+
     <script>
-        // --- Core Fetch Logic ---
+        // --- Starfield Generation (Tetap dipertahankan) ---
+        function createStars() {
+            const starfield = document.getElementById('starfield');
+            // Menghindari duplikasi bintang jika script di-reload tanpa refresh penuh
+            if (!starfield.children.length) { 
+                for (let i = 0; i < 100; i++) { // Jumlah bintang
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.width = star.style.height = `${Math.random() * 3 + 1}px`; // Ukuran bintang
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    starfield.appendChild(star);
+                }
+            }
+        }
+        createStars();
+
+        // --- Core Fetch Logic (Diambil dari versi fungsional) ---
         async function fetchVideo() {
-            const urlInput = document.getElementById('urlInput');
+            const urlInput = document.getElementById('urlInput').value;
             const searchBtn = document.getElementById('searchBtn');
             const progressBarContainer = document.getElementById('progressBarContainer');
             const resultArea = document.getElementById('resultArea');
             const errorMsg = document.getElementById('errorMsg');
 
-            if (!urlInput.value) { showError("Error: Input tidak terdeteksi."); return; }
+            if (!urlInput) { showError("Error: Input tidak terdeteksi."); return; }
 
-            // --- UI State: Loading ---
+            // UI Loading State
             searchBtn.disabled = true;
-            urlInput.disabled = true;
-            resultArea.classList.add('hidden');
+            resultArea.style.display = 'none';
             errorMsg.classList.add('hidden');
             progressBarContainer.classList.remove('hidden');
 
             try {
                 // API Call (TikWM)
-                const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput.value)}`;
+                const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
@@ -336,10 +279,9 @@
                 console.error("[SYSTEM ERROR]:", error);
                 showError("SYSTEM ERROR: Data akuisisi gagal. Cek koneksi atau link.");
             } finally {
-                // --- UI State: Done/Error ---
+                // UI Reset State
                 progressBarContainer.classList.add('hidden');
                 searchBtn.disabled = false;
-                urlInput.disabled = false;
             }
         }
 
@@ -362,7 +304,7 @@
             document.getElementById('dlVideo').href = fixUrl(data.play);
             document.getElementById('dlAudio').href = fixUrl(data.music);
 
-            document.getElementById('resultArea').classList.remove('hidden');
+            document.getElementById('resultArea').style.display = 'block';
         }
 
         function showError(message) {
@@ -370,6 +312,21 @@
             err.innerText = "⚠️ " + message;
             err.classList.remove('hidden');
         }
+
+        // --- Audio/Glitch Logic (Dihapus karena membutuhkan file audio eksternal yang tidak dapat disertakan) ---
+        // Jika Anda ingin mengaktifkan suara, tambahkan kembali file audio (.mp3) dan kode JS-nya.
+
+        // --- Adjust Glitch Title based on window width (Tetap dipertahankan) ---
+        function adjustGlitchTitle() {
+            const title = document.querySelector('.glitch-title');
+            if (window.innerWidth < 480) {
+                title.style.fontSize = '1.5rem';
+            } else {
+                title.style.fontSize = '1.8rem';
+            }
+        }
+        adjustGlitchTitle();
+        window.addEventListener('resize', adjustGlitchTitle);
     </script>
 </body>
 </html>
