@@ -6,7 +6,6 @@
     <title>CYBER DOWNLOADER :: TikTok & Instagram No Watermark</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root{--c:#00eaff;--m:#ff0077;--b:#000;--d:rgba(10,10,20,0.7)}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
@@ -99,7 +98,7 @@
             <div class="car" id="car"></div>
             <div class="ios" id="ios2">📱 iOS: Klik tombol atau long-press media</div>
             <div class="btn all" id="all"><span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD ALL (ZIP)</div>
-            <div class="btn fallback" id="fallback" style="display:none"><span class="shine"></span><i class="fas fa-external-link-alt"></i> Open in SnapSave</div>
+            <div class="btn fallback" id="fallback" style="display:none"><span class="shine"></span><i class="fas fa-external-link-alt"></i> Open in SnapSave (Work 100%)</div>
         </div>
     </div>
 
@@ -139,7 +138,7 @@
             }
         }
 
-        // TikTok (unchanged, works)
+        // TikTok (unchanged)
         async function getTT() {
             const url = document.getElementById('tt').value.trim();
             if (!url) return;
@@ -171,104 +170,20 @@
         document.getElementById('d2').onclick = () => dl(window.ttAud, 'tiktok_audio.mp3', false);
         document.getElementById('tt').addEventListener('keypress', e => e.key === 'Enter' && getTT());
 
-        // Instagram (SnapSave backend via stable proxy)
-        async function getIG() {
+        // Instagram (Direct to SnapSave)
+        function getIG() {
             const url = document.getElementById('ig').value.trim();
             if (!url) return;
-            const p = document.getElementById('p2');
-            const res = document.getElementById('r2');
-            const err = document.getElementById('e2');
-            const main = document.getElementById('main');
-            const car = document.getElementById('car');
-            const dlAll = document.getElementById('all');
-            const fallback = document.getElementById('fallback');
-            p.style.display = 'block';
-            res.style.display = 'none';
-            err.style.display = 'none';
-            main.innerHTML = '';
-            car.innerHTML = '';
-            dlAll.style.display = 'none';
-            fallback.style.display = 'none';
-            try {
-                // Stable proxy to SnapSave backend
-                const proxy = 'https://api.allorigins.win/raw?url=';
-                const snapUrl = encodeURIComponent('https://snapsave.app/action.php?submit=1&url=' + encodeURIComponent(url));
-                const r = await fetch(proxy + snapUrl);
-                const text = await r.text();
-                // Parse for download links (regex for mp4/jpg in <a href>)
-                const mp4Links = [...text.matchAll(/<a href="([^"]*\.mp4[^"]*)"/g)].map(m => m[1]);
-                const jpgLinks = [...text.matchAll(/<a href="([^"]*\.jpg[^"]*)"/g)].map(m => m[1]);
-                const links = [...mp4Links, ...jpgLinks].filter(l => l.startsWith('http'));
-                if (links.length === 0) throw 'No media found';
-                window.igFiles = links.map((link, i) => ({
-                    url: link,
-                    type: link.includes('.mp4') ? 'video' : 'image',
-                    index: i + 1
-                }));
-                // Main preview
-                const first = window.igFiles[0];
-                if (first.type === 'video') {
-                    const v = document.createElement('video');
-                    v.src = first.url;
-                    v.controls = true;
-                    v.playsInline = true;
-                    main.appendChild(v);
-                } else {
-                    const img = document.createElement('img');
-                    img.src = first.url;
-                    main.appendChild(img);
-                }
-                // Carousel
-                if (window.igFiles.length > 1) {
-                    window.igFiles.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'car-item';
-                        if (item.type === 'video') {
-                            const v = document.createElement('video');
-                            v.src = item.url;
-                            v.muted = true;
-                            v.loop = true;
-                            div.appendChild(v);
-                            div.onclick = () => dl(item.url, `ig_${item.index}.mp4`, true);
-                        } else {
-                            const img = document.createElement('img');
-                            img.src = item.url;
-                            div.appendChild(img);
-                            div.onclick = () => dl(item.url, `ig_${item.index}.jpg`, false);
-                        }
-                        car.appendChild(div);
-                    });
-                    dlAll.style.display = 'flex';
-                }
-                res.style.display = 'block';
-                if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display = 'block';
-            } catch {
-                err.innerText = 'Gagal ambil media. Coba lagi atau...';
-                err.style.display = 'block';
-                fallback.style.display = 'flex';
-                fallback.onclick = () => window.open('https://snapsave.app/id/downloader/instagram?attachment=1&url=' + encodeURIComponent(url), '_blank');
-            } finally {
-                p.style.display = 'none';
-            }
+            // Direct redirect to SnapSave with pre-filled link
+            const snapLink = 'https://snapsave.app/id/downloader/instagram?attachment=1&url=' + encodeURIComponent(url);
+            window.open(snapLink, '_blank');
+            // Show loading message
+            document.getElementById('p2').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('p2').style.display = 'none';
+                alert('Redirected to SnapSave — download di sana ya bro! (Work 100% seperti yang kamu test)');
+            }, 1000);
         }
-        document.getElementById('all').onclick = async () => {
-            if (!window.igFiles) return alert('No files!');
-            const zip = new JSZip();
-            for (let i = 0; i < window.igFiles.length; i++) {
-                const item = window.igFiles[i];
-                const r = await fetch(item.url);
-                const b = await r.blob();
-                const ext = item.type === 'video' ? 'mp4' : 'jpg';
-                zip.file(`ig_\( {i + 1}. \){ext}`, b);
-            }
-            const content = await zip.generateAsync({ type: 'blob' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(content);
-            a.download = 'instagram_all.zip';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        };
         document.getElementById('ig').addEventListener('keypress', e => e.key === 'Enter' && getIG());
     </script>
 </body>
