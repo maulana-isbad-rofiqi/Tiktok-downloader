@@ -33,16 +33,18 @@
         .preview-container{border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,234,255,0.4);margin-bottom:20px;background:#000}
         .preview-container video,.preview-container img{width:100%;display:block}
         .carousel{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin:15px 0}
-        .carousel img,.carousel video{width:100%;height:100%;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:0.3s}
+        .carousel .item{width:100%;height:100px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:0.3s}
         .carousel .item:hover{border-color:var(--cyan)}
         .btn{position:relative;overflow:hidden;padding:16px;border-radius:12px;background:linear-gradient(90deg,var(--cyan),var(--magenta));color:#000;font-weight:700;text-align:center;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0;transition:0.3s}
         .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,234,255,0.5)}
         .btn-audio{background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.2)}
+        .btn-all{background:linear-gradient(90deg,var(--magenta),#ff0077)}
         .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);transform:skew(-20deg);transition:0.8s}
         .btn:hover .shine{top:-100%;left:120%}
         .ios-hint{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--cyan);color:var(--cyan);padding:12px;border-radius:10px;margin:15px 0;text-align:center;font-weight:600}
         .divider{height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);margin:50px 0}
         .footer{margin-top:50px;color:#666;font-family:'Share Tech Mono';font-size:0.85rem;letter-spacing:1px}
+        .error{color:#ff80a6;background:rgba(255,0,119,0.15);padding:12px;border-radius:8px;margin:10px 0;display:none;text-align:center}
     </style>
 </head>
 <body>
@@ -58,14 +60,15 @@
         </div>
         <div class="input-group">
             <input type="text" id="tt" placeholder="Paste link TikTok...">
-            <button class="btn-search" onclick="getTT()">Arrow Right</button>
+            <button class="btn-search" onclick="getTT()"><i class="fas fa-arrow-right"></i></button>
         </div>
         <div class="progress" id="p1"><div></div></div>
+        <div class="error" id="ttErr"></div>
         <div id="ttResult" class="result">
             <div class="preview-container"><video id="ttVideo" controls playsinline></video></div>
-            <div class="ios-hint" id="ttIos">iOS: Klik tombol → Save Video</div>
-            <div class="btn" id="dlTT"><div class="shine"></div>Download DOWNLOAD VIDEO</div>
-            <div class="btn btn-audio" id="dlTTAudio"><div class="shine"></div>Download DOWNLOAD AUDIO ONLY</div>
+            <div class="ios-hint" id="ttIos">📱 iOS: Klik tombol → Save ke Photos</div>
+            <div class="btn" id="dlTT"><span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD VIDEO</div>
+            <div class="btn btn-audio" id="dlTTAudio"><span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO</div>
         </div>
     </div>
 
@@ -80,18 +83,19 @@
         </div>
         <div class="input-group">
             <input type="text" id="ig" placeholder="Paste link Instagram...">
-            <button class="btn-search" onclick="getIG()">Arrow Right</button>
+            <button class="btn-search" onclick="getIG()"><i class="fas fa-arrow-right"></i></button>
         </div>
         <div class="progress" id="p2"><div></div></div>
+        <div class="error" id="igErr"></div>
         <div id="igResult" class="result">
             <div class="preview-container" id="mainPreview"></div>
             <div class="carousel" id="carousel"></div>
-            <div class="ios-hint" id="igIos">iOS: Klik tombol atau long-press media</div>
-            <div class="btn" id="dlAllIG" style="display:none"><div class="shine"></div>Download DOWNLOAD ALL (ZIP)</div>
+            <div class="ios-hint" id="igIos">📱 iOS: Klik tombol atau long-press media</div>
+            <div class="btn btn-all" id="dlAllIG"><span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD ALL (ZIP)</div>
         </div>
     </div>
 
-    <div class="footer">© 2025 CODED BY Itsbad — Cyber Edition</div>
+    <div class="footer">© 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】</div>
 
     <script>
         // Stars
@@ -104,116 +108,152 @@
             document.getElementById('stars').appendChild(s);
         }
 
-        // TikTok
-        async function getTT(){
-            const url=document.getElementById('tt').value.trim();
-            if(!url)return;
-            document.getElementById('p1').style.display='block';
-            document.getElementById('ttResult').style.display='none';
-            try{
-                const r=await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(url));
-                const d=await r.json();
-                if(d.code===0){
-                    const fix=l=>l.startsWith('http')?l:'https://www.tikwm.com'+l;
-                    window.ttVid=fix(d.data.play);
-                    window.ttAud=fix(d.data.music);
-                    document.getElementById('ttVideo').src=window.ttVid;
-                    document.getElementById('ttResult').style.display='block';
-                    if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ttIos').style.display='block';
+        // Universal Download
+        async function dl(url, name, isVideo = false) {
+            try {
+                const r = await fetch(url);
+                const b = await r.blob();
+                const blobUrl = URL.createObjectURL(b);
+                if (isVideo && navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                    const file = new File([b], name, { type: b.type });
+                    await navigator.share({ files: [file], title: 'Download Media' });
+                } else {
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 }
-            }catch{alert('Link TikTok salah bro!')}
-            finally{document.getElementById('p1').style.display='none';}
-        }
-        document.getElementById('dlTT').onclick=()=>dl(window.ttVid,'tiktok_video.mp4',true);
-        document.getElementById('dlTTAudio').onclick=()=>dl(window.ttAud,'tiktok_audio.mp3');
-
-        // Instagram (API baru, super stabil)
-        async function getIG(){
-            const url=document.getElementById('ig').value.trim();
-            if(!url)return;
-            document.getElementById('p2').style.display='block';
-            document.getElementById('igResult').style.display='none';
-            document.getElementById('carousel').innerHTML='';
-            document.getElementById('mainPreview').innerHTML='';
-            document.getElementById('dlAllIG').style.display='none';
-            try{
-                const r=await fetch(`https://v3.igdownloader.app/api/v1/download?url=${encodeURIComponent(url)}`);
-                const d=await r.json();
-                if(d.status && d.data && d.data.length>0){
-                    window.igFiles = d.data.map((x,i)=>({url:x.url,type:x.type,index:i+1}));
-                    // Main preview (first item)
-                    const first = window.igFiles[0];
-                    if(first.type==='video'){
-                        const v=document.createElement('video');
-                        v.src=first.url;v.controls=true;v.playsinline=true;
-                        document.getElementById('mainPreview').appendChild(v);
-                    }else{
-                        const img=document.createElement('img');
-                        img.src=first.url;
-                        document.getElementById('mainPreview').appendChild(img);
-                    }
-                    // Carousel (kalau lebih dari 1)
-                    if(window.igFiles.length>1){
-                        window.igFiles.forEach(item=>{
-                            const div=document.createElement('div');
-                            div.className='item';
-                            if(item.type==='video'){
-                                const v=document.createElement('video');
-                                v.src=item.url;v.muted=true;
-                                div.appendChild(v);
-                                div.onclick=()=>dl(item.url,`ig_${item.index}.mp4`,true);
-                            }else{
-                                const img=document.createElement('img');
-                                img.src=item.url;
-                                div.appendChild(img);
-                                div.onclick=()=>dl(item.url,`ig_${item.index}.jpg`);
-                            }
-                            document.getElementById('carousel').appendChild(div);
-                        });
-                        document.getElementById('dlAllIG').style.display='flex';
-                    }
-                    document.getElementById('igResult').style.display='block';
-                    if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('igIos').style.display='block';
-                }else throw 1;
-            }catch{alert('Link Instagram tidak valid / private!')}
-            finally{document.getElementById('p2').style.display='none';}
-        }
-
-        // Download All ZIP
-        document.getElementById('dlAllIG').onclick=async()=>{
-            if(!window.igFiles)return;
-            const zip=new JSZip();
-            for(let i=0;i<window.igFiles.length;i++){
-                const f=window.igFiles[i];
-                const r=await fetch(f.url);
-                const b=await r.blob();
-                zip.file(`instagram_\( {i+1}. \){f.type==='video'?'mp4':'jpg'}`,b);
+                URL.revokeObjectURL(blobUrl);
+            } catch (e) {
+                alert('Gagal download. Coba long-press media!');
             }
-            const content=await zip.generateAsync({type:'blob'});
-            saveAs(content,'instagram_download.zip');
-        };
-
-        // Universal download
-        async function dl(url,name,isVideo=false){
-            try{
-                const r=await fetch(url);
-                const b=await r.blob();
-                if(isVideo && navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)){
-                    const file=new File([b],name,{type:b.type});
-                    await navigator.share({files:[file]});
-                }else{
-                    const a=document.createElement('a');
-                    a.href=URL.createObjectURL(b);
-                    a.download=name;a.click();
-                    URL.revokeObjectURL(a.href);
-                }
-            }catch{alert('Gagal download. Coba long-press media!');}
         }
 
-        // Enter key
-        document.getElementById('tt').addEventListener('keypress',e=>e.key==='Enter'&&getTT());
-        document.getElementById('ig').addEventListener('keypress',e=>e.key==='Enter'&&getIG());
+        // TikTok
+        async function getTT() {
+            const url = document.getElementById('tt').value.trim();
+            if (!url) return;
+            const p = document.getElementById('p1');
+            const res = document.getElementById('ttResult');
+            const err = document.getElementById('ttErr');
+            p.style.display = 'block';
+            res.style.display = 'none';
+            err.style.display = 'none';
+            try {
+                const r = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
+                const d = await r.json();
+                if (d.code === 0) {
+                    const fix = l => l.startsWith('http') ? l : 'https://www.tikwm.com' + l;
+                    window.ttVid = fix(d.data.play);
+                    window.ttAud = fix(d.data.music);
+                    document.getElementById('ttVideo').src = window.ttVid;
+                    res.style.display = 'block';
+                    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ttIos').style.display = 'block';
+                } else throw 'Invalid';
+            } catch {
+                err.innerText = 'Link TikTok tidak valid!';
+                err.style.display = 'block';
+            } finally {
+                p.style.display = 'none';
+            }
+        }
+        document.getElementById('dlTT').onclick = () => dl(window.ttVid, 'tiktok_video.mp4', true);
+        document.getElementById('dlTTAudio').onclick = () => dl(window.ttAud, 'tiktok_audio.mp3', false);
+        document.getElementById('tt').addEventListener('keypress', e => e.key === 'Enter' && getTT());
+
+        // Instagram (API baru stabil)
+        async function getIG() {
+            const url = document.getElementById('ig').value.trim();
+            if (!url) return;
+            const p = document.getElementById('p2');
+            const res = document.getElementById('igResult');
+            const err = document.getElementById('igErr');
+            const main = document.getElementById('mainPreview');
+            const car = document.getElementById('carousel');
+            const dlAll = document.getElementById('dlAllIG');
+            p.style.display = 'block';
+            res.style.display = 'none';
+            err.style.display = 'none';
+            main.innerHTML = '';
+            car.innerHTML = '';
+            dlAll.style.display = 'none';
+            try {
+                const r = await fetch(`https://fastsaverapi.com/api/v1/download?url=${encodeURIComponent(url)}`);
+                const d = await r.json();
+                if (d.success && d.data) {
+                    const items = d.data.media || [d.data];
+                    window.igFiles = items.map((item, i) => ({
+                        url: item.url || item.video_url || item.image_url,
+                        type: item.type || (item.url?.includes('.mp4') ? 'video' : 'image'),
+                        index: i + 1
+                    })).filter(item => item.url);
+                    if (window.igFiles.length === 0) throw 'No media';
+                    // Main preview (first)
+                    const first = window.igFiles[0];
+                    if (first.type === 'video') {
+                        const v = document.createElement('video');
+                        v.src = first.url;
+                        v.controls = true;
+                        v.playsInline = true;
+                        main.appendChild(v);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = first.url;
+                        main.appendChild(img);
+                    }
+                    // Carousel if multiple
+                    if (window.igFiles.length > 1) {
+                        window.igFiles.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'item';
+                            if (item.type === 'video') {
+                                const v = document.createElement('video');
+                                v.src = item.url;
+                                v.muted = true;
+                                v.loop = true;
+                                div.appendChild(v);
+                                div.onclick = () => dl(item.url, `ig_${item.index}.mp4`, true);
+                            } else {
+                                const img = document.createElement('img');
+                                img.src = item.url;
+                                div.appendChild(img);
+                                div.onclick = () => dl(item.url, `ig_${item.index}.jpg`, false);
+                            }
+                            car.appendChild(div);
+                        });
+                        dlAll.style.display = 'flex';
+                    }
+                    res.style.display = 'block';
+                    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('igIos').style.display = 'block';
+                } else throw 'Invalid';
+            } catch {
+                err.innerText = 'Link Instagram tidak valid atau private! (Coba post public)';
+                err.style.display = 'block';
+            } finally {
+                p.style.display = 'none';
+            }
+        }
+        document.getElementById('dlAllIG').onclick = async () => {
+            if (!window.igFiles) return alert('No files!');
+            const zip = new JSZip();
+            for (let i = 0; i < window.igFiles.length; i++) {
+                const item = window.igFiles[i];
+                const r = await fetch(item.url);
+                const b = await r.blob();
+                const ext = item.type === 'video' ? 'mp4' : 'jpg';
+                zip.file(`ig_\( {i + 1}. \){ext}`, b);
+            }
+            const content = await zip.generateAsync({ type: 'blob' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(content);
+            a.download = 'instagram_all.zip';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+        document.getElementById('ig').addEventListener('keypress', e => e.key === 'Enter' && getIG());
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </body>
 </html>
