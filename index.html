@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    <div class="footer">© 2025 Itsbad — Cyber Edition v3</div>
+    <div class="footer">© 2025 Itsbad — Cyber Edition v4</div>
 
     <script>
         // Stars
@@ -184,7 +184,7 @@
             e.style.display = 'none';
             document.getElementById('formats').innerHTML = '';
             try {
-                const res = await fetch('https://no-key-api.p.rapidapi.com/youtube?url=' + encodeURIComponent(u));
+                const res = await fetch('https://youtube-download-api.matheusishiyama.repl.co/?url=' + encodeURIComponent(u));
                 const d = await res.json();
                 if (d.success) {
                     document.getElementById('thumb').innerHTML = `<img src="${d.thumbnail}" alt="Thumbnail">`;
@@ -193,10 +193,10 @@
                     const grid = document.getElementById('formats');
 
                     // Video formats
-                    (d.formats || []).filter(f => f.hasVideo).slice(0, 8).forEach(f => {
+                    (d.formats || []).slice(0, 8).forEach(f => {
                         const btn = document.createElement('div');
                         btn.className = 'btn';
-                        btn.innerHTML = `<span class="shine"></span>${f.quality || f.resolution}`;
+                        btn.innerHTML = `<span class="shine"></span>${f.quality}`;
                         btn.onclick = () => download(f.url, `\( {d.title}_ \){f.quality}.mp4`);
                         grid.appendChild(btn);
                     });
