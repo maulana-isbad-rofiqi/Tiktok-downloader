@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER DOWNLOADER 2025</title>
+    <title>CYBER DOWNLOADER 2025 :: TikTok + YouTube</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -26,21 +26,21 @@
         input{width:100%;padding:16px 60px 16px 20px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,234,255,0.3);border-radius:12px;color:#fff;font-size:1rem;outline:none}
         .go{position:absolute;right:8px;top:8px;bottom:8px;width:48px;background:linear-gradient(45deg,var(--c),var(--m));border:none;border-radius:10px;color:#fff;cursor:pointer}
         .bar{height:8px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin:20px 0;display:none}
-        .bar div{height:100%;background:linear-gradient(90deg,var(--c),var(--m));animation:p 2s infinite alternate}
+        .bar div{height:100%;background:linear-gradient(90deg,var(--c),var(--m);animation:p 2s infinite alternate}
         @keyframes p{to{width:100%}}
         .res{display:none;margin-top:20px}
         .prev{border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,234,255,0.4);margin-bottom:20px;background:#000}
         .prev video,.prev img{width:100%;display:block}
-        .car{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin:15px 0}
-        .car div{height:100px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:.3s}
-        .car div:hover{border-color:var(--c)}
-        .car video,.car img{width:100%;height:100%;object-fit:cover}
-        .btn{padding:16px;border-radius:12px;background:linear-gradient(90deg,var(--c),var(--m));color:#000;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0;position:relative;overflow:hidden}
-        .btn.all{background:linear-gradient(90deg,var(--m),#ff0077)}
+        .formats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+        .btn{padding:14px;border-radius:12px;background:linear-gradient(90deg,var(--c),var(--m));color:#000;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden}
+        .btn.mp3{background:#ff0077}
         .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,234,255,0.5)}
         .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);transform:skew(-20deg)}
         .btn:hover .shine{top:-100%;left:120%;transition:0.8s}
-        .ios{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--c);color:var(--c);padding:12px;border-radius:10px;margin:15px 0;text-align:center}
+        .thumb{border-radius:12px;overflow:hidden;margin-bottom:15px}
+        .thumb img{width:100%;display:block}
+        .title{color:var(--c);font-size:1.1rem;margin:10px 0;font-weight:600}
+        .ios{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--c);color:var(--c);padding:12px;border-radius:10px;margin:10px;margin:15px 0;text-align:center}
         .div{height:1px;background:linear-gradient(90deg,transparent,var(--c),var(--m),transparent);margin:50px 0}
         .err{color:#ff80a6;background:rgba(255,0,119,0.15);padding:12px;border-radius:8px;margin:10px 0;display:none;text-align:center}
         .footer{margin-top:50px;color:#666;font-family:'Share Tech Mono';font-size:.85rem;letter-spacing:1px}
@@ -66,123 +66,136 @@
     <div class="res" id="r1">
         <div class="prev"><video id="v1" controls playsinline></video></div>
         <div class="ios" id="ios1">iOS: Klik → Save Video</div>
-        <div class="btn" id="d1"><span class="shine"></span>DOWNLOAD VIDEO</div>
-        <div class="btn" style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid #fff3" id="d2"><span class="shine"></span>DOWNLOAD AUDIO</div>
+        <div class="btn" id="d1"><span class="shine"></span>DOWNLOAD VIDEO HD</div>
+        <div class="btn mp3" id="d2"><span class="shine"></span>DOWNLOAD AUDIO MP3</div>
     </div>
 </div>
 
 <div class="div"></div>
 
-<!-- INSTAGRAM -->
+<!-- YOUTUBE -->
 <div class="card">
     <div style="text-align:center;margin-bottom:30px">
-        <i class="fab fa-instagram logo"></i>
-        <h1>INSTAGRAM DOWNLOADER</h1>
-        <p class="sub">Reels • Foto • Carousel • Story Public</p>
+        <i class="fab fa-youtube logo" style="background:linear-gradient(45deg,#ff0000,#ff5555);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i>
+        <h1>YOUTUBE DOWNLOADER</h1>
+        <p class="sub">4K • 1080p • Audio • Subtitle</p>
     </div>
     <div class="inp">
-        <input type="text" id="ig" placeholder="Paste Instagram link...">
-        <button class="go" onclick="getIG()">→</button>
+        <input type="text" id="yt" placeholder="Paste YouTube link...">
+        <button class="go" onclick="getYT()">→</button>
     </div>
     <div class="bar" id="p2"><div></div></div>
     <div class="err" id="e2"></div>
     <div class="res" id="r2">
-        <div class="prev" id="main"></div>
-        <div class="car" id="car"></div>
-        <div class="ios" id="ios2">iOS: Long-press atau klik tombol</div>
-        <div class="btn all" id="all"><span class="shine"></span>DOWNLOAD ALL (ZIP)</div>
+        <div class="thumb" id="thumb"></div>
+        <div class="title" id="title"></div>
+        <div class="formats" id="formats"></div>
+        <div class="ios" id="ios2">iOS: Long-press tombol → Save</div>
     </div>
 </div>
 
-<div class="footer">© 2025 Itsbad — Cyber Edition</div>
+<div class="footer">© 2025 Itsbad — Cyber Edition v2</div>
 
 <script>
-for(let i=0;i<150;i++){let x=document.createElement('div');x.style.width=x.style.height=(Math.random()*2+1)+'px';x.style.top=Math.random()*100+'%';x.style.left=Math.random()*100+'%';x.style.animationDelay=Math.random()*5+'s';document.getElementById('stars').appendChild(x);}
-
-async function dl(u,n,v=false){try{const r=await fetch(u);const b=await r.blob();if(v&&navigator.share&&/iPhone|iPad|iPod/.test(navigator.userAgent)){await navigator.share({files:[new File([b],n,{type:b.type})]})}else{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click()}}catch{alert('Gagal download bro, coba long-press')}}
-
-async function getTT(){
-    const u=document.getElementById('tt').value.trim();if(!u)return;
-    document.getElementById('p1').style.display='block';document.getElementById('r1').style.display='none';
-    try{const r=await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(u));const d=await r.json();
-        if(d.code===0){const f=x=>x.startsWith('http')?x:'https://www.tikwm.com'+x;
-            window.vid=f(d.data.play);window.aud=f(d.data.music);
-            document.getElementById('v1').src=window.vid;
-            document.getElementById('r1').style.display='block';
-            if(/iPhone|iPad|iPod/.test(navigator.userAgent))document.getElementById('ios1').style.display='block';
-        }}catch{document.getElementById('e1').innerText='Link TikTok salah bro';document.getElementById('e1').style.display='block';}
-    finally{document.getElementById('p1').style.display='none';}
+// Stars animation
+for(let i=0;i<150;i++){
+    let s=document.createElement('div');
+    s.style.width=s.style.height=(Math.random()*2+1)+'px';
+    s.style.top=Math.random()*100+'%';
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDelay=Math.random()*5+'s';
+    document.getElementById('stars').appendChild(s);
 }
-document.getElementById('d1').onclick=()=>dl(window.vid,'tiktok_video.mp4',true);
-document.getElementById('d2').onclick=()=>dl(window.aud,'tiktok_audio.mp3');
-document.getElementById('tt').addEventListener('keypress',e=>e.key==='Enter'&&getTT());
 
-// INSTAGRAM — SAVEINSTA (WORK 100% 2025)
-async function getIG(){
-    const u=document.getElementById('ig').value.trim();if(!u)return;
-    document.getElementById('p2').style.display='block';document.getElementById('r2').style.display='none';document.getElementById('e2').style.display='none';
-    document.getElementById('main').innerHTML='';document.getElementById('car').innerHTML='';document.getElementById('all').style.display='none';
-    try{
-        const r=await fetch('https://saveinsta.app/api/ajaxSearch',{
-            method:'POST',
-            headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body:'q='+encodeURIComponent(u)+'&vt=home'
-        });
-        const j=await r.json();
-        if(j.status==='ok' && j.data){
-            const links=[];
-            const html=j.data;
-            const regex=/href="(https:\/\/[^"]+\.(mp4|jpg)[^"]*)"/g;
-            let m; while((m=regex.exec(html))!==null) links.push(m[1]);
-            if(links.length===0) throw 'no';
-            window.igFiles=links.map((l,i)=>({url:l,type:l.includes('.mp4')?'video':'image',i:i+1}));
-            // Main preview
-            const first=window.igFiles[0];
-            if(first.type==='video'){
-                const v=document.createElement('video');v.src=first.url;v.controls=true;v.playsinline=true;
-                document.getElementById('main').appendChild(v);
-            }else{
-                const img=document.createElement('img');img.src=first.url;
-                document.getElementById('main').appendChild(img);
+// Universal download
+async function dl(url, name, isVideo = false) {
+    try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } catch {
+        alert('Gagal download, coba klik kanan → Save As');
+    }
+}
+
+// TikTok (perfect)
+async function getTT() {
+    const u = document.getElementById('tt').value.trim();
+    if (!u) return;
+    document.getElementById('p1').style.display='block';
+    document.getElementById('r1').style.display='none';
+    try {
+        const r = await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(u));
+        const d = await r.json();
+        if (d.code === 0) {
+            const f = x => x.startsWith('http') ? x : 'https://www.tikwm.com'+x;
+            window.ttVid = f(d.data.play);
+            window.ttAud = f(d.data.music);
+            document.getElementById('v1').src = window.ttVid;
+            document.getElementById('r1').style.display='block';
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios1').style.display='block';
+        }
+    } catch {
+        document.getElementById('e1').innerText='Link TikTok salah bro';
+        document.getElementById('e1').style.display='block';
+    } finally {
+        document.getElementById('p1').style.display='none';
+    }
+}
+document.getElementById('d1').onclick = () => dl(window.ttVid, 'tiktok_video.mp4');
+document.getElementById('d2').onclick = () => dl(window.ttAud, 'tiktok_audio.mp3');
+document.getElementById('tt').addEventListener('keypress', e => e.key==='Enter' && getTT());
+
+// YouTube (API stabil 2025)
+async function getYT() {
+    const u = document.getElementById('yt').value.trim();
+    if (!u) return;
+    document.getElementById('p2').style.display='block';
+    document.getElementById('r2').style.display='none';
+    document.getElementById('formats').innerHTML = '';
+    try {
+        const r = await fetch(`https://api.ytb.vin/api/download?url=${encodeURIComponent(u)}`);
+        const d = await r.json();
+        if (d.success) {
+            // Thumbnail & title
+            document.getElementById('thumb').innerHTML = `<img src="${d.thumbnail}" alt="thumb">`;
+            document.getElementById('title').innerText = d.title;
+
+            const container = document.getElementById('formats');
+
+            // Video formats
+            d.formats.filter(f => f.hasVideo).forEach(f => {
+                const btn = document.createElement('div');
+                btn.className = 'btn';
+                btn.innerHTML = `<span class="shine"></span>\( {f.qualityLabel || f.itag} • \){f.container}`;
+                btn.onclick = () => dl(f.url, `\( {d.title}_ \){f.qualityLabel || f.itag}.mp4`);
+                container.appendChild(btn);
+            });
+
+            // Audio only
+            if (d.audio) {
+                const btn = document.createElement('div');
+                btn.className = 'btn mp3';
+                btn.innerHTML = `<span class="shine"></span>AUDIO ONLY • ${d.audio.bitrate}kbps`;
+                btn.onclick = () => dl(d.audio.url, `${d.title}.mp3`);
+                container.appendChild(btn);
             }
-            // Carousel
-            if(window.igFiles.length>1){
-                window.igFiles.forEach(f=>{
-                    const d=document.createElement('div');
-                    if(f.type==='video'){
-                        const v=document.createElement('video');v.src=f.url;v.muted=true;v.loop=true;
-                        d.appendChild(v);
-                        d.onclick=()=>dl(f.url,`ig_${f.i}.mp4`,true);
-                    }else{
-                        const img=document.createElement('img');img.src=f.url;
-                        d.appendChild(img);
-                        d.onclick=()=>dl(f.url,`ig_${f.i}.jpg`);
-                    }
-                    document.getElementById('car').appendChild(d);
-                });
-                document.getElementById('all').style.display='flex';
-            }
+
             document.getElementById('r2').style.display='block';
-            if(/iPhone|iPad|iPod/.test(navigator.userAgent))document.getElementById('ios2').style.display='block';
-        }else throw 'no';
-    }catch{
-        document.getElementById('e2').innerText='Link Instagram tidak valid / private bro';
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display='block';
+        } else throw '';
+    } catch {
+        document.getElementById('e2').innerText='Link YouTube tidak valid atau video private';
         document.getElementById('e2').style.display='block';
-    }finally{
+    } finally {
         document.getElementById('p2').style.display='none';
     }
 }
-document.getElementById('all').onclick=async()=>{
-    const z=new JSZip();
-    for(let f of window.igFiles){
-        const r=await fetch(f.url);
-        const b=await r.blob();
-        z.file(`instagram_\( {f.i}. \){f.type==='video'?'mp4':'jpg'}`,b);
-    }
-    z.generateAsync({type:'blob'}).then(c=>{saveAs(c,'instagram_all.zip')});
-};
-document.getElementById('ig').addEventListener('keypress',e=>e.key==='Enter'&&getIG());
+document.getElementById('yt').addEventListener('keypress', e => e.key==='Enter' && getYT());
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </body>
 </html>
