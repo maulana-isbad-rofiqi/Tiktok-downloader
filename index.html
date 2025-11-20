@@ -3,218 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok & Instagram Downloader :: No Watermark</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>CYBER DOWNLOADER :: TikTok & Instagram No Watermark</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
     <style>
-        :root{--bg-dark:#000;--accent-cyan:#00eaff;--accent-magenta:#ff0077;--card-bg:rgba(10,10,20,0.6);--text-light:#e8e8e8;--text-muted:#888}
+        :root{--cyan:#00eaff;--magenta:#ff0077;--black:#000;--dark:rgba(10,10,20,0.7)}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-        body{background:#000;color:var(--text-light);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px;position:relative;overflow-x:hidden}
-        .background-grid,.starfield{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-2;pointer-events:none}
-        .background-grid{background-image:linear-gradient(to right,rgba(0,234,255,0.04)1px,transparent 1px),linear-gradient(to bottom,rgba(0,234,255,0.04)1px,transparent 1px);background-size:60px 60px;animation:grid-pan 80s linear infinite}
-        @keyframes grid-pan{from{background-position:0 0}to{background-position:-5000px -5000px}}
-        .star{position:absolute;background:white;border-radius:50%;animation:twinkle 5s infinite ease-in-out}
-        @keyframes twinkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1)}}
-        .holographic-card{background:var(--card-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(0,234,255,0.25);border-radius:20px;padding:35px;width:100%;max-width:480px;box-shadow:0 20px 50px rgba(0,0,0,0.9),0 0 50px rgba(0,234,255,0.15);margin-bottom:30px}
-        .logo-icon{font-size:3.5rem;background:linear-gradient(45deg,var(--accent-cyan),var(--accent-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:icon-float 3s infinite alternate;margin-bottom:10px;display:block}
-        @keyframes icon-float{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}
-        h1{font-family:'Share Tech Mono',monospace;font-size:1.75rem;letter-spacing:3px;background:linear-gradient(90deg,var(--accent-cyan),#fff,var(--accent-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glitch-title 4s infinite;text-align:center}
-        @keyframes glitch-title{0%,100%{text-shadow:0 0 10px var(--accent-cyan)}50%{text-shadow:0 0 20px var(--accent-magenta),0 0 30px var(--accent-cyan)}}
-        .subtitle{color:var(--text-muted);font-size:0.9rem;margin-top:8px;text-align:center}
-        .input-group{position:relative;margin-bottom:25px}
+        body{background:var(--black);color:#e8e8e8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px;position:relative;overflow-x:hidden}
+        .bg-grid,.stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
+        .bg-grid{background-image:linear-gradient(rgba(0,234,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,234,255,0.04) 1px,transparent 1px);background-size:50px 50px;animation:g 80s linear infinite}
+        @keyframes g{from{background-position:0 0}to{background-position:-5000px -5000px}}
+        .stars>div{position:absolute;background:#fff;border-radius:50%;animation:t 5s infinite}
+        @keyframes t{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1)}}
+        .card{background:var(--dark);backdrop-filter:blur(16px);border:1px solid rgba(0,234,255,0.3);border-radius:20px;padding:35px;width:100%;max-width:480px;box-shadow:0 20px 50px rgba(0,0,0,0.9),0 0 40px rgba(0,234,255,0.15);margin-bottom:40px}
+        .logo{font-size:3.5rem;background:linear-gradient(45deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:f 3s infinite alternate}
+        @keyframes f{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+        h1{font-family:'Share Tech Mono',monospace;font-size:1.8rem;letter-spacing:3px;background:linear-gradient(90deg,var(--cyan),#fff,var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glitch 4s infinite;text-align:center}
+        @keyframes glitch{0%,100%{text-shadow:0 0 10px var(--cyan)}50%{text-shadow:0 0 25px var(--magenta)}}
+        .subtitle{color:#888;font-size:0.9rem;margin-top:8px;text-align:center}
+        .input-group{position:relative;margin:25px 0}
         input{width:100%;padding:16px 60px 16px 20px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,234,255,0.3);border-radius:12px;color:white;font-size:1rem;outline:none}
-        .search-button{position:absolute;right:8px;top:8px;bottom:8px;width:48px;border:none;border-radius:10px;background:linear-gradient(45deg,var(--accent-cyan),var(--accent-magenta));color:white;cursor:pointer}
-        .progress-bar-container{display:none;height:8px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin:20px 0}
-        .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-magenta));animation:fill 2s linear infinite alternate}
-        @keyframes fill{0%{width:0%}100%{width:100%}}
-        .result-area{display:none;margin-top:20px;animation:slideIn 0.5s ease}
-        @keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .media-player-container, .carousel-grid{border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,234,255,0.3);margin-bottom:20px;background:black}
-        .carousel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;padding:8px}
-        .carousel-item{position:relative;cursor:pointer;overflow:hidden;border-radius:8px}
-        .carousel-item img,.carousel-item video{width:100%;height:100%;object-fit:cover;display:block}
-        .carousel-item::after{content:'Play';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);color:white;padding:4px 8px;border-radius:4px;font-size:0.7rem;opacity:0;transition:0.3s}
-        .carousel-item:hover::after{opacity:1}
-        .ios-hint{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--accent-cyan);color:var(--accent-cyan);padding:12px;border-radius:10px;margin:15px 0 10px;font-weight:600;text-align:center}
-        .download-buttons{display:flex;flex-direction:column;gap:14px}
-        .btn-download{position:relative;padding:16px;border-radius:12px;font-weight:700;text-align:center;color:#000;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-magenta));overflow:hidden;transition:all 0.3s;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:8px}
-        .btn-download:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,234,255,0.4)}
-        .btn-all{background:linear-gradient(90deg,#ff0077,var(--accent-magenta))}
+        .btn-search{position:absolute;right:8px;top:8px;bottom:8px;width:48px;background:linear-gradient(45deg,var(--cyan),var(--magenta));border:none;border-radius:10px;color:white;cursor:pointer}
+        .progress{height:8px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin:20px 0;display:none}
+        .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));animation:p 2s infinite alternate}
+        @keyframes p{to{width:100%}}
+        .result{display:none;margin-top:20px;animation:s 0.6s}
+        @keyframes s{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+        .preview-container{border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,234,255,0.4);margin-bottom:20px;background:#000}
+        .preview-container video,.preview-container img{width:100%;display:block}
+        .carousel{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin:15px 0}
+        .carousel img,.carousel video{width:100%;height:100%;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:0.3s}
+        .carousel .item:hover{border-color:var(--cyan)}
+        .btn{position:relative;overflow:hidden;padding:16px;border-radius:12px;background:linear-gradient(90deg,var(--cyan),var(--magenta));color:#000;font-weight:700;text-align:center;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0;transition:0.3s}
+        .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,234,255,0.5)}
+        .btn-audio{background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.2)}
         .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);transform:skew(-20deg);transition:0.8s}
-        .btn-download:hover .shine{top:-100%;left:120%}
-        .tip-text{margin-top:20px;font-size:0.8rem;color:#666;text-align:center}
-        .section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent-cyan),var(--accent-magenta),transparent);margin:50px 0}
-        .footer{margin-top:50px;font-family:'Share Tech Mono',monospace;color:#666;font-size:0.85rem;letter-spacing:1px;text-align:center}
+        .btn:hover .shine{top:-100%;left:120%}
+        .ios-hint{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--cyan);color:var(--cyan);padding:12px;border-radius:10px;margin:15px 0;text-align:center;font-weight:600}
+        .divider{height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);margin:50px 0}
+        .footer{margin-top:50px;color:#666;font-family:'Share Tech Mono';font-size:0.85rem;letter-spacing:1px}
     </style>
 </head>
 <body>
+    <div class="bg-grid"></div>
+    <div class="stars" id="stars"></div>
 
-    <div class="background-grid"></div>
-    <div class="starfield" id="starfield"></div>
-
-    <!-- TIKTOK SECTION (sama seperti sebelumnya) -->
-    <div class="holographic-card">
+    <!-- TIKTOK -->
+    <div class="card">
         <div style="text-align:center;margin-bottom:30px">
-            <i class="fab fa-tiktok logo-icon"></i>
+            <i class="fab fa-tiktok logo"></i>
             <h1>TIKTOK DOWNLOADER</h1>
-            <p class="subtitle">Unduh esensi digital tanpa jejak.</p>
+            <p class="subtitle">Tanpa watermark · HD · Audio</p>
         </div>
         <div class="input-group">
-            <input type="text" id="tiktokUrlInput" placeholder="Link TikTok..." autocomplete="off">
-            <button class="search-button" onclick="fetchTikTok()">Arrow Right</button>
+            <input type="text" id="tt" placeholder="Paste link TikTok...">
+            <button class="btn-search" onclick="getTT()">Arrow Right</button>
         </div>
-        <div class="progress-bar-container" id="tiktokProgress"><div class="progress-bar"></div></div>
-        <div id="tiktokError" class="tip-text" style="display:none;color:#ff80a6"></div>
-        <div id="tiktokResult" class="result-area">
-            <div class="media-player-container"><video id="tiktokPlayer" controls playsinline></video></div>
-            <div class="ios-hint" id="tiktokIosHint">iOS: Klik tombol → Save Video</div>
-            <div class="download-buttons">
-                <button id="tiktokDlVideo" class="btn-download"><span class="shine"></span>Download DOWNLOAD VIDEO</button>
-                <button id="tiktokDlAudio" class="btn-download" style="background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.2)">Download DOWNLOAD AUDIO</button>
-            </div>
+        <div class="progress" id="p1"><div></div></div>
+        <div id="ttResult" class="result">
+            <div class="preview-container"><video id="ttVideo" controls playsinline></video></div>
+            <div class="ios-hint" id="ttIos">iOS: Klik tombol → Save Video</div>
+            <div class="btn" id="dlTT"><div class="shine"></div>Download DOWNLOAD VIDEO</div>
+            <div class="btn btn-audio" id="dlTTAudio"><div class="shine"></div>Download DOWNLOAD AUDIO ONLY</div>
         </div>
     </div>
 
-    <div class="section-divider"></div>
+    <div class="divider"></div>
 
-    <!-- INSTAGRAM SECTION -->
-    <div class="holographic-card">
+    <!-- INSTAGRAM -->
+    <div class="card">
         <div style="text-align:center;margin-bottom:30px">
-            <i class="fab fa-instagram logo-icon"></i>
+            <i class="fab fa-instagram logo"></i>
             <h1>INSTAGRAM DOWNLOADER</h1>
-            <p class="subtitle">Video, foto, reels, carousel, story (public).</p>
+            <p class="subtitle">Reels · Foto · Carousel · Story (public)</p>
         </div>
         <div class="input-group">
-            <input type="text" id="igUrlInput" placeholder="Link Instagram..." autocomplete="off">
-            <button class="search-button" onclick="fetchInstagram()">Arrow Right</button>
+            <input type="text" id="ig" placeholder="Paste link Instagram...">
+            <button class="btn-search" onclick="getIG()">Arrow Right</button>
         </div>
-        <div class="progress-bar-container" id="igProgress"><div class="progress-bar"></div></div>
-        <div id="igError" class="tip-text" style="display:none;color:#ff80a6"></div>
-        <div id="igResult" class="result-area">
-            <div class="meta-container" style="margin-bottom:15px">
-                <div class="author-box">
-                    <img id="igAvatar" class="author-avatar" src="">
-                    <div><h3 id="igUsername" class="author-name">@unknown</h3></div>
-                </div>
-            </div>
-            <div id="igCarousel" class="carousel-grid"></div>
-            <div class="ios-hint" id="igIosHint">iOS: Klik tombol → Save ke Photos</div>
-            <div class="download-buttons">
-                <button id="igDlAll" class="btn-download btn-all"><span class="shine"></span>Download DOWNLOAD ALL (ZIP)</button>
-            </div>
-            <p class="tip-text">Atau klik thumbnail untuk download satu per satu</p>
+        <div class="progress" id="p2"><div></div></div>
+        <div id="igResult" class="result">
+            <div class="preview-container" id="mainPreview"></div>
+            <div class="carousel" id="carousel"></div>
+            <div class="ios-hint" id="igIos">iOS: Klik tombol atau long-press media</div>
+            <div class="btn" id="dlAllIG" style="display:none"><div class="shine"></div>Download DOWNLOAD ALL (ZIP)</div>
         </div>
     </div>
 
-    <div class="footer">© 2025 CODED BY Itsbad</div>
+    <div class="footer">© 2025 CODED BY Itsbad — Cyber Edition</div>
 
     <script>
-        // Starfield
-        for(let i=0;i<120;i++){
-            let s=document.createElement('div');s.className='star';
-            s.style.width=s.style.height=Math.random()*3+1+'px';
-            s.style.top=Math.random()*100+'%';s.style.left=Math.random()*100+'%';
+        // Stars
+        for(let i=0;i<150;i++){
+            let s=document.createElement('div');
+            s.style.width=s.style.height=(Math.random()*2+1)+'px';
+            s.style.top=Math.random()*100+'%';
+            s.style.left=Math.random()*100+'%';
             s.style.animationDelay=Math.random()*5+'s';
-            document.getElementById('starfield').appendChild(s);
+            document.getElementById('stars').appendChild(s);
         }
 
-        // TikTok (ringkas, sama seperti sebelumnya)
-        async function fetchTikTok(){
-            const url=document.getElementById('tiktokUrlInput').value.trim();
+        // TikTok
+        async function getTT(){
+            const url=document.getElementById('tt').value.trim();
             if(!url)return;
-            document.getElementById('tiktokProgress').style.display='block';
-            document.getElementById('tiktokResult').style.display='none';
+            document.getElementById('p1').style.display='block';
+            document.getElementById('ttResult').style.display='none';
             try{
-                const r=await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
+                const r=await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(url));
                 const d=await r.json();
                 if(d.code===0){
-                    const fix=l=>l&&(l.startsWith('http')?l:'https://www.tikwm.com'+l);
-                    window.ttVid=fix(d.data.play); window.ttAud=fix(d.data.music);
-                    document.getElementById('tiktokPlayer').src=window.ttVid;
-                    document.getElementById('tiktokResult').style.display='block';
-                    if(/iPad|iPhone|iPod/.test(navigator.userAgent)) document.getElementById('tiktokIosHint').style.display='block';
+                    const fix=l=>l.startsWith('http')?l:'https://www.tikwm.com'+l;
+                    window.ttVid=fix(d.data.play);
+                    window.ttAud=fix(d.data.music);
+                    document.getElementById('ttVideo').src=window.ttVid;
+                    document.getElementById('ttResult').style.display='block';
+                    if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ttIos').style.display='block';
                 }
-            }catch{e=>document.getElementById('tiktokError').innerText='Link TikTok salah!';document.getElementById('tiktokError').style.display='block';}
-            finally{document.getElementById('tiktokProgress').style.display='none';}
+            }catch{alert('Link TikTok salah bro!')}
+            finally{document.getElementById('p1').style.display='none';}
         }
-        document.getElementById('tiktokDlVideo').onclick=()=>downloadFile(window.ttVid,'tiktok_video.mp4',true);
-        document.getElementById('tiktokDlAudio').onclick=()=>downloadFile(window.ttAud,'tiktok_audio.mp3',false);
+        document.getElementById('dlTT').onclick=()=>dl(window.ttVid,'tiktok_video.mp4',true);
+        document.getElementById('dlTTAudio').onclick=()=>dl(window.ttAud,'tiktok_audio.mp3');
 
-        // Instagram + Carousel Full
-        async function fetchInstagram(){
-            const url=document.getElementById('igUrlInput').value.trim();
+        // Instagram (API baru, super stabil)
+        async function getIG(){
+            const url=document.getElementById('ig').value.trim();
             if(!url)return;
-            document.getElementById('igProgress').style.display='block';
+            document.getElementById('p2').style.display='block';
             document.getElementById('igResult').style.display='none';
-            document.getElementById('igCarousel').innerHTML='';
+            document.getElementById('carousel').innerHTML='';
+            document.getElementById('mainPreview').innerHTML='';
+            document.getElementById('dlAllIG').style.display='none';
             try{
-                const r=await fetch(`https://api.igram.world/api/v1/download?url=${encodeURIComponent(url)}`);
+                const r=await fetch(`https://v3.igdownloader.app/api/v1/download?url=${encodeURIComponent(url)}`);
                 const d=await r.json();
-                if(d.status==='ok' && d.data){
-                    const items = d.data.resources || [{url: d.data.url, type: d.data.type==='video'?'video':'image'}];
-                    window.igFiles = items.map((x,i)=>({url:x.url,type:x.type||'image',index:i+1}));
-                    document.getElementById('igAvatar').src=d.data.thumb||'';
-                    document.getElementById('igUsername').innerText='@'+(d.data.author?.username||'unknown');
-                    const grid=document.getElementById('igCarousel');
-                    window.igFiles.forEach(item=>{
-                        const div=document.createElement('div');div.className='carousel-item';
-                        if(item.type==='video'){
-                            const vid=document.createElement('video');
-                            vid.src=item.url;vid.poster=d.data.thumb;
-                            div.appendChild(vid);
-                            div.onclick=()=>downloadFile(item.url,`ig_${item.index}.mp4`,true);
-                        }else{
-                            const img=document.createElement('img');
-                            img.src=item.url;
-                            div.appendChild(img);
-                            div.onclick=()=>downloadFile(item.url,`ig_${item.index}.jpg`,false);
-                        }
-                        grid.appendChild(div);
-                    });
+                if(d.status && d.data && d.data.length>0){
+                    window.igFiles = d.data.map((x,i)=>({url:x.url,type:x.type,index:i+1}));
+                    // Main preview (first item)
+                    const first = window.igFiles[0];
+                    if(first.type==='video'){
+                        const v=document.createElement('video');
+                        v.src=first.url;v.controls=true;v.playsinline=true;
+                        document.getElementById('mainPreview').appendChild(v);
+                    }else{
+                        const img=document.createElement('img');
+                        img.src=first.url;
+                        document.getElementById('mainPreview').appendChild(img);
+                    }
+                    // Carousel (kalau lebih dari 1)
+                    if(window.igFiles.length>1){
+                        window.igFiles.forEach(item=>{
+                            const div=document.createElement('div');
+                            div.className='item';
+                            if(item.type==='video'){
+                                const v=document.createElement('video');
+                                v.src=item.url;v.muted=true;
+                                div.appendChild(v);
+                                div.onclick=()=>dl(item.url,`ig_${item.index}.mp4`,true);
+                            }else{
+                                const img=document.createElement('img');
+                                img.src=item.url;
+                                div.appendChild(img);
+                                div.onclick=()=>dl(item.url,`ig_${item.index}.jpg`);
+                            }
+                            document.getElementById('carousel').appendChild(div);
+                        });
+                        document.getElementById('dlAllIG').style.display='flex';
+                    }
                     document.getElementById('igResult').style.display='block';
-                    if(/iPad|iPhone|iPod/.test(navigator.userAgent)) document.getElementById('igIosHint').style.display='block';
-                }
-            }catch{
-                document.getElementById('igError').innerText='Link Instagram tidak valid / private!';
-                document.getElementById('igError').style.display='block';
-            }finally{
-                document.getElementById('igProgress').style.display='none';
-            }
+                    if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('igIos').style.display='block';
+                }else throw 1;
+            }catch{alert('Link Instagram tidak valid / private!')}
+            finally{document.getElementById('p2').style.display='none';}
         }
 
         // Download All ZIP
-        document.getElementById('igDlAll').onclick=async()=>{
-            if(!window.igFiles||window.igFiles.length===0)return alert('Tidak ada file!');
+        document.getElementById('dlAllIG').onclick=async()=>{
+            if(!window.igFiles)return;
             const zip=new JSZip();
-            const promises=window.igFiles.map(async(item,i)=>{
-                const r=await fetch(item.url);
-                const blob=await r.blob();
-                const ext=item.type==='video'?'mp4':'jpg';
-                zip.file(`ig_\( {i+1}. \){ext}`,blob);
-            });
-            await Promise.all(promises);
+            for(let i=0;i<window.igFiles.length;i++){
+                const f=window.igFiles[i];
+                const r=await fetch(f.url);
+                const b=await r.blob();
+                zip.file(`instagram_\( {i+1}. \){f.type==='video'?'mp4':'jpg'}`,b);
+            }
             const content=await zip.generateAsync({type:'blob'});
-            const a=document.createElement('a');
-            a.href=URL.createObjectURL(content);
-            a.download='instagram_carousel.zip';
-            a.click();
-            URL.revokeObjectURL(a.href);
+            saveAs(content,'instagram_download.zip');
         };
 
-        // Universal download (iOS Share + normal)
-        async function downloadFile(url,name,isVideo=true){
+        // Universal download
+        async function dl(url,name,isVideo=false){
             try{
                 const r=await fetch(url);
-                const blob=await r.blob();
-                if(isVideo && navigator.share && /iPad|iPhone|iPod/.test(navigator.userAgent)){
-                    const file=new File([blob],name,{type:blob.type});
+                const b=await r.blob();
+                if(isVideo && navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)){
+                    const file=new File([b],name,{type:b.type});
                     await navigator.share({files:[file]});
                 }else{
                     const a=document.createElement('a');
-                    a.href=URL.createObjectURL(blob);
+                    a.href=URL.createObjectURL(b);
                     a.download=name;a.click();
                     URL.revokeObjectURL(a.href);
                 }
@@ -222,7 +211,9 @@
         }
 
         // Enter key
-        ['tiktokUrlInput','igUrlInput'].forEach(id=>document.getElementById(id).addEventListener('keypress',e=>e.key==='Enter'&&(id==='tiktokUrlInput'?fetchTikTok():fetchInstagram())));
+        document.getElementById('tt').addEventListener('keypress',e=>e.key==='Enter'&&getTT());
+        document.getElementById('ig').addEventListener('keypress',e=>e.key==='Enter'&&getIG());
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </body>
 </html>
