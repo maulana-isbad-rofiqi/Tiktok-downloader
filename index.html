@@ -3,195 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER DOWNLOADER 2025</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>CYBER DOWNLOADER 2025 :: TikTok + YouTube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root{--cyan:#00eaff;--pink:#ff0077;--bg:#000;--card:rgba(10,10,25,0.85)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:#e0e0e0;font-family:'Segoe UI',sans-serif;display:flex;flex-direction:column;align-items:center;padding:30px 15px;min-height:100vh;position:relative;overflow-x:hidden}
-        .grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,234,255,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,234,255,.03)1px,transparent 1px);background-size:50px 50px;animation:g 60s linear infinite;pointer-events:none}
-        @keyframes g{to{background-position:-5000px -5000px}}
-        .stars{position:fixed;inset:0;pointer-events:none}
-        .stars div{position:absolute;background:#fff;border-radius:50%;animation:twinkle 6s infinite}
-        @keyframes twinkle{0%,100%{opacity:0}50%{opacity:1}}
-        .card{background:var(--card);backdrop-filter:blur(16px);border:1px solid rgba(0,234,255,.2);border-radius:20px;padding:30px;width:100%;max-width:460px;box-shadow:0 15px 40px rgba(0,0,0,.8),0 0 30px rgba(0,234,255,.1);margin-bottom:40px}
-        .logo{font-size:3.5rem;background:linear-gradient(45deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 3s infinite alternate}
-        @keyframes pulse{0%{transform:scale(1)}100%{transform:scale(1.08)}}
-        h1{font-family:'Share Tech Mono',monospace;font-size:1.7rem;letter-spacing:4px;background:linear-gradient(90deg,var(--cyan),#fff,var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:15px 0 5px;text-align:center}
-        .sub{color:#888;font-size:.95rem;text-align:center;margin-bottom:20px}
-        .inp{position:relative;margin:25px 0}
-        input{width:100%;padding:16px 55px 16px 20px;background:rgba(0,0,0,.5);border:1px solid rgba(0,234,255,.3);border-radius:14px;color:#fff;font-size:1rem;outline:none;transition:.3s}
-        input:focus{border-color:var(--cyan)}
-        button.go{position:absolute;right:6px;top:6px;bottom:6px;width:46px;background:linear-gradient(45deg,var(--cyan),var(--pink));border:none;border-radius:10px;color:#000;font-size:1.3rem;cursor:pointer;transition:.3s}
-        button.go:hover{transform:scale(1.08)}
-        .bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin:20px 0;display:none}
-        .bar div{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--pink));animation:load 2s infinite alternate}
-        @keyframes load{to{width:100%}}
-        .res{display:none;margin-top:20px}
-        .thumb{border-radius:12px;overflow:hidden;margin-bottom:15px;box-shadow:0 0 20px rgba(0,234,255,.3)}
-        .thumb img{width:100%;display:block}
-        .title{color:var(--cyan);font-size:1.1rem;font-weight:600;margin:10px 0 15px;line-height:1.4;text-align:center}
-        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:10px}
-        .btn{padding:14px 10px;border-radius:12px;background:linear-gradient(90deg,var(--cyan),var(--pink));color:#000;font-weight:700;font-size:.95rem;text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:.3s}
-        .btn.mp3{background:#ff0077;color:#fff}
-        .btn:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(0,234,255,.4)}
-        .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);transform:skew(-20deg);transition:.8s}
-        .btn:hover .shine{top:-100%;left:120%}
-        .ios{display:none;background:rgba(0,234,255,.1);border:1px solid var(--cyan);color:var(--cyan);padding:12px;border-radius:10px;margin:15px 0;text-align:center;font-weight:600}
-        .err{color:#ff6b9d;background:rgba(255,0,119,.15);padding:14px;border-radius:10px;margin:10px 0;display:none;text-align:center}
-        .sep{height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),transparent);margin:50px 0;width:100%;max-width:460px}
-        .footer{color:#555;font-family:'Share Tech Mono';font-size:.8rem;margin-top:30px}
+        :root {
+            --cyan: #00eaff;
+            --pink: #ff0077;
+            --bg: #000;
+            --card: rgba(10, 10, 25, 0.85);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center;
+            padding: 30px 15px;
+            min-height: 100vh;
+            position: relative; overflow-x: hidden;
+        }
+        .grid { position: fixed; inset: 0; background-image: linear-gradient(rgba(0,234,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,234,255,.03) 1px, transparent 1px); background-size: 50px 50px; animation: g 60s linear infinite; pointer-events: none; z-index: -1; }
+        @keyframes g { to { background-position: -5000px -5000px; } }
+        .stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+        .stars div { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 6s infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1); } }
+        .card {
+            background: var(--card); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0,234,255,.2); border-radius: 20px;
+            padding: 30px; width: 100%; max-width: 460px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.8), 0 0 30px rgba(0,234,255,.1);
+            margin-bottom: 40px; animation: ca 1s ease;
+        }
+        @keyframes ca { from { opacity: 0; transform: translateY(30px); } }
+        .logo { font-size: 3.5rem; background: linear-gradient(45deg, var(--cyan), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pulse 3s infinite alternate; margin-bottom: 10px; display: block; text-align: center; }
+        @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
+        h1 { font-family: 'Share Tech Mono', monospace; font-size: 1.7rem; letter-spacing: 4px; background: linear-gradient(90deg, var(--cyan), #fff, var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0 5px; text-align: center; animation: gl 4s infinite; }
+        @keyframes gl { 0%, 100% { text-shadow: 0 0 10px var(--cyan); } 50% { text-shadow: 0 0 25px var(--pink); } }
+        .sub { color: #888; font-size: .95rem; text-align: center; margin-bottom: 20px; }
+        .inp { position: relative; margin: 25px 0; }
+        input { width: 100%; padding: 16px 55px 16px 20px; background: rgba(0,0,0,.5); border: 1px solid rgba(0,234,255,.3); border-radius: 14px; color: #fff; font-size: 1rem; outline: none; transition: .3s; }
+        input:focus { border-color: var(--cyan); }
+        button.go { position: absolute; right: 6px; top: 6px; bottom: 6px; width: 46px; background: linear-gradient(45deg, var(--cyan), var(--pink)); border: none; border-radius: 10px; color: #000; font-size: 1.3rem; cursor: pointer; transition: .3s; }
+        button.go:hover:not(:disabled) { transform: scale(1.08); }
+        button.go:disabled { opacity: .5; cursor: not-allowed; }
+        .bar { height: 6px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; margin: 20px 0; display: none; }
+        .bar div { height: 100%; width: 0; background: linear-gradient(90deg, var(--cyan), var(--pink)); animation: load 2s infinite alternate; }
+        @keyframes load { to { width: 100%; } }
+        .res { display: none; margin-top: 20px; }
+        .thumb { border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 0 20px rgba(0,234,255,.3); }
+        .thumb img { width: 100%; display: block; }
+        .title { color: var(--cyan); font-size: 1.1rem; font-weight: 600; margin: 10px 0 15px; line-height: 1.4; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 10px; }
+        .btn { padding: 14px 10px; border-radius: 12px; background: linear-gradient(90deg, var(--cyan), var(--pink)); color: #000; font-weight: 700; font-size: .95rem; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: .3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn.mp3 { background: #ff0077; color: #fff; }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,234,255,.4); }
+        .shine { position: absolute; top: -100%; left: -100%; width: 60%; height: 200%; background: linear-gradient(120deg, transparent, rgba(255,255,255,.4), transparent); transform: skew(-20deg); transition: .8s; }
+        .btn:hover .shine { top: -100%; left: 120%; }
+        .ios { display: none; background: rgba(0,234,255,.1); border: 1px solid var(--cyan); color: var(--cyan); padding: 12px; border-radius: 10px; margin: 15px 0; text-align: center; font-weight: 600; }
+        .err { color: #ff6b9d; background: rgba(255,0,119,.15); padding: 14px; border-radius: 10px; margin: 10px 0; display: none; text-align: center; }
+        .sep { height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), var(--pink), transparent); margin: 50px 0; width: 100%; max-width: 460px; }
+        .footer { color: #555; font-family: 'Share Tech Mono'; font-size: .8rem; margin-top: 30px; text-align: center; }
     </style>
 </head>
 <body>
-<div class="grid"></div>
-<div class="stars" id="stars"></div>
+    <div class="grid"></div>
+    <div class="stars" id="stars"></div>
 
-<!-- TIKTOK -->
-<div class="card">
-    <div style="text-align:center">
-        <i class="fab fa-tiktok logo"></i>
-        <h1>TIKTOK</h1>
-        <p class="sub">No watermark • Full HD • Audio</p>
-    </div>
-    <div class="inp">
-        <input type="text" id="tt" placeholder="Paste TikTok link...">
-        <button class="go" onclick="getTT()">→</button>
-    </div>
-    <div class="bar" id="p1"><div></div></div>
-    <div class="err" id="e1"></div>
-    <div class="res" id="r1">
-        <video controls playsinline style="width:100%;border-radius:12px"></video>
-        <div class="ios" id="ios1">iOS: Klik tombol → Save Video</div>
-        <div class="grid">
-            <div class="btn" id="d1"><span class="shine"></span>VIDEO HD</div>
-            <div class="btn mp3" id="d2"><span class="shine"></span>AUDIO MP3</div>
+    <!-- TIKTOK -->
+    <div class="card">
+        <div style="text-align: center;">
+            <i class="fab fa-tiktok logo"></i>
+            <h1>TIKTOK DOWNLOADER</h1>
+            <p class="sub">No watermark • Full HD • Audio</p>
+        </div>
+        <div class="inp">
+            <input type="text" id="tt" placeholder="Paste TikTok link...">
+            <button class="go" onclick="getTT()"><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="bar" id="p1"><div></div></div>
+        <div class="err" id="e1"></div>
+        <div class="res" id="r1">
+            <video controls playsinline style="width: 100%; border-radius: 12px;"></video>
+            <div class="ios" id="ios1">iOS: Klik tombol → Save Video</div>
+            <div class="grid">
+                <div class="btn" id="d1"><span class="shine"></span><i class="fas fa-video"></i> VIDEO HD</div>
+                <div class="btn mp3" id="d2"><span class="shine"></span><i class="fas fa-music"></i> AUDIO MP3</div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="sep"></div>
+    <div class="sep"></div>
 
-<!-- YOUTUBE -->
-<div class="card">
-    <div style="text-align:center">
-        <i class="fab fa-youtube logo" style="background:linear-gradient(45deg,#f00,#f66);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i>
-        <h1>YOUTUBE</h1>
-        <p class="sub">4K • 1080p • Audio • Subtitle</p>
+    <!-- YOUTUBE -->
+    <div class="card">
+        <div style="text-align: center;">
+            <i class="fab fa-youtube logo" style="background: linear-gradient(45deg, #ff0000, #ff5555); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h1>YOUTUBE DOWNLOADER</h1>
+            <p class="sub">4K • 1080p • Audio • Subtitle</p>
+        </div>
+        <div class="inp">
+            <input type="text" id="yt" placeholder="Paste YouTube link...">
+            <button class="go" onclick="getYT()"><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="bar" id="p2"><div></div></div>
+        <div class="err" id="e2"></div>
+        <div class="res" id="r2">
+            <div class="thumb" id="thumb"></div>
+            <div class="title" id="title"></div>
+            <div class="grid" id="formats"></div>
+            <div class="ios" id="ios2">iOS: Long-press tombol → Save</div>
+        </div>
     </div>
-    <div class="inp">
-        <input type="text" id="yt" placeholder="Paste YouTube link...">
-        <button class="go" onclick="getYT()">→</button>
-    </div>
-    <div class="bar" id="p2"><div></div></div>
-    <div class="err" id="e2"></div>
-    <div class="res" id="r2">
-        <div class="thumb" id="thumb"></div>
-        <div class="title" id="title"></div>
-        <div class="grid" id="formats"></div>
-        <div class="ios" id="ios2">iOS: Long-press tombol → Save</div>
-    </div>
-</div>
 
-<div class="footer">© 2025 Itsbad — Clean Cyber Edition</div>
+    <div class="footer">© 2025 Itsbad — Cyber Edition v3</div>
 
-<script>
-// Bintang-bintang
-for(let i=0;i<120;i++){
-    let s=document.createElement('div');
-    s.style.width=s.style.height=(Math.random()*2+1)+'px';
-    s.style.top=Math.random()*100+'%';
-    s.style.left=Math.random()*100+'%';
-    s.style.animationDelay=Math.random()*6+'s';
-    document.getElementById('stars').appendChild(s);
-}
+    <script>
+        // Stars
+        for(let i = 0; i < 120; i++) {
+            let s = document.createElement('div');
+            s.style.width = s.style.height = (Math.random() * 2 + 1) + 'px';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.animationDelay = Math.random() * 6 + 's';
+            document.getElementById('stars').appendChild(s);
+        }
 
-// Download langsung
-function download(url, name) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-}
+        // Download
+        function download(url, name) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
 
-// TIKTOK
-async function getTT(){
-    const u = document.getElementById('tt').value.trim();
-    if(!u) return;
-    document.getElementById('p1').style.display='block';
-    document.getElementById('r1').style.display='none';
-    document.getElementById('e1').style.display='none';
-    try{
-        const r = await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(u));
-        const d = await r.json();
-        if(d.code===0){
-            const fix = x => x.startsWith('http')?x:'https://www.tikwm.com'+x;
-            const vid = fix(d.data.play);
-            const aud = fix(d.data.music);
-            document.querySelector('#r1 video').src = vid;
-            document.getElementById('r1').style.display='block';
-            document.getElementById('d1').onclick = () => download(vid, 'tiktok.mp4');
-            document.getElementById('d2').onclick = () => download(aud, 'tiktok.mp3');
-            if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios1').style.display='block';
-        }else throw '';
-    }catch{
-        document.getElementById('e1').innerText='Link TikTok salah atau private';
-        document.getElementById('e1').style.display='block';
-    }finally{
-        document.getElementById('p1').style.display='none';
-    }
-}
-document.getElementById('tt').addEventListener('keypress',e=>e.key==='Enter'&&getTT());
-
-// YOUTUBE
-async function getYT(){
-    const u = document.getElementById('yt').value.trim();
-    if(!u) return;
-    document.getElementById('p2').style.display='block';
-    document.getElementById('r2').style.display='none';
-    document.getElementById('e2').style.display='none';
-    document.getElementById('formats').innerHTML='';
-    try{
-        const r = await fetch(`https://api.ytb.vin/api/download?url=${encodeURIComponent(u)}`);
-        const d = await r.json();
-        if(d.success){
-            document.getElementById('thumb').innerHTML = `<img src="${d.thumbnail}" alt="thumb">`;
-            document.getElementById('title').innerText = d.title.length>60 ? d.title.slice(0,57)+'...' : d.title;
-
-            const grid = document.getElementById('formats');
-
-            // Video
-            d.formats.filter(f=>f.hasVideo).slice(0,8).forEach(f=>{
-                const b = document.createElement('div');
-                b.className='btn';
-                b.innerHTML=`<span class="shine"></span>${f.qualityLabel||f.itag}p`;
-                b.onclick=()=>download(f.url, `\( {d.title}_ \){f.qualityLabel||f.itag}.mp4`);
-                grid.appendChild(b);
-            });
-
-            // Audio
-            if(d.audio){
-                const b = document.createElement('div');
-                b.className='btn mp3';
-                b.innerHTML=`<span class="shine"></span>AUDIO MP3`;
-                b.onclick=()=>download(d.audio.url, `${d.title}.mp3`);
-                grid.appendChild(b);
+        // TikTok
+        async function getTT() {
+            const u = document.getElementById('tt').value.trim();
+            if (!u) return;
+            const p = document.getElementById('p1');
+            const r = document.getElementById('r1');
+            const e = document.getElementById('e1');
+            p.style.display = 'block';
+            r.style.display = 'none';
+            e.style.display = 'none';
+            try {
+                const res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(u));
+                const d = await res.json();
+                if (d.code === 0) {
+                    const fix = x => x.startsWith('http') ? x : 'https://www.tikwm.com' + x;
+                    const vid = fix(d.data.play);
+                    const aud = fix(d.data.music);
+                    document.querySelector('#r1 video').src = vid;
+                    r.style.display = 'block';
+                    document.getElementById('d1').onclick = () => download(vid, 'tiktok_video.mp4');
+                    document.getElementById('d2').onclick = () => download(aud, 'tiktok_audio.mp3');
+                    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios1').style.display = 'block';
+                } else throw 'Invalid';
+            } catch {
+                e.innerText = 'Link TikTok tidak valid!';
+                e.style.display = 'block';
+            } finally {
+                p.style.display = 'none';
             }
+        }
+        document.getElementById('tt').addEventListener('keypress', e => e.key === 'Enter' && getTT());
 
-            document.getElementById('r2').style.display='block';
-            if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display='block';
-        }else throw '';
-    }catch{
-        document.getElementById('e2').innerText='Link YouTube salah / private / region lock';
-        document.getElementById('e2').style.display='block';
-    }finally{
-        document.getElementById('p2').style.display='none';
-    }
-}
-document.getElementById('yt').addEventListener('keypress',e=>e.key==='Enter'&&getYT());
-</script>
+        // YouTube (API baru stabil)
+        async function getYT() {
+            const u = document.getElementById('yt').value.trim();
+            if (!u) return;
+            const p = document.getElementById('p2');
+            const r = document.getElementById('r2');
+            const e = document.getElementById('e2');
+            p.style.display = 'block';
+            r.style.display = 'none';
+            e.style.display = 'none';
+            document.getElementById('formats').innerHTML = '';
+            try {
+                const res = await fetch('https://no-key-api.p.rapidapi.com/youtube?url=' + encodeURIComponent(u));
+                const d = await res.json();
+                if (d.success) {
+                    document.getElementById('thumb').innerHTML = `<img src="${d.thumbnail}" alt="Thumbnail">`;
+                    document.getElementById('title').innerText = d.title.length > 60 ? d.title.slice(0, 57) + '...' : d.title;
+
+                    const grid = document.getElementById('formats');
+
+                    // Video formats
+                    (d.formats || []).filter(f => f.hasVideo).slice(0, 8).forEach(f => {
+                        const btn = document.createElement('div');
+                        btn.className = 'btn';
+                        btn.innerHTML = `<span class="shine"></span>${f.quality || f.resolution}`;
+                        btn.onclick = () => download(f.url, `\( {d.title}_ \){f.quality}.mp4`);
+                        grid.appendChild(btn);
+                    });
+
+                    // Audio
+                    if (d.audio) {
+                        const btn = document.createElement('div');
+                        btn.className = 'btn mp3';
+                        btn.innerHTML = `<span class="shine"></span>AUDIO MP3`;
+                        btn.onclick = () => download(d.audio.url, `${d.title}.mp3`);
+                        grid.appendChild(btn);
+                    }
+
+                    r.style.display = 'block';
+                    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display = 'block';
+                } else throw 'Invalid';
+            } catch {
+                e.innerText = 'Link YouTube tidak valid / private / region lock';
+                e.style.display = 'block';
+            } finally {
+                p.style.display = 'none';
+            }
+        }
+        document.getElementById('yt').addEventListener('keypress', e => e.key === 'Enter' && getYT());
+    </script>
 </body>
 </html>
