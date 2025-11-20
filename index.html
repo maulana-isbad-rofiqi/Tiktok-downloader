@@ -27,24 +27,32 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            text-shadow: 0 0 1px rgba(255,255,255,0.05); /* Halus */
+            text-shadow: 0 0 1px rgba(255,255,255,0.05);
         }
 
         body {
-            background-color: var(--bg-dark);
+            background: linear-gradient(-45deg, var(--bg-dark), #1a0a1e, var(--bg-dark));
+            background-size: 400% 400%;
+            animation: wave-bg 10s ease infinite;
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* FIX SCROLL: Hapus 'justify-content: center' dan 'overflow: hidden' */
             padding: 40px 20px; 
             position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes wave-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* --- ANIMATED BACKGROUND GRID (Fixed) --- */
         .background-grid, .starfield {
-            position: fixed; /* Kunci di layar agar konten bisa scroll melewatinya */
+            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             z-index: -2;
             pointer-events: none;
@@ -92,7 +100,7 @@
             animation: card-appear 1s ease forwards;
             opacity: 0;
             transform: translateY(30px);
-            margin-bottom: 20px; /* Tambahkan margin bawah agar tidak menempel ke footer */
+            margin-bottom: 20px;
         }
 
         @keyframes card-appear {
@@ -121,13 +129,13 @@
             100% { opacity: 0.5; background-position: 0% 0%; }
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER dengan Glitch Effect --- */
         .header {
             margin-bottom: 30px;
         }
 
         .logo-icon {
-            font-size: 3rem; /* Sedikit dikecilkan agar rapi di mobile */
+            font-size: 3rem;
             background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -143,12 +151,52 @@
 
         h1 {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 1.6rem; /* Sedikit dikecilkan */
+            font-size: 1.6rem;
             font-weight: 700;
             letter-spacing: 2px;
             text-shadow: 0 0 10px var(--accent-cyan);
             color: white;
+            position: relative;
             animation: text-glow 2s infinite alternate;
+        }
+
+        /* Glitch Effect on Title */
+        h1::before, h1::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        h1::before {
+            animation: glitch-1 2s infinite;
+            color: var(--accent-cyan);
+            z-index: -1;
+        }
+
+        h1::after {
+            animation: glitch-2 2s infinite;
+            color: var(--accent-magenta);
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(3px, 0); }
+            30% { transform: translate(-1px, 0); }
+            50% { transform: translate(1px, 0); }
+            70% { transform: translate(-3px, 0); }
+            90% { transform: translate(1px, 0); }
         }
 
         @keyframes text-glow {
@@ -219,7 +267,7 @@
             filter: none;
         }
 
-        /* --- PROGRESS BAR (CUSTOM LOADER) --- */
+        /* --- PROGRESS BAR --- */
         .progress-bar-container {
             width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; margin-bottom: 20px; overflow: hidden; display: none;
         }
@@ -246,7 +294,7 @@
         .video-desc { font-size: 0.85rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
         /* Statistics */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
         .stat-item { background: rgba(0,0,0,0.3); border: 1px solid rgba(0, 234, 255, 0.1); padding: 8px 5px; border-radius: 8px; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0; animation: stat-show 0.5s ease forwards; }
         .stat-item:nth-child(1) { animation-delay: 0.4s; } .stat-item:nth-child(2) { animation-delay: 0.5s; } .stat-item:nth-child(3) { animation-delay: 0.6s; }
         @keyframes stat-show { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -258,20 +306,37 @@
             width: 100%; aspect-ratio: 9/16; max-height: 400px; background: black; border-radius: 12px; overflow: hidden;
             border: 2px solid rgba(0, 234, 255, 0.3); box-shadow: 0 0 20px rgba(0, 234, 255, 0.2); margin-bottom: 20px;
             animation: video-reveal 0.8s ease forwards; opacity: 0; transform: scale(0.8); animation-delay: 0.7s;
+            position: relative;
         }
         @keyframes video-reveal { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
         video { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-        /* Download Buttons */
+        /* iOS Download Hint */
+        .ios-hint {
+            display: none; background: rgba(0, 234, 255, 0.1); border: 1px solid var(--accent-cyan); padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; color: var(--accent-cyan); text-align: center;
+        }
+
+        /* Download Buttons dengan Ripple */
         .download-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-        .btn-download { position: relative; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; overflow: hidden; transition: all 0.3s ease; animation: btn-pop 0.5s ease forwards; opacity: 0; transform: translateY(10px); }
-        .btn-download:nth-child(1) { animation-delay: 1s; } .btn-download:nth-child(2) { animation-delay: 1.1s; }
+        .btn-download { 
+            position: relative; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; overflow: hidden; transition: all 0.3s ease; animation: btn-pop 0.5s ease forwards; opacity: 0; transform: translateY(10px); 
+            cursor: pointer; border: none;
+        }
+        .btn-download:nth-child(1) { animation-delay: 1s; } .btn-download:nth-child(2) { animation-delay: 1.1s; } .btn-download:nth-child(3) { animation-delay: 1.2s; }
         @keyframes btn-pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn-video { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta)); filter: drop-shadow(0 0 10px rgba(0, 234, 255, 0.4)); color: black; }
+        .btn-video { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta)); filter: drop-shadow(0 0 10px rgba(0, 234, 255, 0.4)); }
         .btn-video:hover { filter: drop-shadow(0 0 20px var(--accent-cyan)); transform: scale(1.02); }
         .btn-audio { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
         .btn-audio:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.02); }
+        .btn-ios { background: linear-gradient(90deg, var(--accent-magenta), var(--accent-cyan)); }
+
+        /* Ripple Effect */
+        .btn-download::after {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.5); transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;
+        }
+        .btn-download:active::after { width: 300px; height: 300px; }
+
         .btn-download .shine { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: rgba(255, 255, 255, 0.3); transform: skewX(-20deg); transition: 0.5s; }
         .btn-download:hover .shine { left: 150%; }
 
@@ -286,10 +351,14 @@
         .message-box { font-size: 0.9rem; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; background: rgba(255, 0, 119, 0.15); color: #ff80a6; border: 1px solid var(--accent-magenta); }
         .tip-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 15px; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 1.2s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Particle Canvas */
+        #particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     </style>
 </head>
 <body>
 
+    <canvas id="particleCanvas"></canvas>
     <div class="background-grid"></div>
     <div class="starfield" id="starfield"></div>
 
@@ -345,32 +414,79 @@
                 <video id="videoPlayer" controls playsinline referrerpolicy="no-referrer"></video>
             </div>
 
+            <div class="ios-hint" id="iosHint">
+                📱 iOS Tip: Long-press video di atas > "Save Video" atau gunakan tombol di bawah.
+            </div>
+
             <div class="download-buttons">
-                <a href="#" id="dlVideo" class="btn-download btn-video" target="_blank" referrerpolicy="no-referrer">
+                <button id="dlVideo" class="btn-download btn-video" onclick="downloadVideo()">
                     <span class="shine"></span>
                     <i class="fas fa-download"></i> DOWNLOAD VIDEO (.MP4)
-                </a>
-                <a href="#" id="dlAudio" class="btn-download btn-audio" target="_blank" referrerpolicy="no-referrer">
+                </button>
+                <button id="dlAudio" class="btn-download btn-audio" onclick="downloadAudio()">
                     <span class="shine"></span>
                     <i class="fas fa-music"></i> DOWNLOAD AUDIO (.MP3)
-                </a>
+                </button>
+                <button id="dlIos" class="btn-download btn-ios" onclick="shareToIos()" style="display: none;">
+                    <i class="fas fa-share"></i> SAVE TO PHOTOS (iOS)
+                </button>
             </div>
             
             <p class="tip-text">
-                ⚠️[INFORMASI]⚠️: Jika pengunduhan tombol download gagal, gunakan opsi unduh dari pemutar video klik titik tiga dan download.
+                ⚠️[INFORMASI]⚠️: Jika pengunduhan gagal, long-press video player > Download. Nikmati tanpa watermark!
             </p>
         </div>
     </div>
 
     <div class="footer">
-        © 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】
+        © 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】 | Enhanced by Grok
     </div>
 
     <audio id="swooshSound" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-whoosh-240.mp3" preload="auto"></audio>
     <audio id="glitchSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-glitch-2176.mp3" preload="auto"></audio>
 
-
     <script>
+        // --- Particle Explosion (Simple Canvas) ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        function createParticles(x, y, color = '#00eaff', count = 20) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: (Math.random() - 0.5) * 10,
+                    life: 1,
+                    color: color
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + Math.floor(p.life * 255).toString(16).padStart(2, '0');
+                ctx.fill();
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02;
+                if (p.life <= 0) particles.splice(i, 1);
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
         // --- Starfield Generation ---
         function createStars() {
             const starfield = document.getElementById('starfield');
@@ -396,33 +512,32 @@
             const resultArea = document.getElementById('resultArea');
             const errorMsg = document.getElementById('errorMsg');
 
-            // --- UI State: Loading ---
+            // UI State: Loading
             searchBtn.disabled = true;
             urlInput.disabled = true;
             resultArea.style.display = 'none';
             errorMsg.style.display = 'none';
             progressBarContainer.style.display = 'block';
 
-            // Play swoosh sound (optional, requires network access)
-            document.getElementById('swooshSound').play().catch(e => console.log("Swoosh sound failed:", e));
+            document.getElementById('swooshSound').play().catch(e => {});
 
             try {
-                // API Call (TikWM)
                 const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (data.code === 0 && data.data) {
                     renderResult(data.data);
+                    // Trigger particles on load
+                    setTimeout(() => createParticles(canvas.width / 2, canvas.height / 2), 800);
                 } else {
                     throw new Error("Target data not found. Verify link integrity.");
                 }
             } catch (error) {
                 console.error("[SYSTEM ERROR]:", error);
                 showError("Error: Target data acquisition failed. System offline or invalid URL.");
-                document.getElementById('glitchSound').play().catch(e => console.log("Glitch sound failed:", e));
+                document.getElementById('glitchSound').play().catch(e => {});
             } finally {
-                // --- UI State: Done/Error ---
                 progressBarContainer.style.display = 'none';
                 searchBtn.disabled = false;
                 urlInput.disabled = false;
@@ -433,8 +548,7 @@
             const domain = "https://www.tikwm.com";
             const fixUrl = (link) => link && (link.startsWith('http') ? link : domain + link);
 
-            // Play glitch sound (optional, requires network access)
-            document.getElementById('glitchSound').play().catch(e => console.log("Glitch sound failed:", e));
+            document.getElementById('glitchSound').play().catch(e => {});
 
             // Meta Info
             document.getElementById('avatar').src = fixUrl(data.author.avatar) || 'https://via.placeholder.com/45/333/FFF?text=NA';
@@ -452,11 +566,67 @@
             videoPlayer.src = fixUrl(data.play);
             videoPlayer.load();
 
-            // Download Links
-            document.getElementById('dlVideo').href = fixUrl(data.play);
-            document.getElementById('dlAudio').href = fixUrl(data.music);
+            // Set global vars for download
+            window.videoUrl = fixUrl(data.play);
+            window.audioUrl = fixUrl(data.music);
+
+            // Show iOS hint if on iOS
+            const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIos) {
+                document.getElementById('iosHint').style.display = 'block';
+                document.getElementById('dlIos').style.display = 'flex';
+            }
 
             resultArea.style.display = 'block';
+        }
+
+        // --- Download Functions ---
+        async function downloadVideo() {
+            if (!window.videoUrl) return;
+            createParticles(event ? event.clientX : canvas.width / 2, event ? event.clientY : canvas.height / 2, '#00eaff', 30);
+            if (navigator.share && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                try {
+                    await navigator.share({ files: [new File([await (await fetch(window.videoUrl)).blob()], 'tiktok_video.mp4', { type: 'video/mp4' })] });
+                } catch (e) {
+                    // Fallback to direct
+                    const a = document.createElement('a');
+                    a.href = window.videoUrl;
+                    a.download = 'tiktok_video.mp4';
+                    a.click();
+                }
+            } else {
+                const a = document.createElement('a');
+                a.href = window.videoUrl;
+                a.download = 'tiktok_video.mp4';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }
+
+        async function downloadAudio() {
+            if (!window.audioUrl) return;
+            createParticles(event ? event.clientX : canvas.width / 2, event ? event.clientY : canvas.height / 2, '#ff0077', 20);
+            const response = await fetch(window.audioUrl);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tiktok_audio.mp3';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        async function shareToIos() {
+            if (navigator.share) {
+                await navigator.share({
+                    title: 'TikTok Video',
+                    text: 'Save this video!',
+                    url: window.videoUrl
+                });
+            }
         }
 
         function showError(message) {
@@ -465,7 +635,7 @@
             err.style.display = 'block';
         }
 
-        // --- Number Animation (for stats) ---
+        // --- Number Animation ---
         function animateNumber(elementId, targetValue, duration = 1000) {
             const element = document.getElementById(elementId);
             let startValue = 0;
@@ -495,7 +665,7 @@
             return num;
         }
 
-        // --- Audio Preload (optional) ---
+        // --- Audio Preload ---
         window.addEventListener('load', () => {
             const swoosh = document.getElementById('swooshSound');
             const glitch = document.getElementById('glitchSound');
@@ -503,14 +673,13 @@
             glitch.volume = 0.4;
         });
 
-        // --- Adjust Glitch Title based on window width ---
+        // --- Adjust Title for Mobile ---
         function adjustGlitchTitle() {
             const title = document.querySelector('h1');
             const logo = document.querySelector('.logo-icon');
-
             if (window.innerWidth < 480) {
                 title.style.fontSize = '1.5rem';
-                logo.style.fontSize = '3rem';
+                logo.style.fontSize = '2.5rem';
             } else {
                 title.style.fontSize = '1.8rem';
                 logo.style.fontSize = '3.5rem';
