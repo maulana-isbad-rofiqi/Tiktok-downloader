@@ -44,6 +44,7 @@
         .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,234,255,0.5)}
         .btn.a{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.2)}
         .btn.all{background:linear-gradient(90deg,var(--m),#ff0077)}
+        .btn.fallback{background:var(--m);color:#fff}
         .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);transform:skew(-20deg);transition:.8s}
         .btn:hover .shine{top:-100%;left:120%}
         .ios{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--c);color:var(--c);padding:12px;border-radius:10px;margin:15px 0;text-align:center;font-weight:600;animation:pu 2s infinite}
@@ -98,6 +99,7 @@
             <div class="car" id="car"></div>
             <div class="ios" id="ios2">📱 iOS: Klik tombol atau long-press media</div>
             <div class="btn all" id="all"><span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD ALL (ZIP)</div>
+            <div class="btn fallback" id="fallback" style="display:none"><span class="shine"></span><i class="fas fa-external-link-alt"></i> Open in SnapSave</div>
         </div>
     </div>
 
@@ -137,7 +139,7 @@
             }
         }
 
-        // TikTok
+        // TikTok (unchanged, works)
         async function getTT() {
             const url = document.getElementById('tt').value.trim();
             if (!url) return;
@@ -169,7 +171,7 @@
         document.getElementById('d2').onclick = () => dl(window.ttAud, 'tiktok_audio.mp3', false);
         document.getElementById('tt').addEventListener('keypress', e => e.key === 'Enter' && getTT());
 
-        // Instagram (SnapSave style - proxy to backend)
+        // Instagram (SnapSave backend via stable proxy)
         async function getIG() {
             const url = document.getElementById('ig').value.trim();
             if (!url) return;
@@ -179,28 +181,25 @@
             const main = document.getElementById('main');
             const car = document.getElementById('car');
             const dlAll = document.getElementById('all');
+            const fallback = document.getElementById('fallback');
             p.style.display = 'block';
             res.style.display = 'none';
             err.style.display = 'none';
             main.innerHTML = '';
             car.innerHTML = '';
             dlAll.style.display = 'none';
+            fallback.style.display = 'none';
             try {
-                // Proxy to SnapSave backend (no token, direct scrape)
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                const snapUrl = 'https://snapsave.app/action.php';
-                const formData = new FormData();
-                formData.append('url', url);
-                const r = await fetch(proxyUrl + snapUrl, {
-                    method: 'POST',
-                    body: formData
-                });
+                // Stable proxy to SnapSave backend
+                const proxy = 'https://api.allorigins.win/raw?url=';
+                const snapUrl = encodeURIComponent('https://snapsave.app/action.php?submit=1&url=' + encodeURIComponent(url));
+                const r = await fetch(proxy + snapUrl);
                 const text = await r.text();
-                // Parse HTML response for download links (SnapSave returns HTML with <a href="download_url">)
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'text/html');
-                const links = Array.from(doc.querySelectorAll('a[href*=".mp4"], a[href*=".jpg"]')).map(a => a.href).filter(l => l);
-                if (links.length === 0) throw 'No media';
+                // Parse for download links (regex for mp4/jpg in <a href>)
+                const mp4Links = [...text.matchAll(/<a href="([^"]*\.mp4[^"]*)"/g)].map(m => m[1]);
+                const jpgLinks = [...text.matchAll(/<a href="([^"]*\.jpg[^"]*)"/g)].map(m => m[1]);
+                const links = [...mp4Links, ...jpgLinks].filter(l => l.startsWith('http'));
+                if (links.length === 0) throw 'No media found';
                 window.igFiles = links.map((link, i) => ({
                     url: link,
                     type: link.includes('.mp4') ? 'video' : 'image',
@@ -244,8 +243,10 @@
                 res.style.display = 'block';
                 if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display = 'block';
             } catch {
-                err.innerText = 'Link Instagram tidak valid atau private! (Coba post public lain)';
+                err.innerText = 'Gagal ambil media. Coba lagi atau...';
                 err.style.display = 'block';
+                fallback.style.display = 'flex';
+                fallback.onclick = () => window.open('https://snapsave.app/id/downloader/instagram?attachment=1&url=' + encodeURIComponent(url), '_blank');
             } finally {
                 p.style.display = 'none';
             }
