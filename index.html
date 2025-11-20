@@ -169,7 +169,7 @@
         document.getElementById('d2').onclick = () => dl(window.ttAud, 'tiktok_audio.mp3', false);
         document.getElementById('tt').addEventListener('keypress', e => e.key === 'Enter' && getTT());
 
-        // Instagram (Apify API)
+        // Instagram (SnapSave style - proxy to backend)
         async function getIG() {
             const url = document.getElementById('ig').value.trim();
             if (!url) return;
@@ -186,58 +186,63 @@
             car.innerHTML = '';
             dlAll.style.display = 'none';
             try {
-                const r = await fetch('https://apify.com/apilabs/instagram-downloader/api/v2/run-sync-get-dataset-items?token=' + (await (await fetch('https://api.apify.com/v2/key?token=YOUR_FREE_TOKEN_HERE')).text()), { // Free token from Apify signup, or use default
+                // Proxy to SnapSave backend (no token, direct scrape)
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const snapUrl = 'https://snapsave.app/action.php';
+                const formData = new FormData();
+                formData.append('url', url);
+                const r = await fetch(proxyUrl + snapUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ directUrls: [url] })
+                    body: formData
                 });
-                const d = await r.json();
-                if (d && d.length > 0) {
-                    const media = d[0].media || d[0].videos || [];
-                    window.igFiles = media.map((item, i) => ({
-                        url: item.url || item.videoUrl || item.imageUrl,
-                        type: item.type || (item.url.includes('.mp4') ? 'video' : 'image'),
-                        index: i + 1
-                    })).filter(item => item.url);
-                    if (window.igFiles.length === 0) throw 'No media';
-                    // Main preview
-                    const first = window.igFiles[0];
-                    if (first.type === 'video') {
-                        const v = document.createElement('video');
-                        v.src = first.url;
-                        v.controls = true;
-                        v.playsInline = true;
-                        main.appendChild(v);
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = first.url;
-                        main.appendChild(img);
-                    }
-                    // Carousel
-                    if (window.igFiles.length > 1) {
-                        window.igFiles.forEach(item => {
-                            const div = document.createElement('div');
-                            div.className = 'car-item';
-                            if (item.type === 'video') {
-                                const v = document.createElement('video');
-                                v.src = item.url;
-                                v.muted = true;
-                                v.loop = true;
-                                div.appendChild(v);
-                                div.onclick = () => dl(item.url, `ig_${item.index}.mp4`, true);
-                            } else {
-                                const img = document.createElement('img');
-                                img.src = item.url;
-                                div.appendChild(img);
-                                div.onclick = () => dl(item.url, `ig_${item.index}.jpg`, false);
-                            }
-                            car.appendChild(div);
-                        });
-                        dlAll.style.display = 'flex';
-                    }
-                    res.style.display = 'block';
-                    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display = 'block';
-                } else throw 'Invalid';
+                const text = await r.text();
+                // Parse HTML response for download links (SnapSave returns HTML with <a href="download_url">)
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = Array.from(doc.querySelectorAll('a[href*=".mp4"], a[href*=".jpg"]')).map(a => a.href).filter(l => l);
+                if (links.length === 0) throw 'No media';
+                window.igFiles = links.map((link, i) => ({
+                    url: link,
+                    type: link.includes('.mp4') ? 'video' : 'image',
+                    index: i + 1
+                }));
+                // Main preview
+                const first = window.igFiles[0];
+                if (first.type === 'video') {
+                    const v = document.createElement('video');
+                    v.src = first.url;
+                    v.controls = true;
+                    v.playsInline = true;
+                    main.appendChild(v);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = first.url;
+                    main.appendChild(img);
+                }
+                // Carousel
+                if (window.igFiles.length > 1) {
+                    window.igFiles.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'car-item';
+                        if (item.type === 'video') {
+                            const v = document.createElement('video');
+                            v.src = item.url;
+                            v.muted = true;
+                            v.loop = true;
+                            div.appendChild(v);
+                            div.onclick = () => dl(item.url, `ig_${item.index}.mp4`, true);
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = item.url;
+                            div.appendChild(img);
+                            div.onclick = () => dl(item.url, `ig_${item.index}.jpg`, false);
+                        }
+                        car.appendChild(div);
+                    });
+                    dlAll.style.display = 'flex';
+                }
+                res.style.display = 'block';
+                if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display = 'block';
             } catch {
                 err.innerText = 'Link Instagram tidak valid atau private! (Coba post public lain)';
                 err.style.display = 'block';
