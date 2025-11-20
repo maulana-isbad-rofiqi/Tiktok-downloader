@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER DOWNLOADER 2025 :: TikTok + YouTube</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>CYBER DOWNLOADER 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        :root{--c:#00eaff;--m:#ff0077;--b:#000;--d:rgba(10,10,20,0.7)}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-        body{background:var(--b);color:#e8e8e8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px;position:relative;overflow-x:hidden}
-        .grid,.stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
-        .grid{background-image:linear-gradient(rgba(0,234,255,0.04)1px,transparent 1px),linear-gradient(90deg,rgba(0,234,255,0.04)1px,transparent 1px);background-size:60px 60px;animation:g 80s linear infinite}
+        :root{--cyan:#00eaff;--pink:#ff0077;--bg:#000;--card:rgba(10,10,25,0.85)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:#e0e0e0;font-family:'Segoe UI',sans-serif;display:flex;flex-direction:column;align-items:center;padding:30px 15px;min-height:100vh;position:relative;overflow-x:hidden}
+        .grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,234,255,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,234,255,.03)1px,transparent 1px);background-size:50px 50px;animation:g 60s linear infinite;pointer-events:none}
         @keyframes g{to{background-position:-5000px -5000px}}
-        .stars div{position:absolute;background:#fff;border-radius:50%;animation:s 5s infinite}
-        @keyframes s{0%,100%{opacity:0}50%{opacity:1}}
-        .card{background:var(--d);backdrop-filter:blur(16px);border:1px solid rgba(0,234,255,0.3);border-radius:20px;padding:35px;width:100%;max-width:480px;box-shadow:0 20px 50px rgba(0,0,0,0.9),0 0 40px rgba(0,234,255,0.15);margin-bottom:40px}
-        .logo{font-size:3.5rem;background:linear-gradient(45deg,var(--c),var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:f 3s infinite alternate}
-        @keyframes f{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
-        h1{font-family:'Share Tech Mono',monospace;font-size:1.8rem;letter-spacing:3px;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gl 4s infinite;text-align:center}
-        @keyframes gl{0%,100%{text-shadow:0 0 10px var(--c)}50%{text-shadow:0 0 25px var(--m)}}
-        .sub{color:#888;font-size:.9rem;margin-top:8px;text-align:center}
+        .stars{position:fixed;inset:0;pointer-events:none}
+        .stars div{position:absolute;background:#fff;border-radius:50%;animation:twinkle 6s infinite}
+        @keyframes twinkle{0%,100%{opacity:0}50%{opacity:1}}
+        .card{background:var(--card);backdrop-filter:blur(16px);border:1px solid rgba(0,234,255,.2);border-radius:20px;padding:30px;width:100%;max-width:460px;box-shadow:0 15px 40px rgba(0,0,0,.8),0 0 30px rgba(0,234,255,.1);margin-bottom:40px}
+        .logo{font-size:3.5rem;background:linear-gradient(45deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 3s infinite alternate}
+        @keyframes pulse{0%{transform:scale(1)}100%{transform:scale(1.08)}}
+        h1{font-family:'Share Tech Mono',monospace;font-size:1.7rem;letter-spacing:4px;background:linear-gradient(90deg,var(--cyan),#fff,var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:15px 0 5px;text-align:center}
+        .sub{color:#888;font-size:.95rem;text-align:center;margin-bottom:20px}
         .inp{position:relative;margin:25px 0}
-        input{width:100%;padding:16px 60px 16px 20px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,234,255,0.3);border-radius:12px;color:#fff;font-size:1rem;outline:none}
-        .go{position:absolute;right:8px;top:8px;bottom:8px;width:48px;background:linear-gradient(45deg,var(--c),var(--m));border:none;border-radius:10px;color:#fff;cursor:pointer}
-        .bar{height:8px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin:20px 0;display:none}
-        .bar div{height:100%;background:linear-gradient(90deg,var(--c),var(--m);animation:p 2s infinite alternate}
-        @keyframes p{to{width:100%}}
+        input{width:100%;padding:16px 55px 16px 20px;background:rgba(0,0,0,.5);border:1px solid rgba(0,234,255,.3);border-radius:14px;color:#fff;font-size:1rem;outline:none;transition:.3s}
+        input:focus{border-color:var(--cyan)}
+        button.go{position:absolute;right:6px;top:6px;bottom:6px;width:46px;background:linear-gradient(45deg,var(--cyan),var(--pink));border:none;border-radius:10px;color:#000;font-size:1.3rem;cursor:pointer;transition:.3s}
+        button.go:hover{transform:scale(1.08)}
+        .bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin:20px 0;display:none}
+        .bar div{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--pink));animation:load 2s infinite alternate}
+        @keyframes load{to{width:100%}}
         .res{display:none;margin-top:20px}
-        .prev{border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,234,255,0.4);margin-bottom:20px;background:#000}
-        .prev video,.prev img{width:100%;display:block}
-        .formats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
-        .btn{padding:14px;border-radius:12px;background:linear-gradient(90deg,var(--c),var(--m));color:#000;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden}
-        .btn.mp3{background:#ff0077}
-        .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,234,255,0.5)}
-        .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);transform:skew(-20deg)}
-        .btn:hover .shine{top:-100%;left:120%;transition:0.8s}
-        .thumb{border-radius:12px;overflow:hidden;margin-bottom:15px}
+        .thumb{border-radius:12px;overflow:hidden;margin-bottom:15px;box-shadow:0 0 20px rgba(0,234,255,.3)}
         .thumb img{width:100%;display:block}
-        .title{color:var(--c);font-size:1.1rem;margin:10px 0;font-weight:600}
-        .ios{display:none;background:rgba(0,234,255,0.12);border:1px solid var(--c);color:var(--c);padding:12px;border-radius:10px;margin:10px;margin:15px 0;text-align:center}
-        .div{height:1px;background:linear-gradient(90deg,transparent,var(--c),var(--m),transparent);margin:50px 0}
-        .err{color:#ff80a6;background:rgba(255,0,119,0.15);padding:12px;border-radius:8px;margin:10px 0;display:none;text-align:center}
-        .footer{margin-top:50px;color:#666;font-family:'Share Tech Mono';font-size:.85rem;letter-spacing:1px}
+        .title{color:var(--cyan);font-size:1.1rem;font-weight:600;margin:10px 0 15px;line-height:1.4;text-align:center}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:10px}
+        .btn{padding:14px 10px;border-radius:12px;background:linear-gradient(90deg,var(--cyan),var(--pink));color:#000;font-weight:700;font-size:.95rem;text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:.3s}
+        .btn.mp3{background:#ff0077;color:#fff}
+        .btn:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(0,234,255,.4)}
+        .shine{position:absolute;top:-100%;left:-100%;width:60%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);transform:skew(-20deg);transition:.8s}
+        .btn:hover .shine{top:-100%;left:120%}
+        .ios{display:none;background:rgba(0,234,255,.1);border:1px solid var(--cyan);color:var(--cyan);padding:12px;border-radius:10px;margin:15px 0;text-align:center;font-weight:600}
+        .err{color:#ff6b9d;background:rgba(255,0,119,.15);padding:14px;border-radius:10px;margin:10px 0;display:none;text-align:center}
+        .sep{height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),transparent);margin:50px 0;width:100%;max-width:460px}
+        .footer{color:#555;font-family:'Share Tech Mono';font-size:.8rem;margin-top:30px}
     </style>
 </head>
 <body>
@@ -52,10 +50,10 @@
 
 <!-- TIKTOK -->
 <div class="card">
-    <div style="text-align:center;margin-bottom:30px">
+    <div style="text-align:center">
         <i class="fab fa-tiktok logo"></i>
-        <h1>TIKTOK DOWNLOADER</h1>
-        <p class="sub">No watermark • HD • Audio</p>
+        <h1>TIKTOK</h1>
+        <p class="sub">No watermark • Full HD • Audio</p>
     </div>
     <div class="inp">
         <input type="text" id="tt" placeholder="Paste TikTok link...">
@@ -64,20 +62,22 @@
     <div class="bar" id="p1"><div></div></div>
     <div class="err" id="e1"></div>
     <div class="res" id="r1">
-        <div class="prev"><video id="v1" controls playsinline></video></div>
-        <div class="ios" id="ios1">iOS: Klik → Save Video</div>
-        <div class="btn" id="d1"><span class="shine"></span>DOWNLOAD VIDEO HD</div>
-        <div class="btn mp3" id="d2"><span class="shine"></span>DOWNLOAD AUDIO MP3</div>
+        <video controls playsinline style="width:100%;border-radius:12px"></video>
+        <div class="ios" id="ios1">iOS: Klik tombol → Save Video</div>
+        <div class="grid">
+            <div class="btn" id="d1"><span class="shine"></span>VIDEO HD</div>
+            <div class="btn mp3" id="d2"><span class="shine"></span>AUDIO MP3</div>
+        </div>
     </div>
 </div>
 
-<div class="div"></div>
+<div class="sep"></div>
 
 <!-- YOUTUBE -->
 <div class="card">
-    <div style="text-align:center;margin-bottom:30px">
-        <i class="fab fa-youtube logo" style="background:linear-gradient(45deg,#ff0000,#ff5555);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i>
-        <h1>YOUTUBE DOWNLOADER</h1>
+    <div style="text-align:center">
+        <i class="fab fa-youtube logo" style="background:linear-gradient(45deg,#f00,#f66);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i>
+        <h1>YOUTUBE</h1>
         <p class="sub">4K • 1080p • Audio • Subtitle</p>
     </div>
     <div class="inp">
@@ -89,113 +89,109 @@
     <div class="res" id="r2">
         <div class="thumb" id="thumb"></div>
         <div class="title" id="title"></div>
-        <div class="formats" id="formats"></div>
+        <div class="grid" id="formats"></div>
         <div class="ios" id="ios2">iOS: Long-press tombol → Save</div>
     </div>
 </div>
 
-<div class="footer">© 2025 Itsbad — Cyber Edition v2</div>
+<div class="footer">© 2025 Itsbad — Clean Cyber Edition</div>
 
 <script>
-// Stars animation
-for(let i=0;i<150;i++){
+// Bintang-bintang
+for(let i=0;i<120;i++){
     let s=document.createElement('div');
     s.style.width=s.style.height=(Math.random()*2+1)+'px';
     s.style.top=Math.random()*100+'%';
     s.style.left=Math.random()*100+'%';
-    s.style.animationDelay=Math.random()*5+'s';
+    s.style.animationDelay=Math.random()*6+'s';
     document.getElementById('stars').appendChild(s);
 }
 
-// Universal download
-async function dl(url, name, isVideo = false) {
-    try {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        a.target = '_blank';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    } catch {
-        alert('Gagal download, coba klik kanan → Save As');
-    }
+// Download langsung
+function download(url, name) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 }
 
-// TikTok (perfect)
-async function getTT() {
+// TIKTOK
+async function getTT(){
     const u = document.getElementById('tt').value.trim();
-    if (!u) return;
+    if(!u) return;
     document.getElementById('p1').style.display='block';
     document.getElementById('r1').style.display='none';
-    try {
+    document.getElementById('e1').style.display='none';
+    try{
         const r = await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(u));
         const d = await r.json();
-        if (d.code === 0) {
-            const f = x => x.startsWith('http') ? x : 'https://www.tikwm.com'+x;
-            window.ttVid = f(d.data.play);
-            window.ttAud = f(d.data.music);
-            document.getElementById('v1').src = window.ttVid;
+        if(d.code===0){
+            const fix = x => x.startsWith('http')?x:'https://www.tikwm.com'+x;
+            const vid = fix(d.data.play);
+            const aud = fix(d.data.music);
+            document.querySelector('#r1 video').src = vid;
             document.getElementById('r1').style.display='block';
-            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios1').style.display='block';
-        }
-    } catch {
-        document.getElementById('e1').innerText='Link TikTok salah bro';
+            document.getElementById('d1').onclick = () => download(vid, 'tiktok.mp4');
+            document.getElementById('d2').onclick = () => download(aud, 'tiktok.mp3');
+            if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios1').style.display='block';
+        }else throw '';
+    }catch{
+        document.getElementById('e1').innerText='Link TikTok salah atau private';
         document.getElementById('e1').style.display='block';
-    } finally {
+    }finally{
         document.getElementById('p1').style.display='none';
     }
 }
-document.getElementById('d1').onclick = () => dl(window.ttVid, 'tiktok_video.mp4');
-document.getElementById('d2').onclick = () => dl(window.ttAud, 'tiktok_audio.mp3');
-document.getElementById('tt').addEventListener('keypress', e => e.key==='Enter' && getTT());
+document.getElementById('tt').addEventListener('keypress',e=>e.key==='Enter'&&getTT());
 
-// YouTube (API stabil 2025)
-async function getYT() {
+// YOUTUBE
+async function getYT(){
     const u = document.getElementById('yt').value.trim();
-    if (!u) return;
+    if(!u) return;
     document.getElementById('p2').style.display='block';
     document.getElementById('r2').style.display='none';
-    document.getElementById('formats').innerHTML = '';
-    try {
+    document.getElementById('e2').style.display='none';
+    document.getElementById('formats').innerHTML='';
+    try{
         const r = await fetch(`https://api.ytb.vin/api/download?url=${encodeURIComponent(u)}`);
         const d = await r.json();
-        if (d.success) {
-            // Thumbnail & title
+        if(d.success){
             document.getElementById('thumb').innerHTML = `<img src="${d.thumbnail}" alt="thumb">`;
-            document.getElementById('title').innerText = d.title;
+            document.getElementById('title').innerText = d.title.length>60 ? d.title.slice(0,57)+'...' : d.title;
 
-            const container = document.getElementById('formats');
+            const grid = document.getElementById('formats');
 
-            // Video formats
-            d.formats.filter(f => f.hasVideo).forEach(f => {
-                const btn = document.createElement('div');
-                btn.className = 'btn';
-                btn.innerHTML = `<span class="shine"></span>\( {f.qualityLabel || f.itag} • \){f.container}`;
-                btn.onclick = () => dl(f.url, `\( {d.title}_ \){f.qualityLabel || f.itag}.mp4`);
-                container.appendChild(btn);
+            // Video
+            d.formats.filter(f=>f.hasVideo).slice(0,8).forEach(f=>{
+                const b = document.createElement('div');
+                b.className='btn';
+                b.innerHTML=`<span class="shine"></span>${f.qualityLabel||f.itag}p`;
+                b.onclick=()=>download(f.url, `\( {d.title}_ \){f.qualityLabel||f.itag}.mp4`);
+                grid.appendChild(b);
             });
 
-            // Audio only
-            if (d.audio) {
-                const btn = document.createElement('div');
-                btn.className = 'btn mp3';
-                btn.innerHTML = `<span class="shine"></span>AUDIO ONLY • ${d.audio.bitrate}kbps`;
-                btn.onclick = () => dl(d.audio.url, `${d.title}.mp3`);
-                container.appendChild(btn);
+            // Audio
+            if(d.audio){
+                const b = document.createElement('div');
+                b.className='btn mp3';
+                b.innerHTML=`<span class="shine"></span>AUDIO MP3`;
+                b.onclick=()=>download(d.audio.url, `${d.title}.mp3`);
+                grid.appendChild(b);
             }
 
             document.getElementById('r2').style.display='block';
-            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display='block';
-        } else throw '';
-    } catch {
-        document.getElementById('e2').innerText='Link YouTube tidak valid atau video private';
+            if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById('ios2').style.display='block';
+        }else throw '';
+    }catch{
+        document.getElementById('e2').innerText='Link YouTube salah / private / region lock';
         document.getElementById('e2').style.display='block';
-    } finally {
+    }finally{
         document.getElementById('p2').style.display='none';
     }
 }
-document.getElementById('yt').addEventListener('keypress', e => e.key==='Enter' && getYT());
+document.getElementById('yt').addEventListener('keypress',e=>e.key==='Enter'&&getYT());
 </script>
 </body>
 </html>
