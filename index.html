@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader :: Download Video TikTok Tanpa Watermark</title>
+    <title>TikTok & Instagram Downloader :: No Watermark</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -76,6 +76,7 @@
             max-width: 480px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 50px rgba(0, 234, 255, 0.15);
             animation: card-appear 1s ease;
+            margin-bottom: 30px;
         }
 
         @keyframes card-appear {
@@ -193,7 +194,7 @@
             text-align: center;
         }
 
-        #resultArea {
+        .result-area {
             display: none;
             margin-top: 20px;
             animation: slideIn 0.5s ease;
@@ -271,17 +272,20 @@
             margin: 4px 0;
         }
 
-        .video-player-container {
+        .media-player-container {
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 0 30px rgba(0,234,255,0.3);
             margin-bottom: 20px;
             background: black;
+            aspect-ratio: 9/16;
+            max-height: 400px;
         }
 
-        #videoPlayer {
+        .media-player-container img, .media-player-container video {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: contain;
             display: block;
         }
 
@@ -368,6 +372,14 @@
             text-align: center;
         }
 
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-magenta), transparent);
+            margin: 40px 0;
+            width: 100%;
+            max-width: 480px;
+        }
+
         .footer {
             margin-top: 50px;
             font-family: 'Share Tech Mono', monospace;
@@ -384,6 +396,7 @@
     <div class="starfield" id="starfield"></div>
 
     <div class="holographic-card">
+        <!-- TikTok Section -->
         <div style="text-align: center; margin-bottom: 30px;">
             <i class="fab fa-tiktok logo-icon"></i>
             <h1>TIKTOK DOWNLOADER</h1>
@@ -391,67 +404,122 @@
         </div>
 
         <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Sematkan data link di sini..." autocomplete="off">
-            <button class="search-button" id="searchBtn" onclick="fetchVideo()">
+            <input type="text" id="tiktokUrlInput" placeholder="Sematkan link TikTok..." autocomplete="off">
+            <button class="search-button" id="tiktokSearchBtn" onclick="fetchTikTok()">
                 <i class="fas fa-arrow-right"></i>
             </button>
         </div>
 
-        <div class="progress-bar-container" id="progressBarContainer">
+        <div class="progress-bar-container" id="tiktokProgress">
             <div class="progress-bar"></div>
         </div>
 
-        <div id="errorMsg"></div>
+        <div id="tiktokError"></div>
 
-        <div id="resultArea">
+        <div id="tiktokResult" class="result-area">
             <div class="meta-container">
                 <div class="author-box">
-                    <img src="" id="avatar" class="author-avatar" alt="Author">
+                    <img src="" id="tiktokAvatar" class="author-avatar" alt="Author">
                     <div>
-                        <h3 id="username" class="author-name">@UNKNOWN</h3>
-                        <p id="description" class="video-desc">Memuat data...</p>
+                        <h3 id="tiktokUsername" class="author-name">@UNKNOWN</h3>
+                        <p id="tiktokDescription" class="video-desc">Memuat data...</p>
                     </div>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <i class="fas fa-eye stat-icon"></i>
-                        <span id="statViews" class="stat-value">0</span>
+                        <span id="tiktokViews" class="stat-value">0</span>
                         <span>Views</span>
                     </div>
                     <div class="stat-item">
                         <i class="fas fa-heart stat-icon"></i>
-                        <span id="statLikes" class="stat-value">0</span>
+                        <span id="tiktokLikes" class="stat-value">0</span>
                         <span>Likes</span>
                     </div>
                     <div class="stat-item">
                         <i class="fas fa-comment-dots stat-icon"></i>
-                        <span id="statComments" class="stat-value">0</span>
+                        <span id="tiktokComments" class="stat-value">0</span>
                         <span>Comments</span>
                     </div>
                 </div>
             </div>
 
-            <div class="video-player-container">
-                <video id="videoPlayer" controls playsinline referrerpolicy="no-referrer"></video>
+            <div class="media-player-container">
+                <video id="tiktokPlayer" controls playsinline referrerpolicy="no-referrer"></video>
             </div>
 
-            <div class="ios-hint" id="iosHint">
-                📱 iOS: Klik tombol di bawah untuk save langsung ke Photos, atau long-press video > "Save Video".
+            <div class="ios-hint" id="tiktokIosHint">
+                📱 iOS: Long-press video > Save Video
             </div>
 
             <div class="download-buttons">
-                <button id="dlVideo" class="btn-download">
+                <button id="tiktokDlVideo" class="btn-download">
                     <span class="shine"></span>
                     <i class="fas fa-download"></i> DOWNLOAD VIDEO (.MP4)
                 </button>
-                <button id="dlAudio" class="btn-download btn-audio">
+                <button id="tiktokDlAudio" class="btn-download btn-audio">
                     <span class="shine"></span>
                     <i class="fas fa-music"></i> DOWNLOAD AUDIO (.MP3)
                 </button>
             </div>
 
             <p class="tip-text">
-                ⚠️ Jika gagal, long-press video player > Download. No watermark guaranteed!
+                ⚠️ Jika gagal, long-press video > Download. No watermark!
+            </p>
+        </div>
+
+        <!-- Divider -->
+        <div class="section-divider"></div>
+
+        <!-- Instagram Section -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <i class="fab fa-instagram logo-icon" style="background: linear-gradient(45deg, #e4405f, #833ab4);"></i>
+            <h1>INSTAGRAM DOWNLOADER</h1>
+            <p class="subtitle">Ambil video, foto, reels tanpa jejak.</p>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="igUrlInput" placeholder="Sematkan link Instagram..." autocomplete="off">
+            <button class="search-button" id="igSearchBtn" onclick="fetchInstagram()">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="progress-bar-container" id="igProgress">
+            <div class="progress-bar"></div>
+        </div>
+
+        <div id="igError"></div>
+
+        <div id="igResult" class="result-area">
+            <div class="meta-container">
+                <div class="author-box">
+                    <img src="" id="igAvatar" class="author-avatar" alt="Author">
+                    <div>
+                        <h3 id="igUsername" class="author-name">@UNKNOWN</h3>
+                        <p id="igDescription" class="video-desc">Memuat data...</p>
+                    </div>
+                </div>
+                <!-- No stats for IG, just placeholder -->
+            </div>
+
+            <div class="media-player-container">
+                <div id="igMedia"></div>
+            </div>
+
+            <div class="ios-hint" id="igIosHint">
+                📱 iOS: Long-press media > Save Image/Video
+            </div>
+
+            <div class="download-buttons">
+                <button id="igDlMedia" class="btn-download">
+                    <span class="shine"></span>
+                    <i class="fas fa-download"></i> DOWNLOAD MEDIA (.MP4 / .JPG)
+                </button>
+            </div>
+
+            <p class="tip-text">
+                ⚠️ Support video, foto, reels, IGTV, story (public only). Jika gagal, long-press media > Download.
             </p>
         </div>
     </div>
@@ -473,15 +541,15 @@
             starfield.appendChild(star);
         }
 
-        // Fetch Video
-        async function fetchVideo() {
-            const urlInput = document.getElementById('urlInput').value.trim();
+        // TikTok Functions (sama seperti sebelumnya)
+        async function fetchTikTok() {
+            const urlInput = document.getElementById('tiktokUrlInput').value.trim();
             if (!urlInput) return;
 
-            const searchBtn = document.getElementById('searchBtn');
-            const progressBarContainer = document.getElementById('progressBarContainer');
-            const resultArea = document.getElementById('resultArea');
-            const errorMsg = document.getElementById('errorMsg');
+            const searchBtn = document.getElementById('tiktokSearchBtn');
+            const progressBarContainer = document.getElementById('tiktokProgress');
+            const resultArea = document.getElementById('tiktokResult');
+            const errorMsg = document.getElementById('tiktokError');
 
             searchBtn.disabled = true;
             progressBarContainer.style.display = 'block';
@@ -496,40 +564,34 @@
                 if (data.code === 0 && data.data) {
                     const videoData = data.data;
                     const domain = "https://www.tikwm.com";
-
-                    // Fix URLs
                     const fixUrl = (link) => link && (link.startsWith('http') ? link : domain + link);
-                    window.videoUrl = fixUrl(videoData.play);
-                    window.audioUrl = fixUrl(videoData.music);
 
-                    // Render Meta
-                    document.getElementById('avatar').src = fixUrl(videoData.author.avatar) || 'https://via.placeholder.com/45/333/FFF?text=NA';
-                    document.getElementById('username').innerText = videoData.author.nickname || 'UNKNOWN ENTITY';
-                    document.getElementById('description').innerText = videoData.title || '[NO DATA]';
+                    window.tiktokVideoUrl = fixUrl(videoData.play);
+                    window.tiktokAudioUrl = fixUrl(videoData.music);
 
-                    // Animate Stats
-                    animateNumber('statViews', videoData.play_count || 0);
-                    animateNumber('statLikes', videoData.digg_count || 0);
-                    animateNumber('statComments', videoData.comment_count || 0);
+                    document.getElementById('tiktokAvatar').src = fixUrl(videoData.author.avatar) || '';
+                    document.getElementById('tiktokUsername').innerText = videoData.author.nickname || 'UNKNOWN';
+                    document.getElementById('tiktokDescription').innerText = videoData.title || '[NO DATA]';
 
-                    // Video Player (use original URL for preview)
-                    const videoPlayer = document.getElementById('videoPlayer');
-                    videoPlayer.src = window.videoUrl;
+                    animateNumber('tiktokViews', videoData.play_count || 0);
+                    animateNumber('tiktokLikes', videoData.digg_count || 0);
+                    animateNumber('tiktokComments', videoData.comment_count || 0);
+
+                    const videoPlayer = document.getElementById('tiktokPlayer');
+                    videoPlayer.src = window.tiktokVideoUrl;
                     videoPlayer.load();
 
-                    // iOS Detection & Hint
                     const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
                     if (isIos) {
-                        document.getElementById('iosHint').style.display = 'block';
+                        document.getElementById('tiktokIosHint').style.display = 'block';
                     }
 
                     resultArea.style.display = 'block';
                 } else {
-                    throw new Error('Invalid TikTok link');
+                    throw new Error('Invalid link');
                 }
             } catch (error) {
-                console.error(error);
-                errorMsg.innerText = 'Error: Link tidak valid atau server bermasalah. Coba link TikTok lain.';
+                errorMsg.innerText = 'Error: Link TikTok tidak valid.';
                 errorMsg.style.display = 'block';
             } finally {
                 searchBtn.disabled = false;
@@ -537,29 +599,87 @@
             }
         }
 
-        // Enter Key Support
-        document.getElementById('urlInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') fetchVideo();
-        });
+        // Instagram Functions
+        async function fetchInstagram() {
+            const urlInput = document.getElementById('igUrlInput').value.trim();
+            if (!urlInput) return;
 
-        // Blob Download Function (SnapTik-style for iOS)
+            const searchBtn = document.getElementById('igSearchBtn');
+            const progressBarContainer = document.getElementById('igProgress');
+            const resultArea = document.getElementById('igResult');
+            const errorMsg = document.getElementById('igError');
+            const mediaDiv = document.getElementById('igMedia');
+
+            searchBtn.disabled = true;
+            progressBarContainer.style.display = 'block';
+            resultArea.style.display = 'none';
+            errorMsg.style.display = 'none';
+            mediaDiv.innerHTML = '';
+
+            try {
+                const apiUrl = `https://api.igram.world/api/v1/download?url=${encodeURIComponent(urlInput)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.status === 'ok' && data.data) {
+                    const igData = data.data;
+                    window.igMediaUrl = igData.url; // Direct download URL
+                    window.igThumbUrl = igData.thumb;
+
+                    // Avatar & Meta (from thumb or placeholder)
+                    document.getElementById('igAvatar').src = igData.thumb || 'https://via.placeholder.com/45/333/FFF?text=IG';
+                    document.getElementById('igUsername').innerText = igData.author?.username || 'UNKNOWN';
+                    document.getElementById('igDescription').innerText = igData.caption || '[NO CAPTION]';
+
+                    // Preview Media
+                    if (igData.type === 'video' || igData.type === 'reel' || igData.type === 'igtv') {
+                        const video = document.createElement('video');
+                        video.src = window.igMediaUrl;
+                        video.controls = true;
+                        video.playsInline = true;
+                        mediaDiv.appendChild(video);
+                    } else {
+                        // Photo or Carousel (first image)
+                        const img = document.createElement('img');
+                        img.src = window.igMediaUrl;
+                        img.alt = 'Instagram Media';
+                        mediaDiv.appendChild(img);
+                    }
+
+                    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                    if (isIos) {
+                        document.getElementById('igIosHint').style.display = 'block';
+                    }
+
+                    resultArea.style.display = 'block';
+                } else {
+                    throw new Error('Invalid link');
+                }
+            } catch (error) {
+                errorMsg.innerText = 'Error: Link Instagram tidak valid (pastikan public post).';
+                errorMsg.style.display = 'block';
+            } finally {
+                searchBtn.disabled = false;
+                progressBarContainer.style.display = 'none';
+            }
+        }
+
+        // Universal Download Function (Blob + iOS Share)
         async function downloadFile(url, filename, isVideo = true) {
             try {
-                const response = await fetch(url, { method: 'GET' });
+                const response = await fetch(url);
                 if (!response.ok) throw new Error('Fetch failed');
                 const blob = await response.blob();
                 const blobUrl = URL.createObjectURL(blob);
 
                 if (isVideo && navigator.share && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                    // iOS Share (like SnapTik)
                     const file = new File([blob], filename, { type: blob.type });
                     await navigator.share({
                         files: [file],
-                        title: 'TikTok Video Download',
-                        text: 'Save this watermark-free video!'
+                        title: 'Instagram Download',
+                        text: 'Save this media!'
                     });
                 } else {
-                    // Standard Download
                     const a = document.createElement('a');
                     a.href = blobUrl;
                     a.download = filename;
@@ -571,24 +691,32 @@
                 URL.revokeObjectURL(blobUrl);
             } catch (error) {
                 console.error('Download failed:', error);
-                alert('Download gagal. Coba long-press video untuk save manual.');
+                alert('Download gagal. Long-press media untuk save manual.');
             }
         }
 
-        // Button Listeners
-        document.getElementById('dlVideo').addEventListener('click', () => {
-            if (window.videoUrl) {
-                downloadFile(window.videoUrl, `tiktok_video_${Date.now()}.mp4`, true);
+        // TikTok Buttons
+        document.getElementById('tiktokDlVideo').addEventListener('click', () => {
+            if (window.tiktokVideoUrl) downloadFile(window.tiktokVideoUrl, `tiktok_video_${Date.now()}.mp4`, true);
+        });
+
+        document.getElementById('tiktokDlAudio').addEventListener('click', () => {
+            if (window.tiktokAudioUrl) downloadFile(window.tiktokAudioUrl, `tiktok_audio_${Date.now()}.mp3`, false);
+        });
+
+        // IG Button
+        document.getElementById('igDlMedia').addEventListener('click', () => {
+            if (window.igMediaUrl) {
+                const ext = window.igMediaUrl.includes('.mp4') ? '.mp4' : '.jpg';
+                downloadFile(window.igMediaUrl, `ig_media_\( {Date.now()} \){ext}`, window.igMediaUrl.includes('.mp4'));
             }
         });
 
-        document.getElementById('dlAudio').addEventListener('click', () => {
-            if (window.audioUrl) {
-                downloadFile(window.audioUrl, `tiktok_audio_${Date.now()}.mp3`, false);
-            }
-        });
+        // Enter Key Support
+        document.getElementById('tiktokUrlInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchTikTok(); });
+        document.getElementById('igUrlInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchInstagram(); });
 
-        // Number Animation
+        // Number Animation (for TikTok)
         function animateNumber(elementId, targetValue) {
             const element = document.getElementById(elementId);
             let startValue = 0;
