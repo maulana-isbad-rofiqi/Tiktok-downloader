@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader :: Download Video TikTok Tanpa Watermark</title>
+    <title>Universal Downloader :: TikTok & Spotify</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,8 +13,12 @@
             --bg-dark: #000000;
             --accent-cyan: #00eaff;
             --accent-magenta: #ff0077;
+            /* Warna Default (TikTok) */
+            --theme-primary: #00eaff;
+            --theme-secondary: #ff0077;
+            
+            --spotify-green: #1DB954;
             --card-bg: rgba(10, 10, 20, 0.6);
-            --border-glow: rgba(0, 234, 255, 0.3);
             --text-light: #e8e8e8;
             --text-muted: #888;
         }
@@ -31,8 +35,10 @@
             padding: 40px 20px;
             position: relative;
             overflow-x: hidden;
+            transition: background 0.5s;
         }
 
+        /* Background Effects */
         .background-grid, .starfield {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -65,17 +71,21 @@
             50% { opacity: 1; transform: scale(1); }
         }
 
+        /* Card Styles */
         .holographic-card {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 234, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--theme-primary);
+            border-bottom: 1px solid var(--theme-secondary);
             border-radius: 20px;
             padding: 35px;
             width: 100%;
             max-width: 480px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 50px rgba(0, 234, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.2);
             animation: card-appear 1s ease;
+            transition: border-color 0.5s;
         }
 
         @keyframes card-appear {
@@ -83,6 +93,55 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Tabs System */
+        .tab-container {
+            display: flex;
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-shadow: 0 0 10px var(--theme-primary);
+        }
+
+        /* Dynamic Theme Colors based on Mode */
+        body.spotify-mode {
+            --theme-primary: #1DB954;
+            --theme-secondary: #1ed760;
+        }
+
+        body.spotify-mode .logo-icon {
+            background: linear-gradient(45deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.spotify-mode h1 {
+            background: linear-gradient(90deg, #1DB954, #fff, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+        }
+
+        /* Header Elements */
         .logo-icon {
             font-size: 3.5rem;
             background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
@@ -91,6 +150,7 @@
             animation: icon-float 3s infinite alternate;
             margin-bottom: 10px;
             display: block;
+            transition: all 0.5s;
         }
 
         @keyframes icon-float {
@@ -105,15 +165,9 @@
             background: linear-gradient(90deg, var(--accent-cyan), #fff, var(--accent-magenta));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: glitch-title 4s infinite;
+            /* animation: glitch-title 4s infinite; */
             text-align: center;
-        }
-
-        @keyframes glitch-title {
-            0%, 100% { text-shadow: 0 0 10px var(--accent-cyan); }
-            50% { text-shadow: 0 0 20px var(--accent-magenta), 0 0 30px var(--accent-cyan); }
-            2%, 98% { transform: translate(0); }
-            1%, 99% { transform: translate(-1px, 1px); }
+            transition: all 0.5s;
         }
 
         .subtitle {
@@ -123,6 +177,7 @@
             text-align: center;
         }
 
+        /* Input Area */
         .input-group {
             position: relative;
             margin-bottom: 25px;
@@ -132,7 +187,7 @@
             width: 100%;
             padding: 16px 60px 16px 20px;
             background: rgba(0,0,0,0.6);
-            border: 1px solid rgba(0,234,255,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
             border-radius: 12px;
             color: white;
             font-size: 1rem;
@@ -141,7 +196,8 @@
         }
 
         input:focus {
-            border-color: var(--accent-cyan);
+            border-color: var(--theme-primary);
+            box-shadow: 0 0 15px rgba(255,255,255,0.05);
         }
 
         .search-button {
@@ -150,10 +206,11 @@
             width: 48px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
-            color: white;
+            background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
+            color: #000;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.3s, background 0.5s;
+            font-weight: bold;
         }
 
         .search-button:hover:not(:disabled) {
@@ -165,11 +222,12 @@
             cursor: not-allowed;
         }
 
+        /* Loading Bar */
         .progress-bar-container {
             display: none;
-            height: 8px;
+            height: 4px;
             background: rgba(255,255,255,0.1);
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
             margin: 20px 0;
         }
@@ -177,12 +235,13 @@
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
             animation: fill 2s linear infinite alternate;
         }
 
         @keyframes fill { 0% { width: 0%; } 100% { width: 100%; } }
 
+        /* Error Message */
         #errorMsg {
             display: none;
             color: #ff80a6;
@@ -191,8 +250,10 @@
             border-radius: 8px;
             margin: 15px 0;
             text-align: center;
+            font-size: 0.9rem;
         }
 
+        /* Result Area */
         #resultArea {
             display: none;
             margin-top: 20px;
@@ -209,6 +270,7 @@
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .author-box {
@@ -216,22 +278,29 @@
             align-items: center;
             gap: 12px;
             padding-bottom: 10px;
-            border-bottom: 1px dashed rgba(0,234,255,0.2);
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
             margin-bottom: 10px;
         }
 
         .author-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-cyan);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Circle for TikTok */
+            border: 2px solid var(--theme-primary);
             object-fit: cover;
+            transition: border-color 0.5s;
+        }
+        
+        /* Spotify Square Art */
+        body.spotify-mode .author-avatar {
+            border-radius: 8px;
         }
 
         .author-name {
             margin: 0;
             color: white;
             font-weight: 600;
+            font-size: 1rem;
         }
 
         .video-desc {
@@ -244,6 +313,7 @@
             overflow: hidden;
         }
 
+        /* Stats Grid (TikTok Only) */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -259,50 +329,34 @@
             font-size: 0.8rem;
         }
 
-        .stat-icon {
-            color: var(--accent-magenta);
-            font-size: 1rem;
-        }
-
         .stat-value {
             font-weight: 700;
-            color: var(--accent-cyan);
+            color: var(--theme-primary);
             display: block;
             margin: 4px 0;
         }
 
-        .video-player-container {
+        /* Video/Audio Player */
+        .media-container {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,234,255,0.3);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
             margin-bottom: 20px;
             background: black;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        #videoPlayer {
+        #videoPlayer, #audioPlayer {
             width: 100%;
-            height: auto;
             display: block;
         }
 
-        .ios-hint {
-            display: none;
-            background: rgba(0, 234, 255, 0.12);
-            border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan);
-            padding: 12px;
-            border-radius: 10px;
-            margin: 15px 0 10px;
-            font-weight: 600;
-            text-align: center;
-            animation: pulse 2s infinite;
+        #audioPlayer {
+            height: 50px;
+            margin: 10px 0;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-
+        /* Buttons */
         .download-buttons {
             display: flex;
             flex-direction: column;
@@ -317,7 +371,7 @@
             text-align: center;
             text-decoration: none;
             color: #000;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
             overflow: hidden;
             transition: all 0.3s;
             cursor: pointer;
@@ -330,17 +384,11 @@
 
         .btn-download:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 234, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
         }
 
-        .btn-download:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-audio {
-            background: rgba(255,255,255,0.12);
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
             color: white;
             border: 1px solid rgba(255,255,255,0.2);
         }
@@ -361,13 +409,6 @@
             left: 120%;
         }
 
-        .tip-text {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #666;
-            text-align: center;
-        }
-
         .footer {
             margin-top: 50px;
             font-family: 'Share Tech Mono', monospace;
@@ -377,7 +418,6 @@
             text-align: center;
         }
     </style>
-    <script type='text/javascript' src='//pl28100357.effectivegatecpm.com/22/a0/a0/22a0a03a8c81b561a1d889e393102185.js'></script>
 </head>
 <body>
 
@@ -385,15 +425,24 @@
     <div class="starfield" id="starfield"></div>
 
     <div class="holographic-card">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <i class="fab fa-tiktok logo-icon"></i>
-            <h1>TIKTOK DOWNLOADER</h1>
-            <p class="subtitle">Unduh esensi digital tanpa jejak.</p>
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchMode('tiktok')" id="tabTikTok">
+                <i class="fab fa-tiktok"></i> TikTok
+            </button>
+            <button class="tab-btn" onclick="switchMode('spotify')" id="tabSpotify">
+                <i class="fab fa-spotify"></i> Spotify
+            </button>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 25px;">
+            <i class="fab fa-tiktok logo-icon" id="mainIcon"></i>
+            <h1 id="mainTitle">TIKTOK DL</h1>
+            <p class="subtitle" id="mainSubtitle">Unduh video tanpa watermark.</p>
         </div>
 
         <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Sematkan data link di sini..." autocomplete="off">
-            <button class="search-button" id="searchBtn" onclick="fetchVideo()">
+            <input type="text" id="urlInput" placeholder="Tempel tautan TikTok di sini..." autocomplete="off">
+            <button class="search-button" id="searchBtn" onclick="handleFetch()">
                 <i class="fas fa-arrow-right"></i>
             </button>
         </div>
@@ -407,53 +456,31 @@
         <div id="resultArea">
             <div class="meta-container">
                 <div class="author-box">
-                    <img src="" id="avatar" class="author-avatar" alt="Author">
+                    <img src="" id="avatar" class="author-avatar" alt="Cover">
                     <div>
                         <h3 id="username" class="author-name">@UNKNOWN</h3>
                         <p id="description" class="video-desc">Memuat data...</p>
                     </div>
                 </div>
-                <div class="stats-grid">
+                
+                <div class="stats-grid" id="tiktokStats">
                     <div class="stat-item">
-                        <i class="fas fa-eye stat-icon"></i>
-                        <span id="statViews" class="stat-value">0</span>
-                        <span>Views</span>
+                        <i class="fas fa-eye"></i> <span id="statViews" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
-                        <i class="fas fa-heart stat-icon"></i>
-                        <span id="statLikes" class="stat-value">0</span>
-                        <span>Likes</span>
+                        <i class="fas fa-heart"></i> <span id="statLikes" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
-                        <i class="fas fa-comment-dots stat-icon"></i>
-                        <span id="statComments" class="stat-value">0</span>
-                        <span>Comments</span>
+                        <i class="fas fa-comment"></i> <span id="statComments" class="stat-value">0</span>
                     </div>
                 </div>
             </div>
 
-            <div class="video-player-container">
-                <video id="videoPlayer" controls playsinline referrerpolicy="no-referrer"></video>
-            </div>
+            <div class="media-container" id="mediaContainer">
+                </div>
 
-            <div class="ios-hint" id="iosHint">
-                📱 iOS: Klik tombol di bawah untuk save langsung ke Photos, atau long-press video > "Save Video".
-            </div>
-
-            <div class="download-buttons">
-                <button id="dlVideo" class="btn-download">
-                    <span class="shine"></span>
-                    <i class="fas fa-download"></i> DOWNLOAD VIDEO (.MP4)
-                </button>
-                <button id="dlAudio" class="btn-download btn-audio">
-                    <span class="shine"></span>
-                    <i class="fas fa-music"></i> DOWNLOAD AUDIO (.MP3)
-                </button>
-            </div>
-
-            <p class="tip-text">
-                ⚠️ Jika gagal, long-press video player > Download. No watermark guaranteed!
-            </p>
+            <div class="download-buttons" id="btnContainer">
+                </div>
         </div>
     </div>
 
@@ -462,9 +489,15 @@
     </div>
 
     <script>
-        // Starfield
+        // --- CONFIGURATION & STATE ---
+        let currentMode = 'tiktok';
+        const API_TIKTOK = 'https://www.tikwm.com/api/';
+        // Menggunakan API publik yang lebih ramah browser dibanding spotmate (karena masalah CORS)
+        const API_SPOTIFY = 'https://api.fabdl.com/spotify/get'; 
+
+        // --- STARFIELD ANIMATION ---
         const starfield = document.getElementById('starfield');
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 80; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             star.style.width = star.style.height = `${Math.random() * 3 + 1}px`;
@@ -474,149 +507,214 @@
             starfield.appendChild(star);
         }
 
-        // Fetch Video
-        async function fetchVideo() {
-            const urlInput = document.getElementById('urlInput').value.trim();
-            if (!urlInput) return;
+        // --- MODE SWITCHING ---
+        function switchMode(mode) {
+            currentMode = mode;
+            const body = document.body;
+            const input = document.getElementById('urlInput');
+            const title = document.getElementById('mainTitle');
+            const icon = document.getElementById('mainIcon');
+            const subtitle = document.getElementById('mainSubtitle');
+            
+            // Reset UI
+            document.getElementById('resultArea').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('urlInput').value = '';
 
-            const searchBtn = document.getElementById('searchBtn');
-            const progressBarContainer = document.getElementById('progressBarContainer');
-            const resultArea = document.getElementById('resultArea');
-            const errorMsg = document.getElementById('errorMsg');
+            // Update Tabs
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            if (mode === 'spotify') {
+                body.classList.add('spotify-mode');
+                document.getElementById('tabSpotify').classList.add('active');
+                
+                icon.className = 'fab fa-spotify logo-icon';
+                title.innerText = 'SPOTIFY DL';
+                subtitle.innerText = 'Unduh lagu & playlist 320kbps.';
+                input.placeholder = 'Tempel tautan lagu Spotify...';
+            } else {
+                body.classList.remove('spotify-mode');
+                document.getElementById('tabTikTok').classList.add('active');
+                
+                icon.className = 'fab fa-tiktok logo-icon';
+                title.innerText = 'TIKTOK DL';
+                subtitle.innerText = 'Unduh video tanpa watermark.';
+                input.placeholder = 'Tempel tautan TikTok di sini...';
+            }
+        }
 
-            searchBtn.disabled = true;
-            progressBarContainer.style.display = 'block';
-            resultArea.style.display = 'none';
-            errorMsg.style.display = 'none';
+        // --- MAIN FETCH HANDLER ---
+        async function handleFetch() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) return;
 
+            if (currentMode === 'tiktok') {
+                await fetchTikTok(url);
+            } else {
+                await fetchSpotify(url);
+            }
+        }
+
+        // --- TIKTOK LOGIC ---
+        async function fetchTikTok(urlInput) {
+            uiLoading(true);
             try {
-                const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`;
+                const apiUrl = `${API_TIKTOK}?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (data.code === 0 && data.data) {
-                    const videoData = data.data;
+                    const v = data.data;
                     const domain = "https://www.tikwm.com";
+                    const fix = (l) => l && (l.startsWith('http') ? l : domain + l);
 
-                    // Fix URLs
-                    const fixUrl = (link) => link && (link.startsWith('http') ? link : domain + link);
-                    window.videoUrl = fixUrl(videoData.play);
-                    window.audioUrl = fixUrl(videoData.music);
+                    // Render
+                    updateMeta(v.author.nickname, v.title, fix(v.author.avatar));
+                    
+                    // Stats
+                    document.getElementById('tiktokStats').style.display = 'grid';
+                    document.getElementById('statViews').innerText = formatNum(v.play_count);
+                    document.getElementById('statLikes').innerText = formatNum(v.digg_count);
+                    document.getElementById('statComments').innerText = formatNum(v.comment_count);
 
-                    // Render Meta
-                    document.getElementById('avatar').src = fixUrl(videoData.author.avatar) || 'https://via.placeholder.com/45/333/FFF?text=NA';
-                    document.getElementById('username').innerText = videoData.author.nickname || 'UNKNOWN ENTITY';
-                    document.getElementById('description').innerText = videoData.title || '[NO DATA]';
+                    // Player
+                    const container = document.getElementById('mediaContainer');
+                    container.innerHTML = `<video id="videoPlayer" controls playsinline src="${fix(v.play)}" style="width:100%"></video>`;
 
-                    // Animate Stats
-                    animateNumber('statViews', videoData.play_count || 0);
-                    animateNumber('statLikes', videoData.digg_count || 0);
-                    animateNumber('statComments', videoData.comment_count || 0);
+                    // Buttons
+                    const btns = `
+                        <button onclick="downloadFile('${fix(v.play)}', 'video.mp4')" class="btn-download">
+                            <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO
+                        </button>
+                        <button onclick="downloadFile('${fix(v.music)}', 'audio.mp3')" class="btn-download btn-secondary">
+                            <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO
+                        </button>
+                    `;
+                    document.getElementById('btnContainer').innerHTML = btns;
 
-                    // Video Player (use original URL for preview)
-                    const videoPlayer = document.getElementById('videoPlayer');
-                    videoPlayer.src = window.videoUrl;
-                    videoPlayer.load();
+                    uiLoading(false);
+                    document.getElementById('resultArea').style.display = 'block';
+                } else {
+                    throw new Error('Video tidak ditemukan / Link Private');
+                }
+            } catch (e) {
+                showError(e.message);
+            }
+        }
 
-                    // iOS Detection & Hint
-                    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                    if (isIos) {
-                        document.getElementById('iosHint').style.display = 'block';
+        // --- SPOTIFY LOGIC ---
+        async function fetchSpotify(urlInput) {
+            if (!urlInput.includes('spotify.com')) {
+                showError('Link tidak valid. Gunakan link Spotify.');
+                return;
+            }
+
+            uiLoading(true);
+            try {
+                // NOTE: Menggunakan API FabDL karena mendukung akses dari browser (CORS friendly)
+                // API spotmate yang Anda berikan membutuhkan server-side proxy (Node.js)
+                const apiUrl = `${API_SPOTIFY}?url=${encodeURIComponent(urlInput)}`;
+                const response = await fetch(apiUrl);
+                const json = await response.json();
+
+                if (json.result) {
+                    const data = json.result;
+                    
+                    // Render
+                    updateMeta(data.artists, data.name, data.image);
+                    
+                    // Hide TikTok stats
+                    document.getElementById('tiktokStats').style.display = 'none';
+
+                    // Player (Audio Only)
+                    const container = document.getElementById('mediaContainer');
+                    // Preview audio jika ada, jika tidak kosongkan player
+                    if(data.preview_url) {
+                        container.innerHTML = `<audio controls src="${data.preview_url}" style="width:100%; margin:10px 0;"></audio>`;
+                    } else {
+                        container.innerHTML = `<div style="padding:15px; text-align:center; color:#888; font-size:0.8rem"><i class="fas fa-music"></i> Preview tidak tersedia</div>`;
                     }
 
-                    resultArea.style.display = 'block';
+                    // Button
+                    // Menggunakan GID/ID untuk link download FabDL
+                    const downloadUrl = `https://api.fabdl.com/spotify/download-mp3/${data.gid}/${data.id}`;
+                    
+                    const btns = `
+                        <button onclick="window.open('${downloadUrl}', '_blank')" class="btn-download">
+                            <span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD MP3
+                        </button>
+                    `;
+                    document.getElementById('btnContainer').innerHTML = btns;
+
+                    uiLoading(false);
+                    document.getElementById('resultArea').style.display = 'block';
                 } else {
-                    throw new Error('Invalid TikTok link');
+                    throw new Error('Gagal mengambil data Spotify.');
                 }
-            } catch (error) {
-                console.error(error);
-                errorMsg.innerText = 'Error: Link tidak valid atau server bermasalah. Coba link TikTok lain.';
-                errorMsg.style.display = 'block';
-            } finally {
-                searchBtn.disabled = false;
-                progressBarContainer.style.display = 'none';
+            } catch (e) {
+                console.error(e);
+                showError('Gagal terhubung ke server Spotify. Pastikan link benar.');
+            }
+        }
+
+        // --- HELPER FUNCTIONS ---
+        function uiLoading(isLoading) {
+            const btn = document.getElementById('searchBtn');
+            const bar = document.getElementById('progressBarContainer');
+            const err = document.getElementById('errorMsg');
+            
+            if (isLoading) {
+                btn.disabled = true;
+                bar.style.display = 'block';
+                err.style.display = 'none';
+                document.getElementById('resultArea').style.display = 'none';
+            } else {
+                btn.disabled = false;
+                bar.style.display = 'none';
+            }
+        }
+
+        function showError(msg) {
+            uiLoading(false);
+            const err = document.getElementById('errorMsg');
+            err.innerText = 'Error: ' + msg;
+            err.style.display = 'block';
+        }
+
+        function updateMeta(author, title, img) {
+            document.getElementById('username').innerText = author;
+            document.getElementById('description').innerText = title;
+            document.getElementById('avatar').src = img || 'https://via.placeholder.com/50';
+        }
+
+        function formatNum(num) {
+            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            return num;
+        }
+
+        // Simple Blob Download for TikTok
+        async function downloadFile(url, filename) {
+            try {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch (e) {
+                window.open(url, '_blank');
             }
         }
 
         // Enter Key Support
         document.getElementById('urlInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') fetchVideo();
+            if (e.key === 'Enter') handleFetch();
         });
-
-        // Blob Download Function (SnapTik-style for iOS)
-        async function downloadFile(url, filename, isVideo = true) {
-            try {
-                const response = await fetch(url, { method: 'GET' });
-                if (!response.ok) throw new Error('Fetch failed');
-                const blob = await response.blob();
-                const blobUrl = URL.createObjectURL(blob);
-
-                if (isVideo && navigator.share && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                    // iOS Share (like SnapTik)
-                    const file = new File([blob], filename, { type: blob.type });
-                    await navigator.share({
-                        files: [file],
-                        title: 'TikTok Video Download',
-                        text: 'Save this watermark-free video!'
-                    });
-                } else {
-                    // Standard Download
-                    const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-
-                URL.revokeObjectURL(blobUrl);
-            } catch (error) {
-                console.error('Download failed:', error);
-                alert('Download gagal. Coba long-press video untuk save manual.');
-            }
-        }
-
-        // Button Listeners
-        document.getElementById('dlVideo').addEventListener('click', () => {
-            if (window.videoUrl) {
-                downloadFile(window.videoUrl, `tiktok_video_${Date.now()}.mp4`, true);
-            }
-        });
-
-        document.getElementById('dlAudio').addEventListener('click', () => {
-            if (window.audioUrl) {
-                downloadFile(window.audioUrl, `tiktok_audio_${Date.now()}.mp3`, false);
-            }
-        });
-
-        // Number Animation
-        function animateNumber(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            let startValue = 0;
-            const duration = 1000;
-            let startTime = null;
-
-            function easeOutQuad(t) { return t * t; }
-
-            function animate(currentTime) {
-                if (!startTime) startTime = currentTime;
-                const progress = Math.min((currentTime - startTime) / duration, 1);
-                const easedProgress = easeOutQuad(progress);
-                const currentValue = Math.floor(startValue + easedProgress * (targetValue - startValue));
-                element.innerText = formatLargeNumber(currentValue);
-
-                if (progress < 1) requestAnimationFrame(animate);
-            }
-            requestAnimationFrame(animate);
-        }
-
-        function formatLargeNumber(num) {
-            if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
-            if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
-            if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
-            return num;
-        }
     </script>
+    
     <script type='text/javascript' src='//pl28100290.effectivegatecpm.com/be/41/56/be4156518224485c21c0b2c49607ddd8.js'></script>
 </body>
 </html>
