@@ -619,57 +619,126 @@
     // --- INSTAGRAM DOWNLOADER ---
     // Ganti ini ke URL API tempat kamu menjalankan instagram-video-downloader
     // Jika kamu menjalankan repo lokal: e.g. "http://localhost:3000/api"
-    const INSTAGRAM_API = 'https://gram-grabberz.vercel.app/api'; // <- sesuaikan
+    // --- INSTAGRAM DOWNLOADER ---
+    // Configure this to your backend URL (no trailing slash). Example: "http://localhost:3000/api" or your deployment URL.
+    // If you get CORS errors in the browser, either enable CORS on the backend or set a CORS proxy below (not recommended for production).
+    let INSTAGRAM_API = 'https://gram-grabberz.vercel.app/api'; // <-- ubah ke backend-mu
+    const CORS_PROXIES = [
+        '', // first try direct
+        // 'https://cors-anywhere.herokuapp.com/', // example proxy (may be rate-limited or require activation)
+    ];
 
     async function runInstagram() {
         const input = document.getElementById('ig-input').value.trim();
         if (!input) return;
         setUI('ig', 'loading');
 
-        try {
-            const resp = await fetch(`${INSTAGRAM_API}?url=${encodeURIComponent(input)}`, { method: 'GET' });
-            if (!resp.ok) throw new Error('API error: ' + resp.status);
-            const json = await resp.json();
-
-            const ok = json.success === true || json.result;
-            if (!ok) throw new Error(json.message || 'Gagal mengambil data Instagram.');
-
-            const res = json.result || json.data || json;
-            const videoUrl = res.video || res.url || res.media || res.play || null;
-            const thumb = res.thumbnail || res.thumb || res.cover || res.image || null;
-            const owner = res.owner_name || res.author || (res.user && res.user.username) || res.author_name || res.owner || 'Instagram';
-            const caption = res.caption || res.title || res.description || '';
-
-            // Update UI
-            document.getElementById('ig-username').innerText = owner.startsWith('@') ? owner : ('@' + owner);
-            document.getElementById('ig-desc').innerText = caption;
-            document.getElementById('ig-avatar').src = thumb || '';
-
-            const mediaBox = document.getElementById('ig-media');
-            if (videoUrl) {
-                mediaBox.innerHTML = `<video controls playsinline src="${videoUrl}" style="width:100%"></video>`;
-            } else if (thumb) {
-                mediaBox.innerHTML = `<img src="${thumb}" alt="thumbnail" style="width:100%; display:block;">`;
-            } else {
-                mediaBox.innerHTML = '';
+        // Helper: fetch with timeout and signal
+        const fetchWithTimeout = async (url, opts = {}, ms = 15000) => {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), ms);
+            try {
+                const res = await fetch(url, { signal: controller.signal, ...opts });
+                clearTimeout(id);
+                return res;
+            } catch (err) {
+                clearTimeout(id);
+                throw err;
             }
+        };
 
-            // Buttons
-            const btns = [];
-            if (videoUrl) {
-                btns.push(`<button onclick="downloadFile('${videoUrl}', 'instagram_video.mp4')" class="btn-download"><span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)</button>`);
+        let lastError = null;
+        // Try direct and optional proxies
+        for (const proxy of CORS_PROXIES) {
+            try {
+                const urlToCall = (proxy || '') + INSTAGRAM_API + '?url=' + encodeURIComponent(input);
+                const resp = await fetchWithTimeout(urlToCall, { method: 'GET' }, 20000);
+
+                // If response status is 0 or opaque, treat as CORS issue
+                if (!resp.ok) {
+                    // If 4xx/5xx, capture and stop trying proxies
+                    lastError = new Error('Server returned ' + resp.status + ' ' + resp.statusText);
+                    // If proxy was used maybe try next, otherwise break
+                    if (proxy) continue; else break;
+                }
+
+                // Try parse JSON
+                let json;
+                try {
+                    json = await resp.json();
+                } catch (e) {
+                    throw new Error('Response bukan JSON — cek endpoint atau CORS.');
+                }
+
+                const ok = json.success === true || json.result || json.data;
+                if (!ok) throw new Error(json.message || 'Tidak ada data (struktur respons tidak dikenal).');
+
+                const res = json.result || json.data || json;
+                const videoUrl = res.video || res.url || res.media || res.play || (res.medias && res.medias[0] && res.medias[0].url) || null;
+                const thumb = res.thumbnail || res.thumb || res.cover || res.image || (res.medias && res.medias[0] && res.medias[0].thumbnail) || null;
+                const owner = res.owner_name || res.author || (res.user && res.user.username) || res.author_name || res.owner || 'Instagram';
+                const caption = (res.caption || res.title || res.description || '').replace(/
+
+{2,}/g, ' ');
+
+// Update UI
+                document.getElementById('ig-username').innerText = owner.startsWith('@') ? owner : ('@' + owner);
+                document.getElementById('ig-desc').innerText = caption || '—';
+                document.getElementById('ig-avatar').src = thumb || '';
+
+                const mediaBox = document.getElementById('ig-media');
+                if (videoUrl) {
+                    mediaBox.innerHTML = `<video controls playsinline src="${videoUrl}" style="width:100%"></video>`;
+                } else if (thumb) {
+                    mediaBox.innerHTML = `<img src="${thumb}" alt="thumbnail" style="width:100%; display:block;">`;
+                } else {
+                    mediaBox.innerHTML = '';
+                }
+
+                // Buttons
+                const btns = [];
+                if (videoUrl) {
+                    btns.push(`<button onclick="downloadFile('${videoUrl}', 'instagram_video.mp4')" class="btn-download"><span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)</button>`);
+                }
+                if (thumb) {
+                    btns.push(`<button onclick="downloadFile('${thumb}', 'instagram_thumbnail.jpg')" class="btn-download btn-secondary"><span class="shine"></span><i class="fas fa-image"></i> DOWNLOAD THUMBNAIL</button>`);
+                }
+                if (btns.length === 0) btns.push(`<button class="btn-download btn-secondary" disabled>Tidak ada file untuk didownload</button>`);
+
+                document.getElementById('ig-dl-btns').innerHTML = btns.join('');
+                setUI('ig', 'success');
+                return; // success -> exit
+
+            } catch (err) {
+                lastError = err;
+                // If it's an AbortError (timeout) or TypeError (often CORS/network), keep trying proxies
+                if (err.name === 'AbortError') {
+                    lastError = new Error('Timeout saat menghubungi API. Coba lagi atau periksa koneksi/back-end.');
+                    // try next proxy (if any)
+                    continue;
+                }
+                if (err instanceof TypeError && !proxy) {
+                    // Usually CORS or network error — try next proxy if configured
+                    continue;
+                }
+                // other errors -> break and show
+                break;
             }
-            if (thumb) {
-                btns.push(`<button onclick="downloadFile('${thumb}', 'instagram_thumbnail.jpg')" class="btn-download btn-secondary"><span class="shine"></span><i class="fas fa-image"></i> DOWNLOAD THUMBNAIL</button>`);
-            }
-            if (btns.length === 0) btns.push(`<button class="btn-download btn-secondary" disabled>Tidak ada file untuk didownload</button>`);
-
-            document.getElementById('ig-dl-btns').innerHTML = btns.join('');
-            setUI('ig', 'success');
-
-        } catch (e) {
-            setUI('ig', 'error', e.message || 'Gagal memproses link.');
         }
+
+        // Jika sampai sini berarti gagal semua percobaan
+        const message = lastError ? lastError.message : 'Gagal mengambil data dari API.';
+        // Jika sangat mungkin CORS, berikan petunjuk
+        const isCors = /Failed to fetch|NetworkError|CORS|cross-origin/i.test(message);
+        if (isCors) {
+            setUI('ig', 'error', 'Gagal terhubung (kemungkinan CORS). Aktifkan CORS di backend atau set proxy.');
+        } else {
+            setUI('ig', 'error', message);
+        }
+
+        // Sebagai fallback: tampilkan tombol untuk membuka API langsung di tab baru agar user bisa melihat respons
+        const fallbackBtn = `<button onclick="window.open('${INSTAGRAM_API}?url=${encodeURIComponent(input)}','_blank')" class="btn-download btn-secondary"><span class="shine"></span><i class="fas fa-external-link-alt"></i> Buka API (cek respons)</button>`;
+        document.getElementById('ig-dl-btns').innerHTML = fallbackBtn;
     }
 
     // Helper YT MP3
