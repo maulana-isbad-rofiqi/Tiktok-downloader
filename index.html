@@ -1,723 +1,724 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Downloader Stacked</title>
+    <title>Universal Downloader Stacked</title><link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --bg-dark: #000000;
+        --accent-cyan: #00eaff;
+        --accent-magenta: #ff0077;
+        --card-bg: rgba(10, 10, 20, 0.75);
+        --text-light: #e8e8e8;
+        --text-muted: #888;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+    body {
+        background: #000000;
+        color: var(--text-light);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        gap: 40px; /* Jarak antar kartu */
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Background Effects */
+    .background-grid, .starfield {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: -2;
+        pointer-events: none;
+    }
+
+    .background-grid {
+        background-image:
+            linear-gradient(to right, rgba(0, 234, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 234, 255, 0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        animation: grid-pan 80s linear infinite;
+    }
+
+    @keyframes grid-pan {
+        from { background-position: 0 0; }
+        to { background-position: -5000px -5000px; }
+    }
+
+    .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 5s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0; transform: scale(0.5); }
+        50% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Card Styles Base */
+    .holographic-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 35px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* TEMA WARNA SPESIFIK PER KARTU */
     
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    /* TikTok (Default) */
+    .card-tiktok {
+        --theme-primary: #00eaff;
+        --theme-secondary: #ff0077;
+        border-top: 1px solid var(--theme-primary);
+        border-bottom: 1px solid var(--theme-secondary);
+    }
+    .card-tiktok .logo-icon { background: linear-gradient(45deg, #00eaff, #ff0077); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .card-tiktok h1 { background: linear-gradient(90deg, #00eaff, #fff, #ff0077); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    <style>
-        :root {
-            --bg-dark: #000000;
-            --accent-cyan: #00eaff;
-            --accent-magenta: #ff0077;
-            --card-bg: rgba(10, 10, 20, 0.75);
-            --text-light: #e8e8e8;
-            --text-muted: #888;
-        }
+    /* Spotify */
+    .card-spotify {
+        --theme-primary: #1DB954;
+        --theme-secondary: #1ed760;
+        border-top: 1px solid #1DB954;
+        border-bottom: 1px solid #1ed760;
+    }
+    .card-spotify .logo-icon { background: linear-gradient(45deg, #1DB954, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .card-spotify h1 { background: linear-gradient(90deg, #1DB954, #fff, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-        body {
-            background: #000000;
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-            gap: 40px; /* Jarak antar kartu */
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Background Effects */
-        .background-grid, .starfield {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        .background-grid {
-            background-image:
-                linear-gradient(to right, rgba(0, 234, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 234, 255, 0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: grid-pan 80s linear infinite;
-        }
-
-        @keyframes grid-pan {
-            from { background-position: 0 0; }
-            to { background-position: -5000px -5000px; }
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 5s infinite ease-in-out;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Card Styles Base */
-        .holographic-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 35px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* TEMA WARNA SPESIFIK PER KARTU */
-        
-        /* TikTok (Cyan/Pink) */
-        .card-tiktok {
-            --theme-primary: #00eaff;
-            --theme-secondary: #ff0077;
-            border-top: 1px solid var(--theme-primary);
-            border-bottom: 1px solid var(--theme-secondary);
-        }
-        .card-tiktok .logo-icon { background: linear-gradient(45deg, #00eaff, #ff0077); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-tiktok h1 { background: linear-gradient(90deg, #00eaff, #fff, #ff0077); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* Instagram (Orange/Purple) - BARU */
-        .card-instagram {
-            --theme-primary: #E1306C;
-            --theme-secondary: #833AB4;
-            border-top: 1px solid #E1306C;
-            border-bottom: 1px solid #833AB4;
-        }
-        .card-instagram .logo-icon { background: linear-gradient(45deg, #F58529, #E1306C, #833AB4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-instagram h1 { background: linear-gradient(90deg, #F58529, #fff, #833AB4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* Spotify (Green) */
-        .card-spotify {
-            --theme-primary: #1DB954;
-            --theme-secondary: #1ed760;
-            border-top: 1px solid #1DB954;
-            border-bottom: 1px solid #1ed760;
-        }
-        .card-spotify .logo-icon { background: linear-gradient(45deg, #1DB954, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-spotify h1 { background: linear-gradient(90deg, #1DB954, #fff, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* YouTube (Red) */
-        .card-youtube {
-            --theme-primary: #FF0000;
-            --theme-secondary: #CC0000;
-            border-top: 1px solid #FF0000;
-            border-bottom: 1px solid #CC0000;
-        }
-        .card-youtube .logo-icon { background: linear-gradient(45deg, #FF0000, #ff4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-youtube h1 { background: linear-gradient(90deg, #FF0000, #fff, #CC0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    /* YouTube */
+    .card-youtube {
+        --theme-primary: #FF0000;
+        --theme-secondary: #CC0000;
+        border-top: 1px solid #FF0000;
+        border-bottom: 1px solid #CC0000;
+    }
+    .card-youtube .logo-icon { background: linear-gradient(45deg, #FF0000, #ff4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .card-youtube h1 { background: linear-gradient(90deg, #FF0000, #fff, #CC0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
 
-        /* Header Elements */
-        .logo-icon {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            display: block;
-            text-align: center;
-        }
+    /* Header Elements */
+    .logo-icon {
+        font-size: 3.5rem;
+        margin-bottom: 10px;
+        display: block;
+        text-align: center;
+    }
 
-        h1 {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.6rem;
-            letter-spacing: 2px;
-            text-align: center;
-            margin-bottom: 5px;
-            line-height: 1.2;
-        }
+    h1 {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 1.6rem; /* Sedikit dikecilkan agar muat di HP */
+        letter-spacing: 2px;
+        text-align: center;
+        margin-bottom: 5px;
+        line-height: 1.2;
+    }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 25px;
-        }
+    .subtitle {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-align: center;
+        margin-bottom: 25px;
+    }
 
-        /* Input Area */
-        .input-group {
-            position: relative;
-            margin-bottom: 25px;
-        }
+    /* Input Area */
+    .input-group {
+        position: relative;
+        margin-bottom: 25px;
+    }
 
-        input {
-            width: 100%;
-            padding: 16px 60px 16px 20px;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
+    input {
+        width: 100%;
+        padding: 16px 60px 16px 20px;
+        background: rgba(0,0,0,0.6);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s;
+    }
 
-        input:focus {
-            border-color: var(--theme-primary);
-            box-shadow: 0 0 15px rgba(255,255,255,0.05);
-        }
+    input:focus {
+        border-color: var(--theme-primary);
+        box-shadow: 0 0 15px rgba(255,255,255,0.05);
+    }
 
-        .search-button {
-            position: absolute;
-            right: 8px; top: 8px; bottom: 8px;
-            width: 48px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
-            color: #000;
-            cursor: pointer;
-            transition: transform 0.3s;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .search-button {
+        position: absolute;
+        right: 8px; top: 8px; bottom: 8px;
+        width: 48px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
+        color: #000;
+        cursor: pointer;
+        transition: transform 0.3s;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .search-button:hover:not(:disabled) { transform: scale(1.05); }
-        .search-button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .search-button:hover:not(:disabled) { transform: scale(1.05); }
+    .search-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Loading Bar */
-        .progress-bar-container {
-            display: none;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
+    /* Loading Bar */
+    .progress-bar-container {
+        display: none;
+        height: 4px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
-            animation: fill 2s linear infinite alternate;
-        }
-        @keyframes fill { 0% { width: 0%; } 100% { width: 100%; } }
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
+        animation: fill 2s linear infinite alternate;
+    }
+    @keyframes fill { 0% { width: 0%; } 100% { width: 100%; } }
 
-        /* Error Message */
-        .error-msg {
-            display: none;
-            color: #ff80a6;
-            background: rgba(255,0,119,0.15);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+    /* Error Message */
+    .error-msg {
+        display: none;
+        color: #ff80a6;
+        background: rgba(255,0,119,0.15);
+        padding: 12px;
+        border-radius: 8px;
+        margin: 15px 0;
+        text-align: center;
+        font-size: 0.9rem;
+    }
 
-        /* Result Area */
-        .result-area {
-            display: none;
-            margin-top: 20px;
-            animation: slideIn 0.5s ease;
-        }
+    /* Result Area */
+    .result-area {
+        display: none;
+        margin-top: 20px;
+        animation: slideIn 0.5s ease;
+    }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .meta-container {
-            background: rgba(0,0,0,0.5);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+    .meta-container {
+        background: rgba(0,0,0,0.5);
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
 
-        .author-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
-            margin-bottom: 10px;
-        }
+    .author-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed rgba(255,255,255,0.1);
+        margin-bottom: 10px;
+    }
 
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid var(--theme-primary);
-            object-fit: cover;
-        }
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid var(--theme-primary);
+        object-fit: cover;
+    }
 
-        .author-name { margin: 0; color: white; font-weight: 600; font-size: 1rem; }
-        .video-desc {
-            margin: 4px 0 0; font-size: 0.85rem; color: #aaa;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
+    .author-name { margin: 0; color: white; font-weight: 600; font-size: 1rem; }
+    .video-desc {
+        margin: 4px 0 0; font-size: 0.85rem; color: #aaa;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 12px;
-        }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+    }
 
-        .stat-item {
-            background: rgba(0,0,0,0.4);
-            padding: 8px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
+    .stat-item {
+        background: rgba(0,0,0,0.4);
+        padding: 8px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 0.8rem;
+    }
 
-        .stat-value { font-weight: 700; color: var(--theme-primary); display: block; margin: 4px 0; }
+    .stat-value { font-weight: 700; color: var(--theme-primary); display: block; margin: 4px 0; }
 
-        /* Media & Buttons */
-        .media-container {
-            border-radius: 12px; overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5); margin-bottom: 20px;
-            background: black; border: 1px solid rgba(255,255,255,0.1); min-height: 50px;
-        }
+    /* Media & Buttons */
+    .media-container {
+        border-radius: 12px; overflow: hidden;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5); margin-bottom: 20px;
+        background: black; border: 1px solid rgba(255,255,255,0.1); min-height: 50px;
+    }
 
-        .download-buttons { display: flex; flex-direction: column; gap: 14px; }
+    .download-buttons { display: flex; flex-direction: column; gap: 14px; }
 
-        .btn-download {
-            position: relative; padding: 16px; border-radius: 12px;
-            font-weight: 700; text-align: center; text-decoration: none;
-            color: #000;
-            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
-            overflow: hidden; transition: all 0.3s; cursor: pointer; border: none;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-download:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15); }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
-        
-        .shine {
-            position: absolute; top: -100%; left: -100%; width: 60%; height: 200%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
-            transform: skew(-20deg); transition: 0.8s;
-        }
-        .btn-download:hover .shine { top: -100%; left: 120%; }
+    .btn-download {
+        position: relative; padding: 16px; border-radius: 12px;
+        font-weight: 700; text-align: center; text-decoration: none;
+        color: #000;
+        background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
+        overflow: hidden; transition: all 0.3s; cursor: pointer; border: none;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-download:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    
+    .shine {
+        position: absolute; top: -100%; left: -100%; width: 60%; height: 200%;
+        background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+        transform: skew(-20deg); transition: 0.8s;
+    }
+    .btn-download:hover .shine { top: -100%; left: 120%; }
 
-        .footer { margin-top: 10px; font-family: 'Share Tech Mono', monospace; color: #666; font-size: 0.85rem; text-align: center; }
-    </style>
+    .footer { margin-top: 10px; font-family: 'Share Tech Mono', monospace; color: #666; font-size: 0.85rem; text-align: center; }
+</style>
+
 </head>
-<body>
+<body><div class="background-grid"></div>
+<div class="starfield" id="starfield"></div>
 
-    <div class="background-grid"></div>
-    <div class="starfield" id="starfield"></div>
+<div class="holographic-card card-tiktok">
+    <i class="fab fa-tiktok logo-icon"></i>
+    <h1>TIKTOK DOWNLOADER</h1>
+    <p class="subtitle">Unduh video tanpa watermark.</p>
 
-    <div class="holographic-card card-tiktok">
-        <i class="fab fa-tiktok logo-icon"></i>
-        <h1>TIKTOK DOWNLOADER</h1>
-        <p class="subtitle">Unduh video tanpa watermark.</p>
+    <div class="input-group">
+        <input type="text" id="tt-input" placeholder="Tempel tautan TikTok..." autocomplete="off">
+        <button class="search-button" id="tt-btn" onclick="runTikTok()">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
 
-        <div class="input-group">
-            <input type="text" id="tt-input" placeholder="Tempel tautan TikTok..." autocomplete="off">
-            <button class="search-button" id="tt-btn" onclick="runTikTok()">
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
+    <div class="progress-bar-container" id="tt-loading"><div class="progress-bar"></div></div>
+    <div class="error-msg" id="tt-error"></div>
 
-        <div class="progress-bar-container" id="tt-loading"><div class="progress-bar"></div></div>
-        <div class="error-msg" id="tt-error"></div>
-
-        <div class="result-area" id="tt-result">
-            <div class="meta-container">
-                <div class="author-box">
-                    <img src="" id="tt-avatar" class="author-avatar" alt="">
-                    <div>
-                        <h3 id="tt-username" class="author-name">@Username</h3>
-                        <p id="tt-desc" class="video-desc">Description...</p>
-                    </div>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-item"><i class="fas fa-eye"></i> <span id="tt-stat1" class="stat-value">0</span></div>
-                    <div class="stat-item"><i class="fas fa-heart"></i> <span id="tt-stat2" class="stat-value">0</span></div>
-                    <div class="stat-item"><i class="fas fa-comment"></i> <span id="tt-stat3" class="stat-value">0</span></div>
+    <div class="result-area" id="tt-result">
+        <div class="meta-container">
+            <div class="author-box">
+                <img src="" id="tt-avatar" class="author-avatar" alt="">
+                <div>
+                    <h3 id="tt-username" class="author-name">@Username</h3>
+                    <p id="tt-desc" class="video-desc">Description...</p>
                 </div>
             </div>
-            <div class="media-container" id="tt-media"></div>
-            <div class="download-buttons" id="tt-dl-btns"></div>
+            <div class="stats-grid">
+                <div class="stat-item"><i class="fas fa-eye"></i> <span id="tt-stat1" class="stat-value">0</span></div>
+                <div class="stat-item"><i class="fas fa-heart"></i> <span id="tt-stat2" class="stat-value">0</span></div>
+                <div class="stat-item"><i class="fas fa-comment"></i> <span id="tt-stat3" class="stat-value">0</span></div>
+            </div>
         </div>
+        <div class="media-container" id="tt-media"></div>
+        <div class="download-buttons" id="tt-dl-btns"></div>
+    </div>
+</div>
+
+<div class="holographic-card card-spotify">
+    <i class="fab fa-spotify logo-icon"></i>
+    <h1>SPOTIFY DOWNLOADER</h1>
+    <p class="subtitle">Play Preview & Unduh MP3.</p>
+
+    <div class="input-group">
+        <input type="text" id="sp-input" placeholder="Tempel link lagu Spotify..." autocomplete="off">
+        <button class="search-button" id="sp-btn" onclick="runSpotify()">
+            <i class="fas fa-arrow-right"></i>
+        </button>
     </div>
 
-    <div class="holographic-card card-instagram">
-        <i class="fab fa-instagram logo-icon"></i>
-        <h1>INSTAGRAM DOWNLOADER</h1>
-        <p class="subtitle">Unduh Reels, Post, & IGTV.</p>
+    <div class="progress-bar-container" id="sp-loading"><div class="progress-bar"></div></div>
+    <div class="error-msg" id="sp-error"></div>
 
-        <div class="input-group">
-            <input type="text" id="ig-input" placeholder="Tempel tautan Instagram..." autocomplete="off">
-            <button class="search-button" id="ig-btn" onclick="runInstagram()">
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
+    <div class="result-area" id="sp-result">
+        <div class="media-container" id="sp-media"></div>
+        <div class="download-buttons" id="sp-dl-btns"></div>
+    </div>
+</div>
 
-        <div class="progress-bar-container" id="ig-loading"><div class="progress-bar"></div></div>
-        <div class="error-msg" id="ig-error"></div>
+<div class="holographic-card card-youtube">
+    <i class="fab fa-youtube logo-icon"></i>
+    <h1>YOUTUBE DOWNLOADER</h1>
+    <p class="subtitle">Unduh Video (MP4) & Musik (MP3).</p>
 
-        <div class="result-area" id="ig-result">
-            <div class="media-container" id="ig-media"></div>
-            <div class="download-buttons" id="ig-dl-btns"></div>
-        </div>
+    <div class="input-group">
+        <input type="text" id="yt-input" placeholder="Tempel tautan YouTube..." autocomplete="off">
+        <button class="search-button" id="yt-btn" onclick="runYouTube()">
+            <i class="fas fa-arrow-right"></i>
+        </button>
     </div>
 
-    <div class="holographic-card card-spotify">
-        <i class="fab fa-spotify logo-icon"></i>
-        <h1>SPOTIFY DOWNLOADER</h1>
-        <p class="subtitle">Play Preview & Unduh MP3.</p>
+    <div class="progress-bar-container" id="yt-loading"><div class="progress-bar"></div></div>
+    <div class="error-msg" id="yt-error"></div>
 
-        <div class="input-group">
-            <input type="text" id="sp-input" placeholder="Tempel link lagu Spotify..." autocomplete="off">
-            <button class="search-button" id="sp-btn" onclick="runSpotify()">
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <div class="progress-bar-container" id="sp-loading"><div class="progress-bar"></div></div>
-        <div class="error-msg" id="sp-error"></div>
-
-        <div class="result-area" id="sp-result">
-            <div class="media-container" id="sp-media"></div>
-            <div class="download-buttons" id="sp-dl-btns"></div>
-        </div>
-    </div>
-
-    <div class="holographic-card card-youtube">
-        <i class="fab fa-youtube logo-icon"></i>
-        <h1>YOUTUBE DOWNLOADER</h1>
-        <p class="subtitle">Unduh Video (MP4) & Musik (MP3).</p>
-
-        <div class="input-group">
-            <input type="text" id="yt-input" placeholder="Tempel tautan YouTube..." autocomplete="off">
-            <button class="search-button" id="yt-btn" onclick="runYouTube()">
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <div class="progress-bar-container" id="yt-loading"><div class="progress-bar"></div></div>
-        <div class="error-msg" id="yt-error"></div>
-
-        <div class="result-area" id="yt-result">
-            <div class="meta-container">
-                <div class="author-box">
-                    <img src="" id="yt-avatar" class="author-avatar" alt="">
-                    <div>
-                        <h3 id="yt-username" class="author-name">Channel Name</h3>
-                        <p id="yt-desc" class="video-desc">Video Title...</p>
-                    </div>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-item"><i class="fas fa-thumbs-up"></i> <span id="yt-stat1" class="stat-value">0</span></div>
-                    <div class="stat-item"><i class="fas fa-comment"></i> <span id="yt-stat2" class="stat-value">0</span></div>
-                    <div class="stat-item"><i class="fas fa-clock"></i> <span id="yt-stat3" class="stat-value">0:00</span></div>
+    <div class="result-area" id="yt-result">
+        <div class="meta-container">
+            <div class="author-box">
+                <img src="" id="yt-avatar" class="author-avatar" alt="">
+                <div>
+                    <h3 id="yt-username" class="author-name">Channel Name</h3>
+                    <p id="yt-desc" class="video-desc">Video Title...</p>
                 </div>
             </div>
-            <div class="media-container" id="yt-media"></div>
-            <div class="download-buttons" id="yt-dl-btns"></div>
+            <div class="stats-grid">
+                <div class="stat-item"><i class="fas fa-thumbs-up"></i> <span id="yt-stat1" class="stat-value">0</span></div>
+                <div class="stat-item"><i class="fas fa-comment"></i> <span id="yt-stat2" class="stat-value">0</span></div>
+                <div class="stat-item"><i class="fas fa-clock"></i> <span id="yt-stat3" class="stat-value">0:00</span></div>
+            </div>
         </div>
+        <div class="media-container" id="yt-media"></div>
+        <div class="download-buttons" id="yt-dl-btns"></div>
+    </div>
+</div>
+
+<!-- INSTAGRAM CARD (DITAMBAHKAN) -->
+<div class="holographic-card card-youtube" id="ig-card">
+    <i class="fab fa-instagram logo-icon" style="background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+    <h1>INSTAGRAM DOWNLOADER</h1>
+    <p class="subtitle">Unduh Reels / Post (MP4) dari Instagram (Publik).</p>
+
+    <div class="input-group">
+        <input type="text" id="ig-input" placeholder="Tempel tautan Instagram (post / reel)..." autocomplete="off">
+        <button class="search-button" id="ig-btn" onclick="runInstagram()">
+            <i class="fas fa-arrow-right"></i>
+        </button>
     </div>
 
-    <div class="footer">
-        © 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】
+    <div class="progress-bar-container" id="ig-loading"><div class="progress-bar"></div></div>
+    <div class="error-msg" id="ig-error"></div>
+
+    <div class="result-area" id="ig-result">
+        <div class="meta-container">
+            <div class="author-box">
+                <img src="" id="ig-avatar" class="author-avatar" alt="">
+                <div>
+                    <h3 id="ig-username" class="author-name">@username</h3>
+                    <p id="ig-desc" class="video-desc">Caption / Title...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="media-container" id="ig-media"></div>
+        <div class="download-buttons" id="ig-dl-btns"></div>
     </div>
+</div>
+<!-- END INSTAGRAM CARD -->
 
-    <script>
-        // --- APIs ---
-        const API_TIKTOK = 'https://www.tikwm.com/api/';
-        const API_SPOTIFY = 'https://api.fabdl.com/spotify/get';
-        const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
-        // API Instagram Publik (Alternatif dari repo backend)
-        const API_INSTAGRAM = 'https://api.kypresso.com/instagram'; 
+<div class="footer">
+    © 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】
+</div>
 
-        // --- ANIMASI BINTANG ---
-        const starfield = document.getElementById('starfield');
-        for (let i = 0; i < 80; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.width = star.style.height = `${Math.random() * 3 + 1}px`;
-            star.style.top = `${Math.random() * 100}%`;
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.animationDelay = `${Math.random() * 5}s`;
-            starfield.appendChild(star);
+<script>
+    // --- APIs ---
+    const API_TIKTOK = 'https://www.tikwm.com/api/';
+    const API_SPOTIFY = 'https://api.fabdl.com/spotify/get';
+    const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
+
+    // --- ANIMASI BINTANG ---
+    const starfield = document.getElementById('starfield');
+    for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = star.style.height = `${Math.random() * 3 + 1}px`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        starfield.appendChild(star);
+    }
+
+    // --- UI HELPER PER CARD ---
+    function setUI(prefix, state, msg = '') {
+        // state: 'loading', 'success', 'error'
+        const btn = document.getElementById(`${prefix}-btn`);
+        const loading = document.getElementById(`${prefix}-loading`);
+        const err = document.getElementById(`${prefix}-error`);
+        const result = document.getElementById(`${prefix}-result`);
+
+        if (state === 'loading') {
+            btn.disabled = true;
+            loading.style.display = 'block';
+            err.style.display = 'none';
+            result.style.display = 'none';
+        } else if (state === 'success') {
+            btn.disabled = false;
+            loading.style.display = 'none';
+            result.style.display = 'block';
+        } else if (state === 'error') {
+            btn.disabled = false;
+            loading.style.display = 'none';
+            err.innerText = '⚠️ ' + msg;
+            err.style.display = 'block';
         }
+    }
 
-        // --- UI HELPER PER CARD ---
-        function setUI(prefix, state, msg = '') {
-            // state: 'loading', 'success', 'error'
-            const btn = document.getElementById(`${prefix}-btn`);
-            const loading = document.getElementById(`${prefix}-loading`);
-            const err = document.getElementById(`${prefix}-error`);
-            const result = document.getElementById(`${prefix}-result`);
+    // --- 1. TIKTOK LOGIC ---
+    async function runTikTok() {
+        const input = document.getElementById('tt-input').value.trim();
+        if (!input) return;
+        
+        setUI('tt', 'loading');
+        
+        try {
+            const response = await fetch(`${API_TIKTOK}?url=${encodeURIComponent(input)}`);
+            const data = await response.json();
 
-            if (state === 'loading') {
-                btn.disabled = true;
-                loading.style.display = 'block';
-                err.style.display = 'none';
-                result.style.display = 'none';
-            } else if (state === 'success') {
-                btn.disabled = false;
-                loading.style.display = 'none';
-                result.style.display = 'block';
-            } else if (state === 'error') {
-                btn.disabled = false;
-                loading.style.display = 'none';
-                err.innerText = '⚠️ ' + msg;
-                err.style.display = 'block';
+            if (data.code === 0 && data.data) {
+                const v = data.data;
+                const domain = "https://www.tikwm.com";
+                const fix = (l) => l && (l.startsWith('http') ? l : domain + l);
+
+                // Update Meta
+                document.getElementById('tt-username').innerText = v.author.nickname;
+                document.getElementById('tt-desc').innerText = v.title;
+                document.getElementById('tt-avatar').src = fix(v.author.avatar);
+                document.getElementById('tt-stat1').innerText = formatNum(v.play_count);
+                document.getElementById('tt-stat2').innerText = formatNum(v.digg_count);
+                document.getElementById('tt-stat3').innerText = formatNum(v.comment_count);
+
+                // Update Media
+                const mediaBox = document.getElementById('tt-media');
+                mediaBox.innerHTML = `<video controls playsinline src="${fix(v.play)}" style="width:100%"></video>`;
+
+                // Buttons
+                const btns = `
+                    <button onclick="downloadFile('${fix(v.play)}', 'tiktok_video.mp4')" class="btn-download">
+                        <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO
+                    </button>
+                    <button onclick="downloadFile('${fix(v.music)}', 'tiktok_audio.mp3')" class="btn-download btn-secondary">
+                        <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO
+                    </button>
+                `;
+                document.getElementById('tt-dl-btns').innerHTML = btns;
+
+                setUI('tt', 'success');
+            } else {
+                throw new Error('Video tidak ditemukan / Private.');
             }
+        } catch (e) {
+            setUI('tt', 'error', e.message);
+        }
+    }
+
+    // --- 2. SPOTIFY LOGIC ---
+    async function runSpotify() {
+        const input = document.getElementById('sp-input').value.trim();
+        if (!input) return;
+        if (!input.includes('spotify')) {
+            setUI('sp', 'error', 'Link Spotify tidak valid.');
+            return;
         }
 
-        // --- 1. TIKTOK LOGIC ---
-        async function runTikTok() {
-            const input = document.getElementById('tt-input').value.trim();
-            if (!input) return;
+        setUI('sp', 'loading');
+
+        try {
+            // Embed Player
+            const trackIdMatch = input.match(/track\/([a-zA-Z0-9]+)/);
+            const trackId = trackIdMatch ? trackIdMatch[1] : null;
             
-            setUI('tt', 'loading');
-            
-            try {
-                const response = await fetch(`${API_TIKTOK}?url=${encodeURIComponent(input)}`);
-                const data = await response.json();
-
-                if (data.code === 0 && data.data) {
-                    const v = data.data;
-                    const domain = "https://www.tikwm.com";
-                    const fix = (l) => l && (l.startsWith('http') ? l : domain + l);
-
-                    // Update Meta
-                    document.getElementById('tt-username').innerText = v.author.nickname;
-                    document.getElementById('tt-desc').innerText = v.title;
-                    document.getElementById('tt-avatar').src = fix(v.author.avatar);
-                    document.getElementById('tt-stat1').innerText = formatNum(v.play_count);
-                    document.getElementById('tt-stat2').innerText = formatNum(v.digg_count);
-                    document.getElementById('tt-stat3').innerText = formatNum(v.comment_count);
-
-                    // Update Media
-                    const mediaBox = document.getElementById('tt-media');
-                    mediaBox.innerHTML = `<video controls playsinline src="${fix(v.play)}" style="width:100%"></video>`;
-
-                    // Buttons
-                    const btns = `
-                        <button onclick="downloadFile('${fix(v.play)}', 'tiktok_video.mp4')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO
-                        </button>
-                        <button onclick="downloadFile('${fix(v.music)}', 'tiktok_audio.mp3')" class="btn-download btn-secondary">
-                            <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO
-                        </button>
-                    `;
-                    document.getElementById('tt-dl-btns').innerHTML = btns;
-
-                    setUI('tt', 'success');
-                } else {
-                    throw new Error('Video tidak ditemukan / Private.');
-                }
-            } catch (e) {
-                setUI('tt', 'error', e.message);
-            }
-        }
-
-        // --- 2. INSTAGRAM LOGIC (BARU) ---
-        async function runInstagram() {
-            const input = document.getElementById('ig-input').value.trim();
-            if (!input) return;
-            if (!input.includes('instagram.com')) {
-                setUI('ig', 'error', 'Link Instagram tidak valid.');
-                return;
+            const mediaBox = document.getElementById('sp-media');
+            if (trackId) {
+                mediaBox.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+            } else {
+                mediaBox.innerHTML = '';
             }
 
-            setUI('ig', 'loading');
+            // API Fetch
+            const response = await fetch(`${API_SPOTIFY}?url=${encodeURIComponent(input)}`);
+            const json = await response.json();
 
-            try {
-                // Menggunakan Public API yang kompatibel dengan browser
-                const apiUrl = `${API_INSTAGRAM}?url=${encodeURIComponent(input)}`;
-                const response = await fetch(apiUrl);
-                const json = await response.json();
-
-                // Menangani berbagai kemungkinan respon API
-                let videoUrl = null;
-                if (json.data) {
-                    // Cek apakah data berbentuk array (slide) atau single object
-                    if (Array.isArray(json.data)) {
-                        videoUrl = json.data[0].url; // Ambil slide pertama
-                    } else {
-                        videoUrl = json.data.url;
-                    }
-                } else if (json.url) {
-                    videoUrl = json.url;
-                }
-
-                if (videoUrl) {
-                    // Update Media Preview
-                    const mediaBox = document.getElementById('ig-media');
-                    mediaBox.innerHTML = `<video controls playsinline src="${videoUrl}" style="width:100%"></video>`;
-
-                    // Buttons
-                    const btns = `
-                        <button onclick="downloadFile('${videoUrl}', 'instagram_video.mp4')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD MEDIA
-                        </button>
-                    `;
-                    document.getElementById('ig-dl-btns').innerHTML = btns;
-                    setUI('ig', 'success');
-                } else {
-                    throw new Error('Gagal mengambil media. Akun mungkin Private.');
-                }
-            } catch (e) {
-                setUI('ig', 'error', 'Gagal. Pastikan akun publik / API sibuk.');
-                console.error(e);
-            }
-        }
-
-        // --- 3. SPOTIFY LOGIC ---
-        async function runSpotify() {
-            const input = document.getElementById('sp-input').value.trim();
-            if (!input) return;
-            if (!input.includes('spotify')) {
-                setUI('sp', 'error', 'Link Spotify tidak valid.');
-                return;
-            }
-
-            setUI('sp', 'loading');
-
-            try {
-                // Embed Player
-                const trackIdMatch = input.match(/track\/([a-zA-Z0-9]+)/);
-                const trackId = trackIdMatch ? trackIdMatch[1] : null;
+            if (json.result) {
+                const data = json.result;
+                const downloadUrl = `https://api.fabdl.com/spotify/download-mp3/${data.gid}/${data.id}`;
                 
-                const mediaBox = document.getElementById('sp-media');
-                if (trackId) {
-                    mediaBox.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
-                } else {
-                    mediaBox.innerHTML = '';
-                }
-
-                // API Fetch
-                const response = await fetch(`${API_SPOTIFY}?url=${encodeURIComponent(input)}`);
-                const json = await response.json();
-
-                if (json.result) {
-                    const data = json.result;
-                    const downloadUrl = `https://api.fabdl.com/spotify/download-mp3/${data.gid}/${data.id}`;
-                    
-                    const btns = `
-                        <button onclick="window.open('${downloadUrl}', '_blank')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD MP3
-                        </button>
-                    `;
-                    document.getElementById('sp-dl-btns').innerHTML = btns;
-                    setUI('sp', 'success');
-                } else {
-                    throw new Error('Gagal mengambil link download.');
-                }
-            } catch (e) {
-                setUI('sp', 'error', 'Gagal memproses. Pastikan link benar.');
+                const btns = `
+                    <button onclick="window.open('${downloadUrl}', '_blank')" class="btn-download">
+                        <span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD MP3
+                    </button>
+                `;
+                document.getElementById('sp-dl-btns').innerHTML = btns;
+                setUI('sp', 'success');
+            } else {
+                throw new Error('Gagal mengambil link download.');
             }
+        } catch (e) {
+            setUI('sp', 'error', 'Gagal memproses. Pastikan link benar.');
         }
+    }
 
-        // --- 4. YOUTUBE LOGIC ---
-        async function runYouTube() {
-            const input = document.getElementById('yt-input').value.trim();
-            if (!input) return;
+    // --- 3. YOUTUBE LOGIC ---
+    async function runYouTube() {
+        const input = document.getElementById('yt-input').value.trim();
+        if (!input) return;
 
-            setUI('yt', 'loading');
+        setUI('yt', 'loading');
 
-            try {
-                const params = new URLSearchParams({ url: input, format: '360' });
-                const response = await fetch(API_YOUTUBE + '?' + params);
-                const json = await response.json();
+        try {
+            const params = new URLSearchParams({ url: input, format: '360' });
+            const response = await fetch(API_YOUTUBE + '?' + params);
+            const json = await response.json();
 
-                if (json.result) {
-                    const yt = json.result;
-                    const meta = yt.metadata || {};
+            if (json.result) {
+                const yt = json.result;
+                const meta = yt.metadata || {};
 
-                    // Meta
-                    document.getElementById('yt-username').innerText = yt.author.channelTitle || 'YouTube';
-                    document.getElementById('yt-desc').innerText = yt.title;
-                    document.getElementById('yt-avatar').src = yt.thumbnail;
-                    document.getElementById('yt-stat1').innerText = formatNum(meta.like || 0);
-                    document.getElementById('yt-stat2').innerText = formatNum(meta.comment || 0);
-                    document.getElementById('yt-stat3').innerText = meta.duration || '-';
+                // Meta
+                document.getElementById('yt-username').innerText = yt.author.channelTitle || 'YouTube';
+                document.getElementById('yt-desc').innerText = yt.title;
+                document.getElementById('yt-avatar').src = yt.thumbnail;
+                document.getElementById('yt-stat1').innerText = formatNum(meta.like || 0);
+                document.getElementById('yt-stat2').innerText = formatNum(meta.comment || 0);
+                document.getElementById('yt-stat3').innerText = meta.duration || '-';
 
-                    // Media
-                    const mediaBox = document.getElementById('yt-media');
-                    mediaBox.innerHTML = `<video controls playsinline src="${yt.download}" style="width:100%"></video>`;
+                // Media
+                const mediaBox = document.getElementById('yt-media');
+                mediaBox.innerHTML = `<video controls playsinline src="${yt.download}" style="width:100%"></video>`;
 
-                    // Buttons
-                    const originalUrl = input;
-                    const downloadVideoUrl = yt.download;
+                // Buttons
+                const originalUrl = input;
+                const downloadVideoUrl = yt.download;
 
-                    const btns = `
-                        <button onclick="downloadFile('${downloadVideoUrl}', 'video.mp4')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)
-                        </button>
-                        <button onclick="fetchYoutubeAudio('${originalUrl}', this)" class="btn-download btn-secondary">
-                            <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO (MP3)
-                        </button>
-                    `;
-                    document.getElementById('yt-dl-btns').innerHTML = btns;
-                    setUI('yt', 'success');
-                } else {
-                    throw new Error('Gagal mengambil data YouTube.');
-                }
-            } catch (e) {
-                setUI('yt', 'error', 'Server sibuk / Link Private.');
+                const btns = `
+                    <button onclick="downloadFile('${downloadVideoUrl}', 'video.mp4')" class="btn-download">
+                        <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)
+                    </button>
+                    <button onclick="fetchYoutubeAudio('${originalUrl}', this)" class="btn-download btn-secondary">
+                        <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO (MP3)
+                    </button>
+                `;
+                document.getElementById('yt-dl-btns').innerHTML = btns;
+                setUI('yt', 'success');
+            } else {
+                throw new Error('Gagal mengambil data YouTube.');
             }
+        } catch (e) {
+            setUI('yt', 'error', 'Server sibuk / Link Private.');
         }
+    }
 
-        // Helper YT MP3
-        async function fetchYoutubeAudio(urlInput, btnElement) {
-            const originalText = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES MP3...';
-            btnElement.disabled = true;
-            try {
-                const params = new URLSearchParams({ url: urlInput, format: 'mp3' });
-                const response = await fetch(API_YOUTUBE + '?' + params);
-                const json = await response.json();
-                if (json.result && json.result.download) {
-                    window.open(json.result.download, '_blank');
-                } else {
-                    alert('Gagal mengambil link MP3.');
-                }
-            } catch (e) {
-                alert('Error.');
-            } finally {
-                btnElement.innerHTML = originalText;
-                btnElement.disabled = false;
+    // --- INSTAGRAM DOWNLOADER ---
+    // Ganti ini ke URL API tempat kamu menjalankan instagram-video-downloader
+    // Jika kamu menjalankan repo lokal: e.g. "http://localhost:3000/api"
+    const INSTAGRAM_API = 'https://gram-grabberz.vercel.app/api'; // <- sesuaikan
+
+    async function runInstagram() {
+        const input = document.getElementById('ig-input').value.trim();
+        if (!input) return;
+        setUI('ig', 'loading');
+
+        try {
+            const resp = await fetch(`${INSTAGRAM_API}?url=${encodeURIComponent(input)}`, { method: 'GET' });
+            if (!resp.ok) throw new Error('API error: ' + resp.status);
+            const json = await resp.json();
+
+            const ok = json.success === true || json.result;
+            if (!ok) throw new Error(json.message || 'Gagal mengambil data Instagram.');
+
+            const res = json.result || json.data || json;
+            const videoUrl = res.video || res.url || res.media || res.play || null;
+            const thumb = res.thumbnail || res.thumb || res.cover || res.image || null;
+            const owner = res.owner_name || res.author || (res.user && res.user.username) || res.author_name || res.owner || 'Instagram';
+            const caption = res.caption || res.title || res.description || '';
+
+            // Update UI
+            document.getElementById('ig-username').innerText = owner.startsWith('@') ? owner : ('@' + owner);
+            document.getElementById('ig-desc').innerText = caption;
+            document.getElementById('ig-avatar').src = thumb || '';
+
+            const mediaBox = document.getElementById('ig-media');
+            if (videoUrl) {
+                mediaBox.innerHTML = `<video controls playsinline src="${videoUrl}" style="width:100%"></video>`;
+            } else if (thumb) {
+                mediaBox.innerHTML = `<img src="${thumb}" alt="thumbnail" style="width:100%; display:block;">`;
+            } else {
+                mediaBox.innerHTML = '';
             }
-        }
 
-        // --- COMMON HELPERS ---
-        function formatNum(num) {
-            if (!num) return '0';
-            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-            if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-            return num;
-        }
-
-        async function downloadFile(url, filename) {
-            try {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } catch (e) {
-                window.open(url, '_blank');
+            // Buttons
+            const btns = [];
+            if (videoUrl) {
+                btns.push(`<button onclick="downloadFile('${videoUrl}', 'instagram_video.mp4')" class="btn-download"><span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)</button>`);
             }
+            if (thumb) {
+                btns.push(`<button onclick="downloadFile('${thumb}', 'instagram_thumbnail.jpg')" class="btn-download btn-secondary"><span class="shine"></span><i class="fas fa-image"></i> DOWNLOAD THUMBNAIL</button>`);
+            }
+            if (btns.length === 0) btns.push(`<button class="btn-download btn-secondary" disabled>Tidak ada file untuk didownload</button>`);
+
+            document.getElementById('ig-dl-btns').innerHTML = btns.join('');
+            setUI('ig', 'success');
+
+        } catch (e) {
+            setUI('ig', 'error', e.message || 'Gagal memproses link.');
         }
-    </script>
-    
-    <script type='text/javascript' src='//pl28100290.effectivegatecpm.com/be/41/56/be4156518224485c21c0b2c49607ddd8.js'></script>
+    }
+
+    // Helper YT MP3
+    async function fetchYoutubeAudio(urlInput, btnElement) {
+        const originalText = btnElement.innerHTML;
+        btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES MP3...';
+        btnElement.disabled = true;
+        try {
+            const params = new URLSearchParams({ url: urlInput, format: 'mp3' });
+            const response = await fetch(API_YOUTUBE + '?' + params);
+            const json = await response.json();
+            if (json.result && json.result.download) {
+                window.open(json.result.download, '_blank');
+            } else {
+                alert('Gagal mengambil link MP3.');
+            }
+        } catch (e) {
+            alert('Error.');
+        } finally {
+            btnElement.innerHTML = originalText;
+            btnElement.disabled = false;
+        }
+    }
+
+    // --- COMMON HELPERS ---
+    function formatNum(num) {
+        if (!num) return '0';
+        if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+        if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+        return num;
+    }
+
+    async function downloadFile(url, filename) {
+        try {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (e) {
+            window.open(url, '_blank');
+        }
+    }
+</script>
+
+<script type='text/javascript' src='//pl28100290.effectivegatecpm.com/be/41/56/be4156518224485c21c0b2c49607ddd8.js'></script>
+
 </body>
 </html>
