@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Downloader v2.1 (Fixed)</title>
+    <title>Universal Downloader Premium</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,6 +15,7 @@
             --theme-secondary: #ff0077;
             --card-bg: rgba(16, 16, 24, 0.9);
             --text-light: #e8e8e8;
+            --text-muted: #888;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -30,7 +31,7 @@
             transition: all 0.5s;
         }
 
-        /* Background Grid */
+        /* Background */
         .background-grid {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none;
             background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
@@ -43,381 +44,363 @@
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-top: 2px solid var(--theme-primary);
+            border-bottom: 2px solid var(--theme-secondary);
             border-radius: 20px;
             padding: 30px;
             width: 100%;
             max-width: 480px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            margin-bottom: 50px;
+            transition: border-color 0.5s;
         }
-
-        /* Header */
-        .header-content { text-align: center; margin-bottom: 20px; }
-        .logo-icon {
-            font-size: 3rem; margin-bottom: 10px; display: block;
-            color: var(--theme-primary);
-            text-shadow: 0 0 20px var(--theme-primary);
-        }
-        h1 { font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; font-size: 1.8rem; }
-        .subtitle { color: #888; font-size: 0.85rem; margin-top: 5px; }
 
         /* Tabs */
         .tab-container {
             display: flex; background: rgba(255,255,255,0.05);
-            border-radius: 10px; padding: 5px; margin-bottom: 20px;
+            border-radius: 12px; padding: 5px; margin-bottom: 25px;
         }
         .tab-btn {
-            flex: 1; padding: 10px; border: none; background: transparent;
+            flex: 1; padding: 12px; border: none; background: transparent;
             color: #666; cursor: pointer; border-radius: 8px; font-weight: 600;
-            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .tab-btn.active {
             background: rgba(255,255,255,0.1); color: white;
-            text-shadow: 0 0 5px var(--theme-primary);
+            text-shadow: 0 0 10px var(--theme-primary);
         }
 
+        /* Header */
+        .logo-icon {
+            font-size: 3.5rem; margin-bottom: 10px; display: block;
+            background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Share Tech Mono', monospace; font-size: 1.8rem;
+            text-align: center; letter-spacing: 2px;
+        }
+        .subtitle { color: #888; font-size: 0.9rem; margin-top: 5px; text-align: center; margin-bottom: 25px; }
+
         /* Input */
-        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group { position: relative; margin-bottom: 25px; }
         input {
-            width: 100%; padding: 15px 60px 15px 15px;
+            width: 100%; padding: 16px 60px 16px 20px;
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px; color: white; outline: none;
+            border-radius: 12px; color: white; outline: none;
         }
         input:focus { border-color: var(--theme-primary); }
         .search-button {
-            position: absolute; right: 5px; top: 5px; bottom: 5px; width: 50px;
-            background: var(--theme-primary); border: none; border-radius: 8px;
+            position: absolute; right: 8px; top: 8px; bottom: 8px; width: 48px;
+            background: var(--theme-primary); border: none; border-radius: 10px;
             cursor: pointer; font-weight: bold;
         }
+        .search-button:disabled { opacity: 0.5; }
 
-        /* Result Styles */
-        #resultArea { display: none; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- LAYOUT HASIL --- */
+        #resultArea { display: none; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Image Handling */
-        .yt-cover {
-            width: 100%; height: 200px; object-fit: cover;
-            border-radius: 10px; margin-bottom: 15px; display: none;
-            border: 1px solid rgba(255,255,255,0.2);
+        /* Thumbnail Besar (YouTube Style) */
+        .video-cover-large {
+            width: 100%; aspect-ratio: 16/9; object-fit: cover;
+            border-radius: 12px; margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none; /* Hidden by default */
         }
-        .author-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .avatar-circle {
-            width: 45px; height: 45px; border-radius: 50%;
+
+        /* Meta Info */
+        .meta-box {
+            background: rgba(255,255,255,0.05); padding: 15px;
+            border-radius: 12px; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .author-avatar {
+            width: 50px; height: 50px; border-radius: 50%;
             border: 2px solid var(--theme-primary); object-fit: cover;
         }
+        .meta-text h3 { font-size: 1rem; color: white; margin-bottom: 4px; }
+        .meta-text p { font-size: 0.85rem; color: #aaa; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 
         /* Stats */
         .stats-grid {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
-            background: rgba(255,255,255,0.05); padding: 10px;
-            border-radius: 8px; margin-bottom: 15px; text-align: center;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;
+        }
+        .stat-item {
+            background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px;
+            text-align: center; font-size: 0.8rem; color: #ccc;
         }
         .stat-item i { color: var(--theme-primary); margin-right: 5px; }
-        .stat-item span { font-size: 0.8rem; font-weight: bold; }
 
-        /* Player */
-        .media-box {
-            width: 100%; background: black; border-radius: 10px; overflow: hidden;
+        /* Media Player */
+        .media-container {
+            width: 100%; background: black; border-radius: 12px; overflow: hidden;
             margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);
-            display: flex; justify-content: center; align-items: center;
+            display: flex; justify-content: center;
         }
+        video { width: 100%; display: block; }
 
-        /* Tombol Download */
+        /* Buttons */
         .btn-dl {
-            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            width: 100%; padding: 15px; border-radius: 10px; border: none;
             font-weight: 700; margin-bottom: 10px; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: transform 0.2s; text-decoration: none;
+            font-size: 0.9rem; transition: 0.2s;
         }
-        .btn-dl:active { transform: scale(0.95); }
-        .btn-primary { background: var(--theme-primary); color: black; }
-        .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-dl:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--theme-primary); color: #000; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
 
-        /* Themes */
-        body.tiktok-mode { --theme-primary: #00eaff; }
-        body.youtube-mode { --theme-primary: #ff0000; }
-        body.spotify-mode { --theme-primary: #1DB954; }
-
-        .footer { margin-top: 20px; color: #555; font-size: 0.8rem; text-align: center; font-family: monospace; }
+        /* Dynamic Themes */
+        body.youtube-mode { --theme-primary: #ff0000; --theme-secondary: #cc0000; }
+        body.spotify-mode { --theme-primary: #1DB954; --theme-secondary: #1ed760; }
+        
+        /* Helper Classes */
+        .hide { display: none !important; }
+        .show { display: block !important; }
+        
+        .footer { margin-top: 30px; color: #555; font-size: 0.8rem; text-align: center; font-family: monospace; }
     </style>
 </head>
-<body class="tiktok-mode">
+<body>
 
     <div class="background-grid"></div>
 
     <div class="holographic-card">
         <div class="tab-container">
-            <button class="tab-btn active" onclick="changeTab('tiktok')" id="tab-tiktok">
-                <i class="fab fa-tiktok"></i> TikTok
-            </button>
-            <button class="tab-btn" onclick="changeTab('spotify')" id="tab-spotify">
-                <i class="fab fa-spotify"></i> Spotify
-            </button>
-            <button class="tab-btn" onclick="changeTab('youtube')" id="tab-youtube">
-                <i class="fab fa-youtube"></i> YouTube
-            </button>
+            <button class="tab-btn active" onclick="switchMode('tiktok')" id="tabTikTok"><i class="fab fa-tiktok"></i> TikTok</button>
+            <button class="tab-btn" onclick="switchMode('spotify')" id="tabSpotify"><i class="fab fa-spotify"></i> Spotify</button>
+            <button class="tab-btn" onclick="switchMode('youtube')" id="tabYouTube"><i class="fab fa-youtube"></i> YouTube</button>
         </div>
 
-        <div class="header-content">
-            <i class="fab fa-tiktok logo-icon" id="headerIcon"></i>
-            <h1 id="headerTitle">TIKTOK DL</h1>
-            <p class="subtitle" id="headerDesc">Tanpa Watermark</p>
+        <div style="text-align: center;">
+            <i class="fab fa-tiktok logo-icon" id="mainIcon"></i>
+            <h1 id="mainTitle">TIKTOK DL</h1>
+            <p class="subtitle" id="mainSubtitle">Unduh video tanpa watermark.</p>
         </div>
 
         <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Tempel tautan di sini..." autocomplete="off">
-            <button class="search-button" onclick="startSearch()">
+            <input type="text" id="urlInput" placeholder="Tempel tautan TikTok di sini..." autocomplete="off">
+            <button class="search-button" id="searchBtn" onclick="handleFetch()">
                 <i class="fas fa-arrow-right"></i>
             </button>
         </div>
 
-        <div id="loading" style="display:none; text-align:center; margin:20px;">
-            <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--theme-primary)"></i>
-        </div>
-        <div id="errorMsg" style="display:none; color:#ff5555; text-align:center; margin:10px;"></div>
+        <div id="errorMsg" style="display:none; color:#ff5555; text-align:center; margin-bottom:15px;"></div>
+        <div id="loading" style="display:none; text-align:center; margin-bottom:20px;"><i class="fas fa-spinner fa-spin fa-2x" style="color:var(--theme-primary)"></i></div>
 
         <div id="resultArea">
             
-            <img src="" id="bigThumb" class="yt-cover">
+            <img src="" id="bigThumb" class="video-cover-large">
 
-            <div class="author-box">
-                <img src="" id="smallAvatar" class="avatar-circle">
-                <div>
-                    <h3 id="resTitle" style="font-size:0.95rem; line-height:1.2; margin-bottom:3px;">Title</h3>
-                    <p id="resAuthor" style="font-size:0.8rem; color:#aaa;">Author</p>
+            <div class="meta-box">
+                <img src="" id="avatar" class="author-avatar">
+                <div class="meta-text">
+                    <h3 id="resTitle">Title</h3>
+                    <p id="resAuthor">Author</p>
                 </div>
             </div>
-
-            <div class="stats-grid" id="statsBox">
+            
+            <div class="stats-grid" id="statsArea">
                 <div class="stat-item"><i class="fas fa-eye"></i> <span id="s1">0</span></div>
                 <div class="stat-item"><i class="fas fa-heart"></i> <span id="s2">0</span></div>
                 <div class="stat-item"><i class="fas fa-comment"></i> <span id="s3">0</span></div>
             </div>
 
-            <div class="media-box" id="mediaBox"></div>
+            <div class="media-container" id="mediaContainer"></div>
 
-            <div id="btnBox"></div>
+            <div id="btnContainer"></div>
         </div>
     </div>
 
-    <div class="footer">CODED BY ITSBAD STORE</div>
+    <div class="footer">© 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】</div>
 
     <script>
         // --- CONFIG ---
-        let mode = 'tiktok';
+        let currentMode = 'tiktok';
         const API_TIKTOK = 'https://www.tikwm.com/api/';
-        const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
         const API_SPOTIFY = 'https://api.fabdl.com/spotify/get';
+        const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
 
-        // --- FUNGSI TAB ---
-        function changeTab(newMode) {
-            mode = newMode;
+        // --- MODE SWITCHER ---
+        function switchMode(mode) {
+            currentMode = mode;
             document.body.className = mode + '-mode';
             
-            // Reset Active Class
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + mode).classList.add('active');
-
-            // Reset UI Content
+            // Reset UI
             document.getElementById('resultArea').style.display = 'none';
             document.getElementById('errorMsg').style.display = 'none';
             document.getElementById('urlInput').value = '';
+            
+            // Tabs Active State
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
-            // Update Teks Header
-            const icon = document.getElementById('headerIcon');
-            const title = document.getElementById('headerTitle');
-            const desc = document.getElementById('headerDesc');
+            // Update Header
+            const icon = document.getElementById('mainIcon');
+            const title = document.getElementById('mainTitle');
+            const sub = document.getElementById('mainSubtitle');
+            const input = document.getElementById('urlInput');
 
             if(mode === 'tiktok') {
+                document.getElementById('tabTikTok').classList.add('active');
                 icon.className = 'fab fa-tiktok logo-icon';
                 title.innerText = 'TIKTOK DL';
-                desc.innerText = 'Video Tanpa Watermark';
-            } else if (mode === 'youtube') {
+                sub.innerText = 'No Watermark Video.';
+                input.placeholder = 'Link TikTok...';
+            } else if(mode === 'youtube') {
+                document.getElementById('tabYouTube').classList.add('active');
                 icon.className = 'fab fa-youtube logo-icon';
                 title.innerText = 'YOUTUBE DL';
-                desc.innerText = 'Video (MP4) & Musik (MP3)';
+                sub.innerText = 'Video (MP4) & Audio (MP3).';
+                input.placeholder = 'Link YouTube...';
             } else {
+                document.getElementById('tabSpotify').classList.add('active');
                 icon.className = 'fab fa-spotify logo-icon';
                 title.innerText = 'SPOTIFY DL';
-                desc.innerText = 'Download Lagu MP3';
+                sub.innerText = 'Download Music MP3.';
+                input.placeholder = 'Link Spotify...';
             }
         }
 
-        // --- LOGIKA UTAMA ---
-        async function startSearch() {
+        // --- MAIN HANDLER ---
+        async function handleFetch() {
             const url = document.getElementById('urlInput').value;
             if(!url) return;
 
             uiLoading(true);
 
             try {
-                if(mode === 'tiktok') await logicTikTok(url);
-                else if(mode === 'youtube') await logicYouTube(url);
-                else await logicSpotify(url);
+                if (currentMode === 'tiktok') await fetchTikTok(url);
+                else if (currentMode === 'youtube') await fetchYouTube(url);
+                else await fetchSpotify(url);
             } catch (e) {
-                uiError(e.message || 'Terjadi kesalahan.');
+                showError(e.message);
             }
         }
 
-        // 1. TIKTOK
-        async function logicTikTok(url) {
+        // --- TIKTOK LOGIC ---
+        async function fetchTikTok(url) {
             const res = await fetch(`${API_TIKTOK}?url=${encodeURIComponent(url)}`);
             const data = await res.json();
             if(data.code !== 0) throw new Error('Video tidak ditemukan.');
-            
+
             const v = data.data;
-            
-            // Tampilan
-            showMeta(v.title, v.author.nickname, v.author.avatar, false); // false = jangan tampilkan thumb besar
-            showStats(v.play_count, v.digg_count, v.comment_count, 'tiktok');
+            const fix = (l) => l && l.startsWith('http') ? l : 'https://www.tikwm.com' + l;
 
-            // Player Vertical
-            document.getElementById('mediaBox').innerHTML = `
-                <video controls playsinline src="${v.play}" style="width:100%; max-height:400px;"></video>
+            // UI Setup TikTok
+            toggleLayout('tiktok'); 
+            updateMeta(v.title, v.author.nickname, fix(v.author.avatar));
+            updateStats(v.play_count, v.digg_count, v.comment_count, 'tiktok');
+
+            document.getElementById('mediaContainer').innerHTML = `
+                <video controls playsinline src="${fix(v.play)}" style="width:100%; max-height:450px;"></video>
             `;
 
-            // Tombol - MENGGUNAKAN STRING HTML AGAR PASTI BISA DI KLIK
-            document.getElementById('btnBox').innerHTML = `
-                <button onclick="openLink('${v.play}')" class="btn-dl btn-primary">
-                    <i class="fas fa-video"></i> DOWNLOAD VIDEO
-                </button>
-                <button onclick="openLink('${v.music}')" class="btn-dl btn-secondary">
-                    <i class="fas fa-music"></i> DOWNLOAD AUDIO
-                </button>
+            document.getElementById('btnContainer').innerHTML = `
+                <button onclick="openLink('${fix(v.play)}')" class="btn-dl btn-primary"><i class="fas fa-video"></i> DOWNLOAD VIDEO</button>
+                <button onclick="openLink('${fix(v.music)}')" class="btn-dl btn-secondary"><i class="fas fa-music"></i> DOWNLOAD AUDIO</button>
             `;
-            
+
             uiLoading(false);
         }
 
-        // 2. YOUTUBE (RAPI & FIX CLICK)
-        async function logicYouTube(url) {
+        // --- YOUTUBE LOGIC (RAPI) ---
+        async function fetchYouTube(url) {
             if(!url.includes('youtu')) throw new Error('Link YouTube tidak valid.');
 
-            // Fetch 360p (Default)
             const res = await fetch(`${API_YOUTUBE}?url=${url}&format=360`);
             const json = await res.json();
-            if(!json.result) throw new Error('Gagal mengambil data.');
+            if(!json.result) throw new Error('Gagal fetch data.');
 
             const yt = json.result;
             
-            // Tampilan
-            showMeta(yt.title, yt.author.channelTitle, yt.thumbnail, true); // true = thumb besar aktif
-            showStats(yt.metadata.view, yt.metadata.like, yt.metadata.duration, 'youtube');
+            // UI Setup YouTube (Big Thumbnail)
+            toggleLayout('youtube');
+            document.getElementById('bigThumb').src = yt.thumbnail;
+            
+            updateMeta(yt.title, yt.author.channelTitle, yt.thumbnail); // Avatar kecil di hide lewat CSS/Layout func
+            updateStats(yt.metadata.view, yt.metadata.like, yt.metadata.duration, 'youtube');
 
-            // Player Landscape (16:9)
-            document.getElementById('mediaBox').innerHTML = `
+            document.getElementById('mediaContainer').innerHTML = `
                 <video controls playsinline poster="${yt.thumbnail}" src="${yt.download}" style="width:100%; aspect-ratio:16/9;"></video>
             `;
 
-            // Tombol - LOGIKA MP3 TERPISAH
-            // Kita simpan URL asli di atribut onclick agar fungsi getMp3 bisa membacanya
             const safeUrl = url.replace(/'/g, "\\'"); 
-            
-            document.getElementById('btnBox').innerHTML = `
-                <button onclick="openLink('${yt.download}')" class="btn-dl btn-primary">
-                    <i class="fas fa-video"></i> DOWNLOAD MP4 (360p)
-                </button>
-                <button onclick="getYouTubeMp3('${safeUrl}', this)" class="btn-dl btn-secondary">
-                    <i class="fas fa-music"></i> DOWNLOAD MP3 (Audio)
-                </button>
+            document.getElementById('btnContainer').innerHTML = `
+                <button onclick="openLink('${yt.download}')" class="btn-dl btn-primary"><i class="fas fa-video"></i> DOWNLOAD MP4 (360p)</button>
+                <button onclick="fetchYoutubeAudio('${safeUrl}', this)" class="btn-dl btn-secondary"><i class="fas fa-music"></i> DOWNLOAD MP3</button>
             `;
 
             uiLoading(false);
         }
 
-        // 3. SPOTIFY
-        async function logicSpotify(url) {
-            // Embed
+        // --- SPOTIFY LOGIC ---
+        async function fetchSpotify(url) {
             const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
-            const trackId = trackIdMatch ? trackIdMatch[1] : '';
+            if(!trackIdMatch) throw new Error('Link Spotify salah.');
+
+            toggleLayout('spotify');
+            updateMeta('Spotify Music', 'Preview', 'https://via.placeholder.com/50');
             
-            if(!trackId) throw new Error('Link Spotify salah.');
-
-            showMeta('Spotify Music', 'Preview', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/168px-Spotify_logo_without_text.svg.png', false);
-            document.getElementById('statsBox').style.display = 'none';
-
-            // Iframe
-            document.getElementById('mediaBox').innerHTML = `
-                 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            document.getElementById('mediaContainer').innerHTML = `
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/$${trackIdMatch[1]}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
             `;
 
-            // Fetch Download
+            // Fetch Download Button
             const res = await fetch(`${API_SPOTIFY}?url=${encodeURIComponent(url)}`);
             const json = await res.json();
-
+            
             if(json.result) {
                 const dlLink = `https://api.fabdl.com/spotify/download-mp3/${json.result.gid}/${json.result.id}`;
-                document.getElementById('btnBox').innerHTML = `
-                    <button onclick="openLink('${dlLink}')" class="btn-dl btn-primary">
-                        <i class="fas fa-download"></i> DOWNLOAD MP3
-                    </button>
+                document.getElementById('btnContainer').innerHTML = `
+                    <button onclick="openLink('${dlLink}')" class="btn-dl btn-primary"><i class="fas fa-download"></i> DOWNLOAD MP3</button>
                 `;
             } else {
-                document.getElementById('btnBox').innerHTML = '<p style="text-align:center; font-size:0.8rem">Gagal mendapatkan link download.</p>';
+                document.getElementById('btnContainer').innerHTML = '<p style="text-align:center; color:#888;">Gagal generate link download.</p>';
             }
-            
+
             uiLoading(false);
         }
 
-        // --- HELPER FUNCTIONS (DITARUH GLOBAL BIAR BISA DIKLIK) ---
-        
-        function openLink(url) {
-            window.open(url, '_blank');
-        }
+        // --- HELPERS (Global Functions) ---
 
-        async function getYouTubeMp3(originalUrl, btnElement) {
-            const oldText = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SEDANG CONVERT...';
-            btnElement.disabled = true;
+        function toggleLayout(type) {
+            const bigThumb = document.getElementById('bigThumb');
+            const avatar = document.getElementById('avatar');
+            const stats = document.getElementById('statsArea');
 
-            try {
-                const res = await fetch(`${API_YOUTUBE}?url=${originalUrl}&format=mp3`);
-                const json = await res.json();
-                if(json.result && json.result.download) {
-                    window.open(json.result.download, '_blank');
-                } else {
-                    alert('Gagal convert ke MP3');
-                }
-            } catch (e) {
-                alert('Server Error / Timeout');
-            } finally {
-                btnElement.innerHTML = oldText;
-                btnElement.disabled = false;
+            if(type === 'youtube') {
+                bigThumb.style.display = 'block'; // Tampilkan Thumbnail Besar
+                avatar.style.display = 'none';   // Sembunyikan Avatar Kecil
+                stats.style.display = 'grid';
+            } else if (type === 'spotify') {
+                bigThumb.style.display = 'none';
+                avatar.style.display = 'none';
+                stats.style.display = 'none';
+            } else { // TikTok
+                bigThumb.style.display = 'none';
+                avatar.style.display = 'block';
+                stats.style.display = 'grid';
             }
         }
 
-        function showMeta(title, author, img, isBigThumb) {
-            const big = document.getElementById('bigThumb');
-            const small = document.getElementById('smallAvatar');
-            
-            if(isBigThumb) {
-                big.style.display = 'block';
-                big.src = img;
-                small.style.display = 'none';
-            } else {
-                big.style.display = 'none';
-                small.style.display = 'block';
-                small.src = img;
-            }
-
+        function updateMeta(title, author, img) {
             document.getElementById('resTitle').innerText = title;
             document.getElementById('resAuthor').innerText = author;
+            if(img) document.getElementById('avatar').src = img;
         }
 
-        function showStats(s1, s2, s3, type) {
-            const box = document.getElementById('statsBox');
-            box.style.display = 'grid';
+        function updateStats(s1, s2, s3, type) {
+            const els = document.getElementById('statsArea').querySelectorAll('span');
+            const icons = document.getElementById('statsArea').querySelectorAll('i');
             
-            document.getElementById('s1').innerText = formatNum(s1);
-            document.getElementById('s2').innerText = formatNum(s2);
-            document.getElementById('s3').innerText = type === 'youtube' ? s3 : formatNum(s3);
-            
-            // Ubah Icon sesuai tipe
-            const icons = box.getElementsByTagName('i');
+            els[0].innerText = formatNum(s1);
+            els[1].innerText = formatNum(s2);
+            els[2].innerText = type === 'youtube' ? s3 : formatNum(s3);
+
             if(type === 'youtube') {
-                icons[0].className = 'fas fa-eye'; // Views
-                icons[1].className = 'fas fa-thumbs-up'; // Like
-                icons[2].className = 'fas fa-clock'; // Duration
+                icons[0].className = 'fas fa-eye';
+                icons[1].className = 'fas fa-thumbs-up';
+                icons[2].className = 'fas fa-clock';
             } else {
                 icons[0].className = 'fas fa-play';
                 icons[1].className = 'fas fa-heart';
@@ -425,23 +408,33 @@
             }
         }
 
-        function uiLoading(isLoading) {
-            const load = document.getElementById('loading');
-            const res = document.getElementById('resultArea');
-            const err = document.getElementById('errorMsg');
-
-            if(isLoading) {
-                load.style.display = 'block';
-                res.style.display = 'none';
-                err.style.display = 'none';
-            } else {
-                load.style.display = 'none';
-                res.style.display = 'block';
-            }
+        function openLink(url) {
+            if(url) window.open(url, '_blank');
         }
 
-        function uiError(msg) {
-            document.getElementById('loading').style.display = 'none';
+        async function fetchYoutubeAudio(url, btn) {
+            const old = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+            btn.disabled = true;
+            try {
+                const res = await fetch(`${API_YOUTUBE}?url=${url}&format=mp3`);
+                const json = await res.json();
+                if(json.result && json.result.download) window.open(json.result.download, '_blank');
+                else alert('Gagal mengambil Audio.');
+            } catch(e) { alert('Error conversion.'); }
+            finally { btn.innerHTML = old; btn.disabled = false; }
+        }
+
+        function uiLoading(state) {
+            document.getElementById('searchBtn').disabled = state;
+            document.getElementById('loading').style.display = state ? 'block' : 'none';
+            document.getElementById('resultArea').style.display = state ? 'none' : 'block';
+            if(state) document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function showError(msg) {
+            uiLoading(false);
+            document.getElementById('resultArea').style.display = 'none';
             const err = document.getElementById('errorMsg');
             err.style.display = 'block';
             err.innerText = '⚠️ ' + msg;
