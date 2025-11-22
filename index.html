@@ -83,7 +83,7 @@
 
         /* TEMA WARNA SPESIFIK PER KARTU */
         
-        /* TikTok (Default) */
+        /* TikTok (Cyan/Pink) */
         .card-tiktok {
             --theme-primary: #00eaff;
             --theme-secondary: #ff0077;
@@ -93,7 +93,17 @@
         .card-tiktok .logo-icon { background: linear-gradient(45deg, #00eaff, #ff0077); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .card-tiktok h1 { background: linear-gradient(90deg, #00eaff, #fff, #ff0077); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Spotify */
+        /* Instagram (Orange/Purple) - BARU */
+        .card-instagram {
+            --theme-primary: #E1306C;
+            --theme-secondary: #833AB4;
+            border-top: 1px solid #E1306C;
+            border-bottom: 1px solid #833AB4;
+        }
+        .card-instagram .logo-icon { background: linear-gradient(45deg, #F58529, #E1306C, #833AB4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-instagram h1 { background: linear-gradient(90deg, #F58529, #fff, #833AB4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Spotify (Green) */
         .card-spotify {
             --theme-primary: #1DB954;
             --theme-secondary: #1ed760;
@@ -103,7 +113,7 @@
         .card-spotify .logo-icon { background: linear-gradient(45deg, #1DB954, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .card-spotify h1 { background: linear-gradient(90deg, #1DB954, #fff, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* YouTube */
+        /* YouTube (Red) */
         .card-youtube {
             --theme-primary: #FF0000;
             --theme-secondary: #CC0000;
@@ -124,7 +134,7 @@
 
         h1 {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 1.6rem; /* Sedikit dikecilkan agar muat di HP */
+            font-size: 1.6rem;
             letter-spacing: 2px;
             text-align: center;
             margin-bottom: 5px;
@@ -340,6 +350,27 @@
         </div>
     </div>
 
+    <div class="holographic-card card-instagram">
+        <i class="fab fa-instagram logo-icon"></i>
+        <h1>INSTAGRAM DOWNLOADER</h1>
+        <p class="subtitle">Unduh Reels, Post, & IGTV.</p>
+
+        <div class="input-group">
+            <input type="text" id="ig-input" placeholder="Tempel tautan Instagram..." autocomplete="off">
+            <button class="search-button" id="ig-btn" onclick="runInstagram()">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="progress-bar-container" id="ig-loading"><div class="progress-bar"></div></div>
+        <div class="error-msg" id="ig-error"></div>
+
+        <div class="result-area" id="ig-result">
+            <div class="media-container" id="ig-media"></div>
+            <div class="download-buttons" id="ig-dl-btns"></div>
+        </div>
+    </div>
+
     <div class="holographic-card card-spotify">
         <i class="fab fa-spotify logo-icon"></i>
         <h1>SPOTIFY DOWNLOADER</h1>
@@ -405,6 +436,8 @@
         const API_TIKTOK = 'https://www.tikwm.com/api/';
         const API_SPOTIFY = 'https://api.fabdl.com/spotify/get';
         const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
+        // API Instagram Publik (Alternatif dari repo backend)
+        const API_INSTAGRAM = 'https://api.kypresso.com/instagram'; 
 
         // --- ANIMASI BINTANG ---
         const starfield = document.getElementById('starfield');
@@ -491,7 +524,59 @@
             }
         }
 
-        // --- 2. SPOTIFY LOGIC ---
+        // --- 2. INSTAGRAM LOGIC (BARU) ---
+        async function runInstagram() {
+            const input = document.getElementById('ig-input').value.trim();
+            if (!input) return;
+            if (!input.includes('instagram.com')) {
+                setUI('ig', 'error', 'Link Instagram tidak valid.');
+                return;
+            }
+
+            setUI('ig', 'loading');
+
+            try {
+                // Menggunakan Public API yang kompatibel dengan browser
+                const apiUrl = `${API_INSTAGRAM}?url=${encodeURIComponent(input)}`;
+                const response = await fetch(apiUrl);
+                const json = await response.json();
+
+                // Menangani berbagai kemungkinan respon API
+                let videoUrl = null;
+                if (json.data) {
+                    // Cek apakah data berbentuk array (slide) atau single object
+                    if (Array.isArray(json.data)) {
+                        videoUrl = json.data[0].url; // Ambil slide pertama
+                    } else {
+                        videoUrl = json.data.url;
+                    }
+                } else if (json.url) {
+                    videoUrl = json.url;
+                }
+
+                if (videoUrl) {
+                    // Update Media Preview
+                    const mediaBox = document.getElementById('ig-media');
+                    mediaBox.innerHTML = `<video controls playsinline src="${videoUrl}" style="width:100%"></video>`;
+
+                    // Buttons
+                    const btns = `
+                        <button onclick="downloadFile('${videoUrl}', 'instagram_video.mp4')" class="btn-download">
+                            <span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD MEDIA
+                        </button>
+                    `;
+                    document.getElementById('ig-dl-btns').innerHTML = btns;
+                    setUI('ig', 'success');
+                } else {
+                    throw new Error('Gagal mengambil media. Akun mungkin Private.');
+                }
+            } catch (e) {
+                setUI('ig', 'error', 'Gagal. Pastikan akun publik / API sibuk.');
+                console.error(e);
+            }
+        }
+
+        // --- 3. SPOTIFY LOGIC ---
         async function runSpotify() {
             const input = document.getElementById('sp-input').value.trim();
             if (!input) return;
@@ -537,7 +622,7 @@
             }
         }
 
-        // --- 3. YOUTUBE LOGIC ---
+        // --- 4. YOUTUBE LOGIC ---
         async function runYouTube() {
             const input = document.getElementById('yt-input').value.trim();
             if (!input) return;
