@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Downloader :: TikTok & Spotify</title>
+    <title>Universal Downloader :: TikTok, Spotify & YouTube</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -79,7 +79,7 @@
             border-radius: 24px;
             padding: 35px;
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.2);
             animation: card-appear 1s ease;
             transition: border-color 0.5s;
@@ -98,6 +98,7 @@
             padding: 5px;
             margin-bottom: 25px;
             border: 1px solid rgba(255,255,255,0.1);
+            gap: 5px;
         }
 
         .tab-btn {
@@ -107,10 +108,14 @@
             background: transparent;
             color: #888;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .tab-btn.active {
@@ -121,22 +126,37 @@
         }
 
         /* Dynamic Theme Colors */
+        /* Spotify Theme */
         body.spotify-mode {
             --theme-primary: #1DB954;
             --theme-secondary: #1ed760;
         }
-
         body.spotify-mode .logo-icon {
             background: linear-gradient(45deg, #1DB954, #1ed760);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         body.spotify-mode h1 {
             background: linear-gradient(90deg, #1DB954, #fff, #1ed760);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+        }
+
+        /* YouTube Theme */
+        body.youtube-mode {
+            --theme-primary: #FF0000;
+            --theme-secondary: #CC0000;
+        }
+        body.youtube-mode .logo-icon {
+            background: linear-gradient(45deg, #FF0000, #ff4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.youtube-mode h1 {
+            background: linear-gradient(90deg, #FF0000, #fff, #CC0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
         }
 
         /* Header Elements */
@@ -347,14 +367,6 @@
             display: block;
         }
 
-        /* Spotify Iframe Styles */
-        .spotify-embed-container {
-            width: 100%;
-            height: 152px; /* Standard compact height */
-            border: none;
-            background: #282828;
-        }
-
         /* Download Buttons */
         .download-buttons {
             display: flex;
@@ -390,6 +402,11 @@
             background: rgba(255,255,255,0.1);
             color: white;
             border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-download:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
         .shine {
@@ -431,6 +448,9 @@
             <button class="tab-btn" onclick="switchMode('spotify')" id="tabSpotify">
                 <i class="fab fa-spotify"></i> Spotify
             </button>
+            <button class="tab-btn" onclick="switchMode('youtube')" id="tabYouTube">
+                <i class="fab fa-youtube"></i> YouTube
+            </button>
         </div>
 
         <div style="text-align: center; margin-bottom: 25px;">
@@ -463,15 +483,15 @@
                     </div>
                 </div>
                 
-                <div class="stats-grid" id="tiktokStats">
+                <div class="stats-grid" id="statsArea">
                     <div class="stat-item">
-                        <i class="fas fa-eye"></i> <span id="statViews" class="stat-value">0</span>
+                        <i class="fas fa-eye"></i> <span id="stat1" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
-                        <i class="fas fa-heart"></i> <span id="statLikes" class="stat-value">0</span>
+                        <i class="fas fa-heart"></i> <span id="stat2" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
-                        <i class="fas fa-comment"></i> <span id="statComments" class="stat-value">0</span>
+                        <i class="fas fa-comment"></i> <span id="stat3" class="stat-value">0</span>
                     </div>
                 </div>
             </div>
@@ -493,6 +513,7 @@
         let currentMode = 'tiktok';
         const API_TIKTOK = 'https://www.tikwm.com/api/';
         const API_SPOTIFY = 'https://api.fabdl.com/spotify/get';
+        const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
 
         // --- ANIMASI BINTANG ---
         const starfield = document.getElementById('starfield');
@@ -522,19 +543,24 @@
 
             // Update Tabs Style
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            body.classList.remove('spotify-mode', 'youtube-mode');
             
             if (mode === 'spotify') {
                 body.classList.add('spotify-mode');
                 document.getElementById('tabSpotify').classList.add('active');
-                
                 icon.className = 'fab fa-spotify logo-icon';
                 title.innerText = 'SPOTIFY DL';
                 subtitle.innerText = 'Play Preview & Unduh MP3.';
                 input.placeholder = 'Tempel link lagu Spotify...';
+            } else if (mode === 'youtube') {
+                body.classList.add('youtube-mode');
+                document.getElementById('tabYouTube').classList.add('active');
+                icon.className = 'fab fa-youtube logo-icon';
+                title.innerText = 'YOUTUBE DL';
+                subtitle.innerText = 'Unduh Video (MP4) & Musik (MP3).';
+                input.placeholder = 'Tempel tautan YouTube/Shorts...';
             } else {
-                body.classList.remove('spotify-mode');
                 document.getElementById('tabTikTok').classList.add('active');
-                
                 icon.className = 'fab fa-tiktok logo-icon';
                 title.innerText = 'TIKTOK DL';
                 subtitle.innerText = 'Unduh video tanpa watermark.';
@@ -549,15 +575,18 @@
 
             if (currentMode === 'tiktok') {
                 await fetchTikTok(url);
-            } else {
+            } else if (currentMode === 'spotify') {
                 await fetchSpotify(url);
+            } else if (currentMode === 'youtube') {
+                await fetchYouTube(url);
             }
         }
 
         // --- LOGIKA TIKTOK ---
         async function fetchTikTok(urlInput) {
             uiLoading(true);
-            document.getElementById('metaInfoBox').style.display = 'block'; // Show meta for TikTok
+            document.getElementById('metaInfoBox').style.display = 'block';
+            document.getElementById('statsArea').style.display = 'grid';
 
             try {
                 const apiUrl = `${API_TIKTOK}?url=${encodeURIComponent(urlInput)}`;
@@ -570,20 +599,16 @@
                     const fix = (l) => l && (l.startsWith('http') ? l : domain + l);
 
                     updateMeta(v.author.nickname, v.title, fix(v.author.avatar));
-                    
-                    document.getElementById('tiktokStats').style.display = 'grid';
-                    document.getElementById('statViews').innerText = formatNum(v.play_count);
-                    document.getElementById('statLikes').innerText = formatNum(v.digg_count);
-                    document.getElementById('statComments').innerText = formatNum(v.comment_count);
+                    updateStats(v.play_count, v.digg_count, v.comment_count);
 
                     const container = document.getElementById('mediaContainer');
                     container.innerHTML = `<video id="videoPlayer" controls playsinline src="${fix(v.play)}" style="width:100%"></video>`;
 
                     const btns = `
-                        <button onclick="downloadFile('${fix(v.play)}', 'video.mp4')" class="btn-download">
+                        <button onclick="downloadFile('${fix(v.play)}', 'tiktok_video.mp4')" class="btn-download">
                             <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO
                         </button>
-                        <button onclick="downloadFile('${fix(v.music)}', 'audio.mp3')" class="btn-download btn-secondary">
+                        <button onclick="downloadFile('${fix(v.music)}', 'tiktok_audio.mp3')" class="btn-download btn-secondary">
                             <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO
                         </button>
                     `;
@@ -599,40 +624,28 @@
             }
         }
 
-        // --- LOGIKA SPOTIFY (PEMBARUAN) ---
+        // --- LOGIKA SPOTIFY ---
         async function fetchSpotify(urlInput) {
-            // 1. Validasi
-            if (!urlInput.includes('open.spotify.com/track')) {
-                showError('Harap masukkan link "Track" Spotify (bukan playlist/album).');
+            if (!urlInput.includes('http') || (!urlInput.includes('spotify') && !urlInput.includes('open.spotify'))) {
+                showError('Link Spotify tidak valid.');
                 return;
             }
 
             uiLoading(true);
-            document.getElementById('metaInfoBox').style.display = 'none'; // Sembunyikan meta teks biasa, kita pakai Embed
+            document.getElementById('metaInfoBox').style.display = 'none';
 
             try {
-                // 2. Ambil ID Lagu untuk Embed Player
+                // Embed Player
                 const trackIdMatch = urlInput.match(/track\/([a-zA-Z0-9]+)/);
                 const trackId = trackIdMatch ? trackIdMatch[1] : null;
-
                 if (!trackId) throw new Error('ID Lagu tidak ditemukan.');
 
-                // 3. Pasang SPOTIFY EMBED (Langsung bisa diputar)
                 const container = document.getElementById('mediaContainer');
                 container.innerHTML = `
-                    <iframe 
-                        style="border-radius:12px" 
-                        src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" 
-                        width="100%" 
-                        height="152" 
-                        frameBorder="0" 
-                        allowfullscreen="" 
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                        loading="lazy">
-                    </iframe>
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                 `;
 
-                // 4. Fetch Download Link (Background Process)
+                // Fetch Download Link
                 const apiUrl = `${API_SPOTIFY}?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(apiUrl);
                 const json = await response.json();
@@ -654,8 +667,89 @@
                     throw new Error('Gagal mengambil link download.');
                 }
             } catch (e) {
-                console.error(e);
                 showError('Gagal memproses. Pastikan link benar.');
+            }
+        }
+
+        // --- LOGIKA YOUTUBE (BARU) ---
+        async function fetchYouTube(urlInput) {
+            if (!urlInput.includes('youtu')) {
+                showError('Link YouTube tidak valid. Gunakan link dari share.');
+                return;
+            }
+
+            uiLoading(true);
+            document.getElementById('metaInfoBox').style.display = 'block';
+            document.getElementById('statsArea').style.display = 'grid';
+
+            try {
+                // Fetch Default (360p) untuk Metadata & Video
+                const params = new URLSearchParams({ url: urlInput, format: '360' });
+                const response = await fetch(API_YOUTUBE + '?' + params);
+                const json = await response.json();
+
+                if (json.result) {
+                    const yt = json.result;
+                    const meta = yt.metadata || {};
+
+                    updateMeta(yt.author.channelTitle, yt.title, yt.thumbnail);
+                    // Update Stats Icon untuk YT (Like, Comment, Duration)
+                    document.getElementById('stat1').innerHTML = `<i class="fas fa-thumbs-up"></i> ${formatNum(meta.like || 0)}`;
+                    document.getElementById('stat2').innerHTML = `<i class="fas fa-comment"></i> ${formatNum(meta.comment || 0)}`;
+                    document.getElementById('stat3').innerHTML = `<i class="fas fa-clock"></i> ${meta.duration || '-'}`;
+
+                    // Render Preview Video (jika download link direct mp4)
+                    const container = document.getElementById('mediaContainer');
+                    // Cek jika link download bisa diputar langsung atau tidak (kebanyakan API stream)
+                    container.innerHTML = `<video id="videoPlayer" controls playsinline src="${yt.download}" style="width:100%"></video>`;
+
+                    // Simpan URL asli untuk fetch MP3 nanti
+                    const originalUrl = urlInput;
+                    const downloadVideoUrl = yt.download; // Link 360p dari respon awal
+
+                    const btns = `
+                        <button onclick="downloadFile('${downloadVideoUrl}', 'video.mp4')" class="btn-download">
+                            <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)
+                        </button>
+                        <button onclick="fetchYoutubeAudio('${originalUrl}', this)" class="btn-download btn-secondary">
+                            <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO (MP3)
+                        </button>
+                    `;
+                    document.getElementById('btnContainer').innerHTML = btns;
+
+                    uiLoading(false);
+                    document.getElementById('resultArea').style.display = 'block';
+                } else {
+                    throw new Error('Gagal mengambil data YouTube.');
+                }
+            } catch (e) {
+                console.error(e);
+                showError('Server sibuk atau link private.');
+            }
+        }
+
+        // Helper Khusus Youtube MP3 (Perlu request ulang dengan format mp3)
+        async function fetchYoutubeAudio(urlInput, btnElement) {
+            // Ubah tombol jadi loading
+            const originalText = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES MP3...';
+            btnElement.disabled = true;
+
+            try {
+                const params = new URLSearchParams({ url: urlInput, format: 'mp3' });
+                const response = await fetch(API_YOUTUBE + '?' + params);
+                const json = await response.json();
+
+                if (json.result && json.result.download) {
+                    window.open(json.result.download, '_blank');
+                } else {
+                    alert('Gagal mengambil link MP3.');
+                }
+            } catch (e) {
+                alert('Terjadi kesalahan saat konversi MP3.');
+            } finally {
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
             }
         }
 
@@ -684,12 +778,25 @@
         }
 
         function updateMeta(author, title, img) {
-            document.getElementById('username').innerText = author;
-            document.getElementById('description').innerText = title;
+            document.getElementById('username').innerText = author || 'Unknown';
+            document.getElementById('description').innerText = title || '-';
             document.getElementById('avatar').src = img || 'https://via.placeholder.com/50';
         }
 
+        function updateStats(view, like, comment) {
+            // Reset Icon ke default TikTok/Umum
+            const s1 = document.getElementById('stat1');
+            const s2 = document.getElementById('stat2');
+            const s3 = document.getElementById('stat3');
+            
+            // Icon Default
+            s1.innerHTML = `<i class="fas fa-eye"></i> <span class="stat-value">${formatNum(view)}</span>`;
+            s2.innerHTML = `<i class="fas fa-heart"></i> <span class="stat-value">${formatNum(like)}</span>`;
+            s3.innerHTML = `<i class="fas fa-comment"></i> <span class="stat-value">${formatNum(comment)}</span>`;
+        }
+
         function formatNum(num) {
+            if (!num) return '0';
             if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
             if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
             if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
