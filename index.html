@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Downloader :: TikTok, Spotify & YouTube</title>
+    <title>Universal Downloader v2.0</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +15,7 @@
             --accent-magenta: #ff0077;
             --theme-primary: #00eaff;
             --theme-secondary: #ff0077;
-            --card-bg: rgba(10, 10, 20, 0.75);
+            --card-bg: rgba(16, 16, 24, 0.85);
             --text-light: #e8e8e8;
             --text-muted: #888;
         }
@@ -30,798 +30,491 @@
             flex-direction: column;
             align-items: center;
             padding: 40px 20px;
-            position: relative;
             overflow-x: hidden;
-            transition: background 0.5s;
         }
 
         /* Background Effects */
-        .background-grid, .starfield {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -2;
-            pointer-events: none;
-        }
-
         .background-grid {
-            background-image:
-                linear-gradient(to right, rgba(0, 234, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 234, 255, 0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: grid-pan 80s linear infinite;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
 
-        @keyframes grid-pan {
-            from { background-position: 0 0; }
-            to { background-position: -5000px -5000px; }
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 5s infinite ease-in-out;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Card Styles */
+        /* Main Card */
         .holographic-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 1px solid var(--theme-primary);
-            border-bottom: 1px solid var(--theme-secondary);
-            border-radius: 24px;
-            padding: 35px;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 2px solid var(--theme-primary);
+            border-radius: 20px;
+            padding: 30px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.2);
-            animation: card-appear 1s ease;
-            transition: border-color 0.5s;
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            transition: all 0.4s ease;
         }
 
-        @keyframes card-appear {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Header */
+        .header-content { text-align: center; margin-bottom: 25px; }
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.5s;
         }
+        h1 { font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; font-size: 1.8rem; }
+        .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-top: 5px; }
 
-        /* Tabs System */
+        /* Tabs */
         .tab-container {
             display: flex;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
             border-radius: 12px;
-            padding: 5px;
+            padding: 6px;
             margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-            gap: 5px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
         .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            color: #888;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            flex: 1; padding: 10px; border: none; background: transparent;
+            color: #666; cursor: pointer; border-radius: 8px; font-weight: 600;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-
         .tab-btn.active {
             background: rgba(255,255,255,0.1);
-            color: white;
-            text-shadow: 0 0 10px var(--theme-primary);
-            font-weight: bold;
+            color: var(--text-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        /* Dynamic Theme Colors */
-        /* Spotify Theme */
-        body.spotify-mode {
-            --theme-primary: #1DB954;
-            --theme-secondary: #1ed760;
-        }
-        body.spotify-mode .logo-icon {
-            background: linear-gradient(45deg, #1DB954, #1ed760);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        body.spotify-mode h1 {
-            background: linear-gradient(90deg, #1DB954, #fff, #1ed760);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* YouTube Theme */
-        body.youtube-mode {
-            --theme-primary: #FF0000;
-            --theme-secondary: #CC0000;
-        }
-        body.youtube-mode .logo-icon {
-            background: linear-gradient(45deg, #FF0000, #ff4444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        body.youtube-mode h1 {
-            background: linear-gradient(90deg, #FF0000, #fff, #CC0000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-        }
-
-        /* Header Elements */
-        .logo-icon {
-            font-size: 3.5rem;
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-magenta));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: icon-float 3s infinite alternate;
-            margin-bottom: 10px;
-            display: block;
-            transition: all 0.5s;
-        }
-
-        @keyframes icon-float {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-5px); }
-        }
-
-        h1 {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.75rem;
-            letter-spacing: 3px;
-            background: linear-gradient(90deg, var(--accent-cyan), #fff, var(--accent-magenta));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            transition: all 0.5s;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        /* Input Area */
-        .input-group {
-            position: relative;
-            margin-bottom: 25px;
-        }
-
+        /* Input */
+        .input-group { position: relative; margin-bottom: 20px; }
         input {
-            width: 100%;
-            padding: 16px 60px 16px 20px;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; padding: 16px 55px 16px 18px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; color: white; outline: none;
         }
-
-        input:focus {
-            border-color: var(--theme-primary);
-            box-shadow: 0 0 15px rgba(255,255,255,0.05);
-        }
-
+        input:focus { border-color: var(--theme-primary); }
         .search-button {
-            position: absolute;
-            right: 8px; top: 8px; bottom: 8px;
-            width: 48px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
-            color: #000;
-            cursor: pointer;
-            transition: transform 0.3s, background 0.5s;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-button:hover:not(:disabled) {
-            transform: scale(1.05);
-        }
-
-        .search-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Loading Bar */
-        .progress-bar-container {
-            display: none;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
-            animation: fill 2s linear infinite alternate;
-        }
-
-        @keyframes fill { 0% { width: 0%; } 100% { width: 100%; } }
-
-        /* Error Message */
-        #errorMsg {
-            display: none;
-            color: #ff80a6;
-            background: rgba(255,0,119,0.15);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-            font-size: 0.9rem;
+            position: absolute; right: 6px; top: 6px; bottom: 6px; width: 44px;
+            background: var(--theme-primary); border: none; border-radius: 8px;
+            cursor: pointer; font-weight: bold; color: #000;
         }
 
         /* Result Area */
-        #resultArea {
-            display: none;
-            margin-top: 20px;
-            animation: slideIn 0.5s ease;
-        }
+        #resultArea { display: none; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .meta-container {
-            background: rgba(0,0,0,0.5);
-            padding: 15px;
+        /* --- YT SPECIFIC LAYOUT FIXES --- */
+        
+        /* Card Thumbnail (YouTube Style) */
+        .video-cover-large {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            display: none; /* Hidden by default, shown only in YT mode */
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Meta Container */
+        .meta-box {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .author-box {
+        /* Header Author (TikTok Style vs YT Style) */
+        .author-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
             margin-bottom: 10px;
         }
-
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid var(--theme-primary);
-            object-fit: cover;
-            transition: border-color 0.5s;
+        
+        .avatar-img {
+            width: 45px; height: 45px; border-radius: 50%;
+            border: 2px solid var(--theme-primary); object-fit: cover;
         }
+        
+        .author-info h3 { font-size: 0.95rem; color: white; }
+        .author-info p { font-size: 0.8rem; color: #aaa; line-height: 1.3; }
 
-        .author-name {
-            margin: 0;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .video-desc {
-            margin: 4px 0 0;
-            font-size: 0.85rem;
-            color: #aaa;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .stat-item {
-            background: rgba(0,0,0,0.4);
-            padding: 8px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .stat-value {
-            font-weight: 700;
-            color: var(--theme-primary);
-            display: block;
-            margin: 4px 0;
-        }
-
-        /* Media Players */
-        .media-container {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            background: black;
-            border: 1px solid rgba(255,255,255,0.1);
-            min-height: 50px;
-            position: relative;
-        }
-
-        #videoPlayer {
-            width: 100%;
-            display: block;
-        }
-
-        /* Download Buttons */
-        .download-buttons {
+        /* Stats Grid */
+        .stats-row {
             display: flex;
-            flex-direction: column;
-            gap: 14px;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
         }
+        .stat-pill {
+            font-size: 0.75rem; color: #ccc;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .stat-pill i { color: var(--theme-primary); }
 
-        .btn-download {
-            position: relative;
-            padding: 16px;
+        /* Media Player Container */
+        .media-wrapper {
+            width: 100%;
             border-radius: 12px;
-            font-weight: 700;
-            text-align: center;
-            text-decoration: none;
-            color: #000;
-            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
             overflow: hidden;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
+            background: #000;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* RAPIKAN PLAYER */
+        video { width: 100%; display: block; }
+        
+        /* Mode Khusus YouTube (Aspect Ratio 16:9) */
+        body.youtube-mode .media-wrapper {
+            aspect-ratio: 16/9; /* Kunci rasio agar tidak gepeng */
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+        }
+        /* Mode Khusus TikTok (Aspect Ratio Default/Auto) */
+        body.tiktok-mode .media-wrapper {
+            min-height: 300px;
         }
 
-        .btn-download:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+        /* Buttons */
+        .btn-dl {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: transform 0.2s;
         }
+        .btn-dl:active { transform: scale(0.98); }
+        .btn-primary { background: var(--theme-primary); color: #000; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1); }
 
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
+        /* Footer */
+        .footer { margin-top: 40px; color: #555; font-size: 0.8rem; font-family: 'Share Tech Mono'; text-align: center;}
 
-        .btn-download:disabled {
-            opacity: 0.6;
-            cursor: wait;
-        }
-
-        .shine {
-            position: absolute;
-            top: -100%;
-            left: -100%;
-            width: 60%;
-            height: 200%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
-            transform: skew(-20deg);
-            transition: 0.8s;
-        }
-
-        .btn-download:hover .shine {
-            top: -100%;
-            left: 120%;
-        }
-
-        .footer {
-            margin-top: 50px;
-            font-family: 'Share Tech Mono', monospace;
-            color: #666;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-align: center;
-        }
+        /* Themes */
+        body.youtube-mode { --theme-primary: #ff0000; --theme-secondary: #c4302b; }
+        body.spotify-mode { --theme-primary: #1DB954; --theme-secondary: #191414; }
     </style>
 </head>
-<body>
+<body class="tiktok-mode">
 
     <div class="background-grid"></div>
-    <div class="starfield" id="starfield"></div>
 
     <div class="holographic-card">
+        
         <div class="tab-container">
-            <button class="tab-btn active" onclick="switchMode('tiktok')" id="tabTikTok">
-                <i class="fab fa-tiktok"></i> TikTok
-            </button>
-            <button class="tab-btn" onclick="switchMode('spotify')" id="tabSpotify">
-                <i class="fab fa-spotify"></i> Spotify
-            </button>
-            <button class="tab-btn" onclick="switchMode('youtube')" id="tabYouTube">
-                <i class="fab fa-youtube"></i> YouTube
-            </button>
+            <button class="tab-btn active" onclick="setMode('tiktok')" id="t-tiktok"><i class="fab fa-tiktok"></i> TikTok</button>
+            <button class="tab-btn" onclick="setMode('spotify')" id="t-spotify"><i class="fab fa-spotify"></i> Spotify</button>
+            <button class="tab-btn" onclick="setMode('youtube')" id="t-youtube"><i class="fab fa-youtube"></i> YouTube</button>
         </div>
 
-        <div style="text-align: center; margin-bottom: 25px;">
+        <div class="header-content">
             <i class="fab fa-tiktok logo-icon" id="mainIcon"></i>
             <h1 id="mainTitle">TIKTOK DL</h1>
-            <p class="subtitle" id="mainSubtitle">Unduh video tanpa watermark.</p>
+            <p class="subtitle" id="mainDesc">Download Video Tanpa Watermark</p>
         </div>
 
         <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Tempel tautan TikTok di sini..." autocomplete="off">
-            <button class="search-button" id="searchBtn" onclick="handleFetch()">
-                <i class="fas fa-arrow-right"></i>
-            </button>
+            <input type="text" id="urlInput" placeholder="Tempel link di sini..." autocomplete="off">
+            <button class="search-button" id="btnSearch" onclick="processLink()">GO</button>
         </div>
-
-        <div class="progress-bar-container" id="progressBarContainer">
-            <div class="progress-bar"></div>
-        </div>
-
-        <div id="errorMsg"></div>
+        
+        <div id="loadingBar" style="display:none; height:3px; background:var(--theme-primary); width:100%; margin-bottom:20px; animation: load 1s infinite alternate;"></div>
+        <div id="errorMsg" style="display:none; color:#ff4d4d; background:rgba(255,0,0,0.1); padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:0.9rem;"></div>
 
         <div id="resultArea">
             
-            <div class="meta-container" id="metaInfoBox">
-                <div class="author-box">
-                    <img src="" id="avatar" class="author-avatar" alt="Cover">
-                    <div>
-                        <h3 id="username" class="author-name">@UNKNOWN</h3>
-                        <p id="description" class="video-desc">Memuat data...</p>
+            <img src="" id="ytThumbnail" class="video-cover-large">
+
+            <div class="meta-box">
+                <div class="author-header">
+                    <img src="" id="avatar" class="avatar-img"> <div class="author-info">
+                        <h3 id="authorName">Author Name</h3>
+                        <p id="videoTitle">Video Title Description</p>
                     </div>
                 </div>
-                
-                <div class="stats-grid" id="statsArea">
-                    <div class="stat-item">
-                        <i class="fas fa-eye"></i> <span id="stat1" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-heart"></i> <span id="stat2" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-comment"></i> <span id="stat3" class="stat-value">0</span>
-                    </div>
+
+                <div class="stats-row" id="statsRow">
+                    <div class="stat-pill"><i class="fas fa-play"></i> <span id="s-play">0</span></div>
+                    <div class="stat-pill"><i class="fas fa-heart"></i> <span id="s-like">0</span></div>
+                    <div class="stat-pill"><i class="fas fa-comment"></i> <span id="s-com">0</span></div>
                 </div>
             </div>
 
-            <div class="media-container" id="mediaContainer">
+            <div class="media-wrapper" id="playerBox">
                 </div>
 
-            <div class="download-buttons" id="btnContainer">
-                </div>
+            <div id="buttonGroup"></div>
+
         </div>
     </div>
 
-    <div class="footer">
-        © 2025 CODED BY 【﻿ 𝕀𝕥𝕤𝕓𝕒𝕕  】
-    </div>
+    <div class="footer">POWERED BY ITSBAD STORE API</div>
 
     <script>
-        // --- CONFIGURATION ---
-        let currentMode = 'tiktok';
+        // --- API CONFIG ---
         const API_TIKTOK = 'https://www.tikwm.com/api/';
+        const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube'; // Sesuai kode bot Anda
         const API_SPOTIFY = 'https://api.fabdl.com/spotify/get';
-        const API_YOUTUBE = 'https://api.ootaizumi.web.id/downloader/youtube';
 
-        // --- ANIMASI BINTANG ---
-        const starfield = document.getElementById('starfield');
-        for (let i = 0; i < 80; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.width = star.style.height = `${Math.random() * 3 + 1}px`;
-            star.style.top = `${Math.random() * 100}%`;
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.animationDelay = `${Math.random() * 5}s`;
-            starfield.appendChild(star);
-        }
+        let currentMode = 'tiktok';
 
-        // --- FUNGSI GANTI MODE ---
-        function switchMode(mode) {
+        function setMode(mode) {
             currentMode = mode;
-            const body = document.body;
-            const input = document.getElementById('urlInput');
-            const title = document.getElementById('mainTitle');
-            const icon = document.getElementById('mainIcon');
-            const subtitle = document.getElementById('mainSubtitle');
+            document.body.className = mode + '-mode'; // Ganti class body untuk CSS variable
             
             // Reset UI
-            document.getElementById('resultArea').style.display = 'none';
-            document.getElementById('errorMsg').style.display = 'none';
-            document.getElementById('urlInput').value = '';
-
-            // Update Tabs Style
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            body.classList.remove('spotify-mode', 'youtube-mode');
-            
-            if (mode === 'spotify') {
-                body.classList.add('spotify-mode');
-                document.getElementById('tabSpotify').classList.add('active');
-                icon.className = 'fab fa-spotify logo-icon';
-                title.innerText = 'SPOTIFY DL';
-                subtitle.innerText = 'Play Preview & Unduh MP3.';
-                input.placeholder = 'Tempel link lagu Spotify...';
-            } else if (mode === 'youtube') {
-                body.classList.add('youtube-mode');
-                document.getElementById('tabYouTube').classList.add('active');
-                icon.className = 'fab fa-youtube logo-icon';
-                title.innerText = 'YOUTUBE DL';
-                subtitle.innerText = 'Unduh Video (MP4) & Musik (MP3).';
-                input.placeholder = 'Tempel tautan YouTube/Shorts...';
-            } else {
-                document.getElementById('tabTikTok').classList.add('active');
+            document.getElementById('t-' + mode).classList.add('active');
+            document.getElementById('resultArea').style.display = 'none';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+
+            // Update Text & Icon
+            const icon = document.getElementById('mainIcon');
+            const title = document.getElementById('mainTitle');
+            const desc = document.getElementById('mainDesc');
+
+            if(mode === 'tiktok') {
                 icon.className = 'fab fa-tiktok logo-icon';
                 title.innerText = 'TIKTOK DL';
-                subtitle.innerText = 'Unduh video tanpa watermark.';
-                input.placeholder = 'Tempel tautan TikTok di sini...';
-            }
-        }
-
-        // --- MAIN HANDLER ---
-        async function handleFetch() {
-            const url = document.getElementById('urlInput').value.trim();
-            if (!url) return;
-
-            if (currentMode === 'tiktok') {
-                await fetchTikTok(url);
-            } else if (currentMode === 'spotify') {
-                await fetchSpotify(url);
-            } else if (currentMode === 'youtube') {
-                await fetchYouTube(url);
-            }
-        }
-
-        // --- LOGIKA TIKTOK ---
-        async function fetchTikTok(urlInput) {
-            uiLoading(true);
-            document.getElementById('metaInfoBox').style.display = 'block';
-            document.getElementById('statsArea').style.display = 'grid';
-
-            try {
-                const apiUrl = `${API_TIKTOK}?url=${encodeURIComponent(urlInput)}`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.code === 0 && data.data) {
-                    const v = data.data;
-                    const domain = "https://www.tikwm.com";
-                    const fix = (l) => l && (l.startsWith('http') ? l : domain + l);
-
-                    updateMeta(v.author.nickname, v.title, fix(v.author.avatar));
-                    updateStats(v.play_count, v.digg_count, v.comment_count);
-
-                    const container = document.getElementById('mediaContainer');
-                    container.innerHTML = `<video id="videoPlayer" controls playsinline src="${fix(v.play)}" style="width:100%"></video>`;
-
-                    const btns = `
-                        <button onclick="downloadFile('${fix(v.play)}', 'tiktok_video.mp4')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO
-                        </button>
-                        <button onclick="downloadFile('${fix(v.music)}', 'tiktok_audio.mp3')" class="btn-download btn-secondary">
-                            <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO
-                        </button>
-                    `;
-                    document.getElementById('btnContainer').innerHTML = btns;
-
-                    uiLoading(false);
-                    document.getElementById('resultArea').style.display = 'block';
-                } else {
-                    throw new Error('Video tidak ditemukan / Link Private');
-                }
-            } catch (e) {
-                showError(e.message);
-            }
-        }
-
-        // --- LOGIKA SPOTIFY ---
-        async function fetchSpotify(urlInput) {
-            if (!urlInput.includes('http') || (!urlInput.includes('spotify') && !urlInput.includes('open.spotify'))) {
-                showError('Link Spotify tidak valid.');
-                return;
-            }
-
-            uiLoading(true);
-            document.getElementById('metaInfoBox').style.display = 'none';
-
-            try {
-                // Embed Player
-                const trackIdMatch = urlInput.match(/track\/([a-zA-Z0-9]+)/);
-                const trackId = trackIdMatch ? trackIdMatch[1] : null;
-                if (!trackId) throw new Error('ID Lagu tidak ditemukan.');
-
-                const container = document.getElementById('mediaContainer');
-                container.innerHTML = `
-                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                `;
-
-                // Fetch Download Link
-                const apiUrl = `${API_SPOTIFY}?url=${encodeURIComponent(urlInput)}`;
-                const response = await fetch(apiUrl);
-                const json = await response.json();
-
-                if (json.result) {
-                    const data = json.result;
-                    const downloadUrl = `https://api.fabdl.com/spotify/download-mp3/${data.gid}/${data.id}`;
-                    
-                    const btns = `
-                        <button onclick="window.open('${downloadUrl}', '_blank')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-download"></i> DOWNLOAD MP3
-                        </button>
-                    `;
-                    document.getElementById('btnContainer').innerHTML = btns;
-
-                    uiLoading(false);
-                    document.getElementById('resultArea').style.display = 'block';
-                } else {
-                    throw new Error('Gagal mengambil link download.');
-                }
-            } catch (e) {
-                showError('Gagal memproses. Pastikan link benar.');
-            }
-        }
-
-        // --- LOGIKA YOUTUBE (BARU) ---
-        async function fetchYouTube(urlInput) {
-            if (!urlInput.includes('youtu')) {
-                showError('Link YouTube tidak valid. Gunakan link dari share.');
-                return;
-            }
-
-            uiLoading(true);
-            document.getElementById('metaInfoBox').style.display = 'block';
-            document.getElementById('statsArea').style.display = 'grid';
-
-            try {
-                // Fetch Default (360p) untuk Metadata & Video
-                const params = new URLSearchParams({ url: urlInput, format: '360' });
-                const response = await fetch(API_YOUTUBE + '?' + params);
-                const json = await response.json();
-
-                if (json.result) {
-                    const yt = json.result;
-                    const meta = yt.metadata || {};
-
-                    updateMeta(yt.author.channelTitle, yt.title, yt.thumbnail);
-                    // Update Stats Icon untuk YT (Like, Comment, Duration)
-                    document.getElementById('stat1').innerHTML = `<i class="fas fa-thumbs-up"></i> ${formatNum(meta.like || 0)}`;
-                    document.getElementById('stat2').innerHTML = `<i class="fas fa-comment"></i> ${formatNum(meta.comment || 0)}`;
-                    document.getElementById('stat3').innerHTML = `<i class="fas fa-clock"></i> ${meta.duration || '-'}`;
-
-                    // Render Preview Video (jika download link direct mp4)
-                    const container = document.getElementById('mediaContainer');
-                    // Cek jika link download bisa diputar langsung atau tidak (kebanyakan API stream)
-                    container.innerHTML = `<video id="videoPlayer" controls playsinline src="${yt.download}" style="width:100%"></video>`;
-
-                    // Simpan URL asli untuk fetch MP3 nanti
-                    const originalUrl = urlInput;
-                    const downloadVideoUrl = yt.download; // Link 360p dari respon awal
-
-                    const btns = `
-                        <button onclick="downloadFile('${downloadVideoUrl}', 'video.mp4')" class="btn-download">
-                            <span class="shine"></span><i class="fas fa-video"></i> DOWNLOAD VIDEO (MP4)
-                        </button>
-                        <button onclick="fetchYoutubeAudio('${originalUrl}', this)" class="btn-download btn-secondary">
-                            <span class="shine"></span><i class="fas fa-music"></i> DOWNLOAD AUDIO (MP3)
-                        </button>
-                    `;
-                    document.getElementById('btnContainer').innerHTML = btns;
-
-                    uiLoading(false);
-                    document.getElementById('resultArea').style.display = 'block';
-                } else {
-                    throw new Error('Gagal mengambil data YouTube.');
-                }
-            } catch (e) {
-                console.error(e);
-                showError('Server sibuk atau link private.');
-            }
-        }
-
-        // Helper Khusus Youtube MP3 (Perlu request ulang dengan format mp3)
-        async function fetchYoutubeAudio(urlInput, btnElement) {
-            // Ubah tombol jadi loading
-            const originalText = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES MP3...';
-            btnElement.disabled = true;
-
-            try {
-                const params = new URLSearchParams({ url: urlInput, format: 'mp3' });
-                const response = await fetch(API_YOUTUBE + '?' + params);
-                const json = await response.json();
-
-                if (json.result && json.result.download) {
-                    window.open(json.result.download, '_blank');
-                } else {
-                    alert('Gagal mengambil link MP3.');
-                }
-            } catch (e) {
-                alert('Terjadi kesalahan saat konversi MP3.');
-            } finally {
-                btnElement.innerHTML = originalText;
-                btnElement.disabled = false;
-            }
-        }
-
-        // --- HELPER FUNCTIONS ---
-        function uiLoading(isLoading) {
-            const btn = document.getElementById('searchBtn');
-            const bar = document.getElementById('progressBarContainer');
-            const err = document.getElementById('errorMsg');
-            
-            if (isLoading) {
-                btn.disabled = true;
-                bar.style.display = 'block';
-                err.style.display = 'none';
-                document.getElementById('resultArea').style.display = 'none';
+                desc.innerText = 'No Watermark Video Downloader';
+            } else if (mode === 'youtube') {
+                icon.className = 'fab fa-youtube logo-icon';
+                title.innerText = 'YOUTUBE DL';
+                desc.innerText = 'Support Video (MP4) & Audio (MP3)';
             } else {
-                btn.disabled = false;
-                bar.style.display = 'none';
+                icon.className = 'fab fa-spotify logo-icon';
+                title.innerText = 'SPOTIFY DL';
+                desc.innerText = 'Music Downloader & Preview';
             }
         }
 
-        function showError(msg) {
-            uiLoading(false);
-            const err = document.getElementById('errorMsg');
-            err.innerText = '⚠️ ' + msg;
-            err.style.display = 'block';
+        async function processLink() {
+            const url = document.getElementById('urlInput').value;
+            if(!url) return;
+
+            uiState('loading');
+
+            try {
+                if(currentMode === 'tiktok') await handleTikTok(url);
+                else if(currentMode === 'youtube') await handleYouTube(url);
+                else await handleSpotify(url);
+            } catch (e) {
+                uiState('error', e.message || 'Terjadi kesalahan.');
+            }
         }
 
-        function updateMeta(author, title, img) {
-            document.getElementById('username').innerText = author || 'Unknown';
-            document.getElementById('description').innerText = title || '-';
-            document.getElementById('avatar').src = img || 'https://via.placeholder.com/50';
-        }
+        // --- HANDLER TIKTOK ---
+        async function handleTikTok(url) {
+            const res = await fetch(`${API_TIKTOK}?url=${encodeURIComponent(url)}`);
+            const data = await res.json();
+            if(data.code !== 0) throw new Error('Video tidak ditemukan.');
 
-        function updateStats(view, like, comment) {
-            // Reset Icon ke default TikTok/Umum
-            const s1 = document.getElementById('stat1');
-            const s2 = document.getElementById('stat2');
-            const s3 = document.getElementById('stat3');
+            const v = data.data;
             
-            // Icon Default
-            s1.innerHTML = `<i class="fas fa-eye"></i> <span class="stat-value">${formatNum(view)}</span>`;
-            s2.innerHTML = `<i class="fas fa-heart"></i> <span class="stat-value">${formatNum(like)}</span>`;
-            s3.innerHTML = `<i class="fas fa-comment"></i> <span class="stat-value">${formatNum(comment)}</span>`;
+            // UI Setup
+            document.getElementById('ytThumbnail').style.display = 'none'; // Sembunyikan Thumbnail Besar
+            document.getElementById('avatar').style.display = 'block'; // Tampilkan Avatar Bulat
+            
+            renderMeta(v.author.nickname, v.title, v.author.avatar);
+            renderStats(v.play_count, v.digg_count, v.comment_count);
+
+            // Player (Vertical/Default)
+            document.getElementById('playerBox').innerHTML = `
+                <video controls playsinline src="${v.play}" style="width:100%; height:100%; object-fit:contain;"></video>
+            `;
+
+            // Buttons
+            renderButtons([
+                { text: 'DOWNLOAD VIDEO', icon: 'video', url: v.play, type: 'primary', name: 'tiktok.mp4' },
+                { text: 'DOWNLOAD AUDIO', icon: 'music', url: v.music, type: 'secondary', name: 'tiktok.mp3' }
+            ]);
+
+            uiState('success');
+        }
+
+        // --- HANDLER YOUTUBE (Fixed Layout) ---
+        async function handleYouTube(url) {
+            if(!url.includes('youtu')) throw new Error('Link tidak valid!');
+
+            // Fetch Data
+            const params = new URLSearchParams({ url: url, format: '360' });
+            const res = await fetch(API_YOUTUBE + '?' + params);
+            const json = await res.json();
+            
+            if(!json.result) throw new Error('Gagal mengambil data YouTube.');
+
+            const yt = json.result;
+            const meta = yt.metadata || {};
+
+            // UI Setup untuk YouTube (Lebih Rapi)
+            document.getElementById('ytThumbnail').src = yt.thumbnail;
+            document.getElementById('ytThumbnail').style.display = 'block'; // Tampilkan Thumbnail Besar
+            
+            // Sembunyikan Avatar kecil karena thumbnail sudah besar, 
+            // atau ganti dengan icon channel jika mau. Di sini kita hide biar rapi.
+            document.getElementById('avatar').style.display = 'none'; 
+
+            // Mapping Data
+            document.getElementById('authorName').innerText = yt.author.channelTitle || 'YouTube Channel';
+            document.getElementById('videoTitle').innerText = yt.title;
+            
+            // Update Stats (Durasi, View, Like)
+            document.getElementById('s-play').parentNode.innerHTML = `<i class="fas fa-eye"></i> ${meta.view || '0'}`;
+            document.getElementById('s-like').parentNode.innerHTML = `<i class="fas fa-thumbs-up"></i> ${meta.like || '0'}`;
+            document.getElementById('s-com').parentNode.innerHTML = `<i class="fas fa-clock"></i> ${meta.duration || '-'}`;
+
+            // Player (16:9 Aspect Ratio handled by CSS)
+            document.getElementById('playerBox').innerHTML = `
+                <video controls playsinline poster="${yt.thumbnail}" src="${yt.download}" style="width:100%; height:100%; object-fit:cover;"></video>
+            `;
+
+            // Buttons (Special Handler for MP3)
+            const btnDiv = document.getElementById('buttonGroup');
+            btnDiv.innerHTML = `
+                <button onclick="downloadDirect('${yt.download}', 'video.mp4')" class="btn-dl btn-primary">
+                    <i class="fas fa-video"></i> DOWNLOAD MP4 (360p)
+                </button>
+                <button onclick="fetchYoutubeMP3('${url}', this)" class="btn-dl btn-secondary">
+                    <i class="fas fa-music"></i> DOWNLOAD MP3
+                </button>
+            `;
+
+            uiState('success');
+        }
+
+        // --- HANDLER SPOTIFY ---
+        async function handleSpotify(url) {
+            // Simple embedding logic
+            const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
+            if (!trackIdMatch) throw new Error('Link Spotify Track tidak valid.');
+
+            // Hide YT Elements
+            document.getElementById('ytThumbnail').style.display = 'none';
+            document.getElementById('avatar').style.display = 'none';
+            
+            // Dummy Meta
+            renderMeta('Spotify Music', 'Memuat preview...', 'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg');
+            document.getElementById('statsRow').style.display = 'none';
+
+            // Embed Player
+            document.getElementById('playerBox').innerHTML = `
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackIdMatch[1]}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            `;
+
+            // Fetch for Download Button
+            const res = await fetch(`${API_SPOTIFY}?url=${encodeURIComponent(url)}`);
+            const json = await res.json();
+            
+            if(json.result) {
+                const dlUrl = `https://api.fabdl.com/spotify/download-mp3/${json.result.gid}/${json.result.id}`;
+                renderButtons([
+                    { text: 'DOWNLOAD MP3', icon: 'download', url: dlUrl, type: 'primary' }
+                ]);
+            }
+
+            uiState('success');
+        }
+
+        // --- HELPERS ---
+        
+        function renderMeta(name, title, img) {
+            document.getElementById('authorName').innerText = name;
+            document.getElementById('videoTitle').innerText = title;
+            document.getElementById('avatar').src = img;
+            document.getElementById('statsRow').style.display = 'flex';
+        }
+
+        function renderStats(p, l, c) {
+            document.getElementById('s-play').innerText = formatNum(p);
+            document.getElementById('s-like').innerText = formatNum(l);
+            document.getElementById('s-com').innerText = formatNum(c);
+            // Reset Icons to default
+            document.getElementById('s-play').previousElementSibling.className = 'fas fa-play';
+            document.getElementById('s-like').previousElementSibling.className = 'fas fa-heart';
+            document.getElementById('s-com').previousElementSibling.className = 'fas fa-comment';
+        }
+
+        function renderButtons(btns) {
+            const div = document.getElementById('buttonGroup');
+            div.innerHTML = '';
+            btns.forEach(b => {
+                const btn = document.createElement('button');
+                btn.className = `btn-dl btn-${b.type}`;
+                btn.innerHTML = `<i class="fas fa-${b.icon}"></i> ${b.text}`;
+                btn.onclick = () => downloadDirect(b.url, b.name);
+                div.appendChild(btn);
+            });
+        }
+
+        async function fetchYoutubeMP3(url, btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CONVERTING...';
+            btn.disabled = true;
+            try {
+                const res = await fetch(`${API_YOUTUBE}?url=${url}&format=mp3`);
+                const json = await res.json();
+                if(json.result && json.result.download) {
+                    window.open(json.result.download, '_blank');
+                } else throw new Error('Gagal convert');
+            } catch (e) {
+                alert('Gagal mengambil MP3');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function downloadDirect(url, name) {
+            window.open(url, '_blank');
+        }
+
+        function uiState(state, msg) {
+            const loader = document.getElementById('loadingBar');
+            const result = document.getElementById('resultArea');
+            const error = document.getElementById('errorMsg');
+            const btn = document.getElementById('btnSearch');
+
+            if(state === 'loading') {
+                loader.style.display = 'block';
+                result.style.display = 'none';
+                error.style.display = 'none';
+                btn.disabled = true;
+            } else if (state === 'success') {
+                loader.style.display = 'none';
+                result.style.display = 'block';
+                btn.disabled = false;
+            } else {
+                loader.style.display = 'none';
+                error.style.display = 'block';
+                error.innerText = msg;
+                btn.disabled = false;
+            }
         }
 
         function formatNum(num) {
-            if (!num) return '0';
             if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
             if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
             if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-            return num;
+            return num || 0;
         }
-
-        async function downloadFile(url, filename) {
-            try {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } catch (e) {
-                window.open(url, '_blank');
-            }
-        }
-
-        document.getElementById('urlInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleFetch();
-        });
+        
+        @keyframes load { from{width:0%} to{width:100%} }
     </script>
-    
-    <script type='text/javascript' src='//pl28100290.effectivegatecpm.com/be/41/56/be4156518224485c21c0b2c49607ddd8.js'></script>
 </body>
 </html>
